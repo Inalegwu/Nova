@@ -4,6 +4,8 @@ import { Duration, Effect, Mailbox, Schedule } from "effect";
 import { parentPort } from "node:worker_threads";
 import { z } from "zod";
 import { parseFileNameFromPath, transformMessage } from "../../utils";
+import * as chokidar from "chokidar";
+import { parser } from "@/shared/workers";
 
 const port = parentPort;
 
@@ -43,24 +45,62 @@ const watchFS = Effect.fn(function* (directory: string | null) {
   yield* Effect.log(unsavedIssues);
 
   yield* mailbox.offerAll(unsavedIssues);
+
+  yield* Effect.logInfo(`watching ${directory} for changes`);
+  const chokidar_watcher = yield* Effect.try(() =>
+    chokidar.watch(directory, {
+      ignoreInitial: true,
+    }),
+  );
+
+  yield* Effect.forever(
+    Effect.try(() =>
+      chokidar_watcher.on("add", (parsePath) =>
+        parser.postMessage({
+          parsePath,
+          action: "LINK",
+        } satisfies ParserSchema),
+      ),
+    ),
+  ).pipe(Effect.forkDaemon);
+
+  yield* Effect.forever(
+    Effect.try(() =>
+      chokidar_watcher.on("unlink", (parsePath) =>
+        parser.postMessage({
+          parsePath,
+          action: "UNLINK",
+        } satisfies ParserSchema),
+      ),
+    ),
+  ).pipe(Effect.forkDaemon);
 });
 
 port.on("message", (message) =>
   transformMessage(z.object({ activate: z.boolean() }), message).pipe(
     Effect.matchEffect({
       onSuccess: ({ activate }) =>
-        watchFS(process.env.source_dir!).pipe(
-          Effect.schedule(Schedule.duration(Duration.seconds(10))),
-          Effect.catchTags({
-            FSError: (error) => Effect.fail(error),
-            UnknownException: (exception) =>
-              Effect.logFatal({
-                message: exception.message,
-                cause: exception.cause,
-              }),
-          }),
-          Effect.forever,
-        ),
+        (() => {
+          console.log({ activate });
+
+          return watchFS(process.env.source_dir!).pipe(
+            Effect.schedule(Schedule.duration(Duration.seconds(10))),
+            Effect.catchTags({
+              FSError: (error) =>
+                Effect.logFatal({
+                  cause: error.cause,
+                  message: error.message,
+                  name: error.name,
+                }),
+              UnknownException: (exception) =>
+                Effect.logFatal({
+                  message: exception.message,
+                  cause: exception.cause,
+                }),
+            }),
+            Effect.forever,
+          );
+        })(),
       onFailure: Effect.logFatal,
     }),
     Effect.annotateLogs({

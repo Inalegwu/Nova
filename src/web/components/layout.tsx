@@ -8,7 +8,8 @@ import { v4 } from "uuid";
 import { useWindow } from "../hooks";
 import { globalState$ } from "../state";
 import { toast } from "sonner";
-import { Flex, Text } from "@kuma-ui/core";
+import { Flex, Text, Link } from "@kuma-ui/core";
+import { Button } from "@kuma-ui/core";
 
 type LayoutProps = {
   children?: React.ReactNode;
@@ -115,12 +116,16 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <Flex
       width="100%"
-      bg="colors.light.100"
-      className="h-screen transition bg-neutral-50 dark:bg-moonlightBase relative"
+      bg="colors.light.200"
+      className="h-screen transition relative"
     >
       <Text as="h1" fontWeight="bold" fontFamily="Body">
         layout route...under construction
       </Text>
+      <Link variant="danger" href="/" color="colors.primary.100">
+        content
+      </Link>
+      <Button variant="danger">content</Button>
     </Flex>
   );
 }

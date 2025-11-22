@@ -1,100 +1,11 @@
-import { Flex, Switch, Tabs, Text } from "@radix-ui/themes";
-import t from "@/shared/config";
+import { Flex } from "@kuma-ui/core";
 import { createFileRoute } from "@tanstack/react-router";
 import React, { memo } from "react";
-import { toast } from "@/web/components/toast";
-import { globalState$ } from "../state";
-import { SsdRound, Glasses, PaperBin } from "@solar-icons/react";
 
 export const Route = createFileRoute("/settings")({
   component: memo(Component),
 });
 
 function Component() {
-  return (
-    <Flex direction="column" className="w-full h-screen pt-10">
-      <Tabs.Root defaultValue="storage">
-        <Tabs.List defaultValue="storage" size="2">
-          <Tabs.Trigger className="cursor-pointer" value="storage">
-            <Flex align="center" justify="center" gap="2">
-              <SsdRound size={16} />
-              <Text size="2">Storage</Text>
-            </Flex>
-          </Tabs.Trigger>
-          <Tabs.Trigger className="cursor-pointer" value="reader">
-            <Flex align="center" justify="center" gap="2">
-              <Glasses size={16} />
-              <Text size="2">Reader</Text>
-            </Flex>
-          </Tabs.Trigger>
-        </Tabs.List>
-        <Tabs.Content value="storage" className="w-full h-screen">
-          <StorageView />
-        </Tabs.Content>
-        <Tabs.Content value="reader" className="w-full h-screen">
-          <ReaderView />
-        </Tabs.Content>
-      </Tabs.Root>
-    </Flex>
-  );
+  return <Flex> under construction</Flex>;
 }
-
-const StorageView = React.memo(() => {
-  const utils = t.useUtils();
-
-  const { mutate: emptyCache } = t.library.emptyCache.useMutation({
-    onError: (error) => toast.error(error.message),
-    onSuccess: () => utils.library.invalidate(),
-  });
-
-  return (
-    <Flex className="w-full h-full px-2 py-2" gap="3" direction="column">
-      <Flex align="center" justify="between" width="100%">
-        <Flex direction="column">
-          <Text weight="bold" size="2">
-            Empty Cache
-          </Text>
-          <Text weight="medium" size="1" color="gray">
-            Empty storage cache
-          </Text>
-        </Flex>
-        <button
-          onClick={() => emptyCache()}
-          className="p-3 rounded-md cursor-pointer dark:text-moonlightSlight hover:bg-neutral-400/10 dark:hover:bg-neutral-400/5"
-        >
-          <PaperBin size={16} />
-        </button>
-      </Flex>
-    </Flex>
-  );
-});
-
-const ReaderView = React.memo(() => {
-  const direction = globalState$.reader.direction.get();
-
-  return (
-    <Flex className="h-full px-4 py-2" direction="column" gap="3">
-      <Flex width="100%" align="center" justify="between">
-        <Flex direction="column">
-          <Text weight="bold" size="2">
-            Reader Direction
-          </Text>
-          <Text weight="medium" size="1" color="gray">
-            Change scroll direction of the reader view
-          </Text>
-        </Flex>
-        <Switch
-          radius="full"
-          value={globalState$.reader.direction.get()}
-          checked={globalState$.reader.direction.get() === "vertical"}
-          onCheckedChange={(checked) =>
-            globalState$.reader.direction.set(
-              checked ? "vertical" : "horizontal",
-            )
-          }
-          size="2"
-        />
-      </Flex>
-    </Flex>
-  );
-});

@@ -10,6 +10,8 @@ import {
 } from "../services/archive-service";
 import { Path } from "@effect/platform";
 import { NodeContext } from "@effect/platform-node";
+import { issues } from "@/shared/schema";
+import { eq } from "drizzle-orm";
 
 const port = parentPort;
 
@@ -74,7 +76,21 @@ const handleMessage = Effect.fnUntraced(function* ({
       archive.zip(filePath).pipe(Effect.runPromise),
     ),
     Match.when({ action: "LINK", ext: "none" }, () => Effect.void),
-    Match.when({ action: "UNLINK" }, () => Effect.void),
+    Match.when({ action: "UNLINK" }, () =>
+      (async () => {
+        await db
+          .delete(issues)
+          .where(
+            eq(
+              issues.path,
+              path.join(
+                process.env.cache_dir!,
+                parseFileNameFromPath(filePath),
+              ),
+            ),
+          );
+      })(),
+    ),
   );
 });
 

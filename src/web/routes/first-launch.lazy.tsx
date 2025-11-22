@@ -1,11 +1,11 @@
 import { useObservable } from "@legendapp/state/react";
-import { Flex, Heading, Kbd, Text } from "@radix-ui/themes";
 import { Link, createLazyFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion, useMotionValue } from "motion/react";
 import { memo, useEffect, useState } from "react";
 import { Icon } from "../components";
 import { useDebounce, useKeyPress, useTimeout } from "../hooks";
 import { globalState$ } from "../state";
+import { Flex, Text } from "@kuma-ui/core";
 
 export const Route = createLazyFileRoute("/first-launch")({
   component: memo(Component),
@@ -80,15 +80,15 @@ function Component() {
             }}
             className="absolute top-[2%] left-[40.5%] bg-moonlightOrange/10 px-3 py-1 rounded-full text-moonlightText border-1 border-solid border-moonlightOrange/30"
           >
-            <Text size="2">
+            <Text as="p">
               Press{" "}
-              <Kbd color="orange" className="mx-2">
+              <Text color="orange" className="mx-2">
                 [
-              </Kbd>
+              </Text>
               and
-              <Kbd color="orange" className="mx-2">
+              <Text color="orange" className="mx-2">
                 ]
-              </Kbd>
+              </Text>
               or <span className="text-moonlightOrange font-bold">Drag</span> to
               navigate
             </Text>
@@ -129,17 +129,16 @@ function Component() {
           >
             {welcomeMessages.map((message) => (
               <Flex
-                align="center"
-                justify="center"
-                direction="column"
+                alignItems="center"
+                justifyContent="center"
                 key={message.id}
                 gap="1"
                 className="w-full h-full shrink-0"
               >
-                <Heading size="8" className="text-moonlightOrange">
+                <Text as="h3" className="text-moonlightOrange">
                   {message.title}
-                </Heading>
-                <Text size="4" weight="medium" color="gray">
+                </Text>
+                <Text as="p" color="gray">
                   {message.subtitle}
                 </Text>
               </Flex>
@@ -148,8 +147,8 @@ function Component() {
         </AnimatePresence>
       </Flex>
       <Flex
-        align="center"
-        justify="center"
+        alignItems="center"
+        justifyContent="center"
         gap="2"
         className="absolute z-10 bottom-[3%] left-[49%] p-2"
       >

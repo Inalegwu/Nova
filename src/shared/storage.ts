@@ -5,7 +5,7 @@ import * as Effect from "effect/Effect";
 import { pipe } from "effect/Function";
 import * as schema from "./schema";
 
-const db = pipe(new Database("vision.db"), (client) =>
+const db = pipe(new Database(process.env.db_url!), (client) =>
   drizzle(client, { schema }),
 );
 

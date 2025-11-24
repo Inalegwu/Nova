@@ -22,5 +22,5 @@
       }
     ]
   },
-  "include": ["src", "src/web/kuma.config.ts"]
+  "include": ["src"]
 }

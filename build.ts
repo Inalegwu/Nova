@@ -1,9 +1,6 @@
-import { Data, Effect } from "effect";
+import { Duration, Effect } from "effect";
 import { build } from "electron-builder";
-
-class BuildError extends Data.TaggedError("BuildError")<{
-  error: unknown;
-}> {}
+import { BuildError } from "./src/shared/core/utils/errors";
 
 Effect.tryPromise({
   try: async () =>
@@ -40,7 +37,7 @@ Effect.tryPromise({
           ],
         },
         linux: {
-          icon:"build/win.png",
+          icon: "build/win.png",
           target: [
             {
               target: "AppImage",
@@ -54,10 +51,10 @@ Effect.tryPromise({
           runAfterFinish: true,
         },
       },
-    }).then((paths) => console.log(`Packaged App @ ${paths.join(",")}`)),
+    }).then((paths) => paths.join(",")),
   catch: (error) => new BuildError({ error }),
 }).pipe(
-  Effect.andThen(Effect.logInfo),
+  Effect.andThen((paths) => Effect.logInfo(`Built executable @ ${paths}`)),
   Effect.catchTags({
     BuildError: ({ error }) =>
       Effect.logFatal(
@@ -65,6 +62,13 @@ Effect.tryPromise({
         `Build failed with Exit Code ${error.exitCode} ERROR CODE ==> ${error.code}...\n${error}`,
       ),
   }),
+  Effect.timed,
+  Effect.tap(([duration]) =>
+    Effect.logInfo(`Build took ${Duration.format(duration)}`),
+  ),
   Effect.withLogSpan("app.build"),
+  Effect.annotateLogs({
+    script: "app.build",
+  }),
   Effect.runPromise,
 );

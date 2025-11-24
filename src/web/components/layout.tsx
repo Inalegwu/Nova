@@ -8,8 +8,7 @@ import { v4 } from "uuid";
 import { useWindow } from "../hooks";
 import { globalState$ } from "../state";
 import { toast } from "sonner";
-import { Flex, Text, Link } from "@kuma-ui/core";
-import { Button } from "@kuma-ui/core";
+import { Button, Column, Row } from "./ui";
 
 type LayoutProps = {
   children?: React.ReactNode;
@@ -20,9 +19,9 @@ export default function Layout({ children }: LayoutProps) {
   const navigation = useRouter();
   const routerState = useRouterState();
 
-  const { mutate: minimizeWindow } = t.window.minimize.useMutation();
-  const { mutate: maximizeWindow } = t.window.maximize.useMutation();
-  const { mutate: closeWindow } = t.window.closeWindow.useMutation();
+  const { mutate: minimize } = t.window.minimize.useMutation();
+  const { mutate: maximize } = t.window.maximize.useMutation();
+  const { mutate: close } = t.window.closeWindow.useMutation();
   const { mutate: launchWatcher } = t.library.launchWatcher.useMutation();
 
   const isNotHome = computed(() => routerState.location.pathname !== "/").get();
@@ -89,11 +88,6 @@ export default function Layout({ children }: LayoutProps) {
     }
   });
 
-  const goToSettings = () =>
-    navigation.navigate({
-      to: "/settings",
-    });
-
   useWindow("keypress", (e) => {
     if (e.keyCode === 16) {
       console.log("search command pressed");
@@ -114,18 +108,11 @@ export default function Layout({ children }: LayoutProps) {
   }, [navigation, launchWatcher]);
 
   return (
-    <Flex
-      width="100%"
-      bg="colors.light.200"
-      className="h-screen transition relative"
-    >
-      <Text as="h1" fontWeight="bold" fontFamily="Body">
-        layout route...under construction
-      </Text>
-      <Link variant="danger" href="/" color="colors.primary.100">
-        content
-      </Link>
-      <Button variant="danger">content</Button>
-    </Flex>
+    <Column className="w-full h-screen bg-neutral-50">
+      <Row className="w-full p-3 bg-red-100">
+        <Button>hello world</Button>
+      </Row>
+      {children}
+    </Column>
   );
 }

@@ -1,6 +1,5 @@
 import { publicProcedure, router } from "@/trpc";
 import { observable } from "@trpc/server/observable";
-import { gte } from "drizzle-orm";
 import { deeplinkChannel, parserChannel, deletionChannel } from "../channels";
 import { parseFileNameFromPath } from "../utils";
 import { history } from "./history";
@@ -21,7 +20,7 @@ export const appRouter = router({
       const listener = async (evt: DeeplinkChannel) => {
         const exists = await ctx.db.query.issues.findFirst({
           where: (fields, { eq }) =>
-            gte(fields.issueTitle, parseFileNameFromPath(evt.path)),
+            eq(fields.issueTitle, parseFileNameFromPath(evt.path)),
           columns: {
             id: true,
           },
@@ -30,8 +29,8 @@ export const appRouter = router({
         if (!exists) {
           parser.postMessage({
             parsePath: evt.path,
-            action: 'LINK'
-          } satisfies ParserSchema)
+            action: "LINK",
+          } satisfies ParserSchema);
           return;
         }
 
@@ -47,7 +46,6 @@ export const appRouter = router({
       };
     }),
   ),
-  // subscriptions
   additions: publicProcedure.subscription(() =>
     observable<ParserChannel>((emit) => {
       const listener = (evt: ParserChannel) => {

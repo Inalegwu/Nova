@@ -5,7 +5,6 @@ import { resolve } from "node:path";
 import UnoCSS from "unocss/vite";
 import path from "node:path";
 import tsconfigPaths from "vite-tsconfig-paths";
-import KumaUI from "@kuma-ui/vite";
 
 export default defineConfig({
   main: {
@@ -32,9 +31,6 @@ export default defineConfig({
     plugins: [
       react(),
       UnoCSS(),
-      KumaUI({
-        wasm:true
-      }),
       tsconfigPaths(),
       tanstackRouter({
         routesDirectory: path.join(__dirname, "src/web/routes"),

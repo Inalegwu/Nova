@@ -11,7 +11,6 @@ import ReactDOM from "react-dom/client";
 import "virtual:uno.css";
 import "./app.css";
 import ErrorComponent from "./components/error";
-import { ToastProvider } from "./components/toast";
 import { routeTree } from "./routeTree.gen";
 
 enableReactTracking({
@@ -43,14 +42,7 @@ if (!rootElement?.innerHTML) {
           persistOptions={{ persister }}
           client={queryClient}
         >
-            <ToastProvider
-              context={{
-                duration: 2000,
-                position: "bottom-left",
-              }}
-            >
-              <RouterProvider defaultViewTransition router={router} />
-            </ToastProvider>
+          <RouterProvider defaultViewTransition router={router} />
         </PersistQueryClientProvider>
       </t.Provider>
     </StrictMode>,

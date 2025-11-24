@@ -1,14 +1,10 @@
 import { useObservable } from "@legendapp/state/react";
-import { Flex } from "@kuma-ui/core";
 import t from "@/shared/config";
 import { createFileRoute } from "@tanstack/react-router";
 import React, { memo } from "react";
-import { toast } from "@/web/components/toast";
+import { toast } from "sonner";
 import { useTimeout } from "../hooks";
 import { globalState$ } from "../state";
-
-const Collection = React.lazy(() => import("../components/collection"));
-const Issue = React.lazy(() => import("../components/issue"));
 
 export const Route = createFileRoute("/")({
   component: memo(Component),
@@ -37,5 +33,5 @@ function Component() {
 
   console.log({ data });
 
-  return <Flex>under construction</Flex>;
+  return <div>under construction</div>;
 }

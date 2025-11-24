@@ -2,13 +2,13 @@ import { Tooltip as RTooltip } from "radix-ui";
 
 type Props = {
   content: string;
-  child: React.ReactNode;
+  children: React.ReactNode;
 };
 
-export default function Tooltip({ content, child }: Props) {
+export default function Tooltip({ content, children }: Props) {
   return (
     <RTooltip.Root>
-      <RTooltip.Trigger>{child}</RTooltip.Trigger>
+      <RTooltip.Trigger>{children}</RTooltip.Trigger>
       <RTooltip.Content>{content}</RTooltip.Content>
     </RTooltip.Root>
   );

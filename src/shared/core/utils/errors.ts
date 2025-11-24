@@ -19,40 +19,45 @@ export class DeletionError extends Data.TaggedError("DeletionError")<{
   cause: unknown;
 }> {}
 
+export class BuildError extends Data.TaggedError("BuildError")<{
+  error: unknown;
+}> {}
+
 export const ApplicationError = Data.taggedEnum<
   TaskError | DeletionError | ArchiveError | FSError
 >();
 
 export type ApplicationError = typeof ApplicationError;
 
-const ensureError = Effect.fn(function* (
+const ensureError = (
   error: TaskError | DeletionError | ArchiveError | FSError,
-) {
-  const dump = yield* Dump;
+) =>
+  Effect.gen(function* () {
+    const dump = yield* Dump;
 
-  yield* Effect.logError(error);
+    yield* Effect.logError(error);
 
-  yield* dump
-    .writeToDump({
-      date: new Date(),
-      error: JSON.stringify({
-        message: error.message,
-        cause: error.cause,
-      }),
-      id: Encoding.encodeBase64(`${error._tag}::${Date.now()}`),
-    })
-    .pipe(
-      Effect.andThen(
-        Effect.logInfo(`Error saved to dump @ ${process.env.error_dump}`),
-      ),
-    );
-});
+    const id = Encoding.encodeBase64(`${error._tag}::${Date.now()}`);
+
+    yield* dump
+      .writeToDump({
+        date: new Date(),
+        error: JSON.stringify({
+          message: error.message,
+          cause: error.cause,
+        }),
+        id,
+      })
+      .pipe(
+        Effect.andThen(
+          Effect.logInfo(`Error saved to dump @ ${process.env.error_dump}`),
+        ),
+      );
+  }).pipe(Effect.provide(Dump.Default));
 
 export const handleApplicationError = ApplicationError.$match({
-  DeletionError: (error) =>
-    ensureError(error).pipe(Effect.provide(Dump.Default)),
-  ArchiveError: (error) =>
-    ensureError(error).pipe(Effect.provide(Dump.Default)),
-  TaskError: (error) => ensureError(error).pipe(Effect.provide(Dump.Default)),
-  FSError: (error) => ensureError(error).pipe(Effect.provide(Dump.Default)),
+  DeletionError: (error) => ensureError(error),
+  ArchiveError: (error) => ensureError(error),
+  TaskError: (error) => ensureError(error),
+  FSError: (error) => ensureError(error),
 });

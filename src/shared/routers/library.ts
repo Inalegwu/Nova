@@ -1,16 +1,15 @@
 import { publicProcedure, router } from "@/trpc";
 import { eq } from "drizzle-orm";
-import { Effect } from "effect";
-import * as Array from "effect/Array";
+import { Effect, Array } from "effect";
 import { dialog } from "electron";
 import { v4 } from "uuid";
 import { z } from "zod";
 import {
   collections as collectionsSchema,
   issues as issueSchema,
-} from "../schema";
-import { sortPages } from "../utils";
-import { watcher, cache } from "../workers";
+} from "@/shared/schema";
+import { sortPages } from "@/shared/utils";
+import { watcher, cache } from "@/shared/workers";
 
 const libraryRouter = router({
   launchWatcher: publicProcedure.mutation(async () => {
@@ -191,7 +190,7 @@ const libraryRouter = router({
           Effect.runPromise,
         ),
     ),
-  addToCollectionInBulk: publicProcedure
+  bulkAddToCollection: publicProcedure
     .input(
       z.object({
         collectionId: z.string(),

@@ -8,10 +8,9 @@ import {
   ArchiveService,
   databaseArchiveService,
 } from "../services/archive-service";
-import { Path } from "@effect/platform";
-import { NodeContext } from "@effect/platform-node";
 import { issues } from "@/shared/schema";
 import { eq } from "drizzle-orm";
+import path from "node:path";
 
 const port = parentPort;
 
@@ -22,17 +21,14 @@ const handleMessage = Effect.fnUntraced(function* ({
   parsePath,
 }: ParserSchema) {
   const archive = yield* ArchiveService;
-  const path = yield* Path.Path;
 
-  const filePath = path.normalize(parsePath);
-
-  yield* Effect.log({ filePath });
+  yield* Effect.log({ parsePath });
 
   yield* Effect.log({ action, parsePath });
 
-  const ext = filePath.includes("cbr")
+  const ext = parsePath.includes("cbr")
     ? "cbr"
-    : filePath.includes("cbz")
+    : parsePath.includes("cbz")
       ? "cbz"
       : "none";
 
@@ -40,14 +36,14 @@ const handleMessage = Effect.fnUntraced(function* ({
     isCompleted: false,
     state: "SUCCESS",
     error: null,
-    issue: parseFileNameFromPath(filePath),
+    issue: parseFileNameFromPath(parsePath),
   });
 
   const exists = yield* Effect.tryPromise(
     async () =>
       await db.query.issues.findFirst({
         where: (issue, { eq }) =>
-          eq(issue.issueTitle, parseFileNameFromPath(filePath)),
+          eq(issue.issueTitle, parseFileNameFromPath(parsePath)),
       }),
   );
 
@@ -65,15 +61,15 @@ const handleMessage = Effect.fnUntraced(function* ({
     isCompleted: false,
     state: "SUCCESS",
     error: null,
-    issue: parseFileNameFromPath(filePath),
+    issue: parseFileNameFromPath(parsePath),
   });
 
   Match.value({ action, ext }).pipe(
     Match.when({ action: "LINK", ext: "cbr" }, () =>
-      archive.rar(filePath).pipe(Effect.runPromise),
+      archive.rar(parsePath).pipe(Effect.runPromise),
     ),
     Match.when({ action: "LINK", ext: "cbz" }, () =>
-      archive.zip(filePath).pipe(Effect.runPromise),
+      archive.zip(parsePath).pipe(Effect.runPromise),
     ),
     Match.when({ action: "LINK", ext: "none" }, () => Effect.void),
     Match.when({ action: "UNLINK" }, () =>
@@ -85,7 +81,7 @@ const handleMessage = Effect.fnUntraced(function* ({
               issues.path,
               path.join(
                 process.env.cache_dir!,
-                parseFileNameFromPath(filePath),
+                parseFileNameFromPath(parsePath),
               ),
             ),
           );
@@ -104,7 +100,6 @@ port.on("message", (message) =>
       worker: "parser-worker",
     }),
     Effect.provideService(ArchiveService, databaseArchiveService),
-    Effect.provide(NodeContext.layer),
     Effect.orDie,
     Effect.runPromise,
   ),

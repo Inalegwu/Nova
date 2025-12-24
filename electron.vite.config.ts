@@ -1,10 +1,9 @@
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig, externalizeDepsPlugin } from "electron-vite";
-import { resolve } from "node:path";
-import UnoCSS from "unocss/vite";
 import path from "node:path";
 import tsconfigPaths from "vite-tsconfig-paths";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   main: {
@@ -30,7 +29,7 @@ export default defineConfig({
     root: "src/web/",
     plugins: [
       react(),
-      UnoCSS(),
+      tailwindcss(),
       tsconfigPaths(),
       tanstackRouter({
         routesDirectory: path.join(__dirname, "src/web/routes"),

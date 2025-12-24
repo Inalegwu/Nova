@@ -108,7 +108,7 @@ const createWindow = () => {
   //   globalState$.set,
   // );
 
-  // mainWindow.webContents.openDevTools({ mode: "detach" });
+  // mainWindow.webContents.openDevTools({ mode: "bottom" });
 };
 
 app.whenReady().then(() => createWindow());

@@ -63,5 +63,5 @@ function Component() {
 
   useKeyPress(debounceKeyPress);
 
-  return <div>first launch screen</div>;
+  return <div className="font-medium text-lg">first launch screen</div>;
 }

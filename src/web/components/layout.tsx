@@ -97,22 +97,17 @@ export default function Layout({ children }: LayoutProps) {
   useEffect(() => {
     launchWatcher();
     if (globalState$.isFullscreen.get()) globalState$.isFullscreen.set(false);
-    if (globalState$.firstLaunch.get()) {
-      navigation.navigate({
-        to: "/first-launch",
-      });
-    }
+    // if (globalState$.firstLaunch.get()) {
+    //   navigation.navigate({
+    //     to: "/first-launch",
+    //   });
+    // }
     if (globalState$.appId.get() === null) {
       globalState$.appId.set(v4());
     }
   }, [navigation, launchWatcher]);
 
   return (
-    <Column className="w-full h-screen bg-neutral-50">
-      <Row className="w-full p-3 bg-red-100">
-        <Button>hello world</Button>
-      </Row>
-      {children}
-    </Column>
+    <Column className="w-full h-screen bg-neutral-50 p-2">{children}</Column>
   );
 }

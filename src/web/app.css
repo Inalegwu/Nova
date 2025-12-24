@@ -1,38 +1,27 @@
-@font-face {
-    font-family: Title;
-    src: url("../assets/fonts/VirusKiller-0W1ov.ttf");
-}
-
-@font-face {
-    font-family: Font;
-    src: url("../assets/fonts/atkinson.ttf");
-}
+@import "tailwindcss";
 
 @font-face{
-    font-family: Count;
-    src:url("../assets/fonts/plex-mono.ttf")
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
     font-family: Font;
-    text-decoration: none;
+    src: url("../assets/fonts/commit.ttf");
 }
 
-a {
-    appearance: none;
-    padding: 0;
-    margin: 0;
-    color: black;
+@theme{
+    --font-sans: Font;
+    --color-50: oklch(6.341 0.000 89.9);
+    --color-150: oklch(6.307 0.169 106.9);
+    --color-250: oklch(6.134 0.293 92.5);
+    --color-350: oklch(5.799 0.415 71.2);
+    --color-450: oklch(5.418 0.622 60.3);
+    --color-550: oklch(4.946 0.906 58.6);
+    --color-650: oklch(4.223 1.091 51.6);
+    --color-750: oklch(3.329 1.366 29.2);
+    --color-850: oklch(2.924 1.200 29.2);
+    --color-950: oklch(2.359 0.968 29.2);
 }
 
-body {
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    overflow: hidden;
+@font-face {
+    font-family: Font;
+    src: url("../assets/fonts/commit.ttf");
 }
 
 #drag-region {
@@ -45,19 +34,4 @@ body {
 ::-webkit-scrollbar {
     width: 0;
     background: none;
-}
-
-button {
-    border: none;
-    appearance: none;
-    background: none;
-    outline: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
-
-img {
-    pointer-events: none;
 }

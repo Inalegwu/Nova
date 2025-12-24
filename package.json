@@ -37,6 +37,7 @@
     "@tanstack/react-query-persist-client": "^5.90.12",
     "@tanstack/react-router": "^1.139.3",
     "@tanstack/react-virtual": "^3.13.12",
+    "@toolwind/corner-shape": "^0.0.8-3",
     "@trpc/client": "^10.45.2",
     "@trpc/react-query": "^10.45.2",
     "@trpc/server": "^10.45.2",

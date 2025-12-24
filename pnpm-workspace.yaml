@@ -1,7 +1,0 @@
-onlyBuiltDependencies:
-  - '@biomejs/biome'
-  - '@parcel/watcher'
-  - better-sqlite3
-  - electron
-  - esbuild
-  - msgpackr-extract

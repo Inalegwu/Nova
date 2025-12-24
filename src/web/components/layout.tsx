@@ -9,6 +9,7 @@ import { useWindow } from "../hooks";
 import { globalState$ } from "../state";
 import { toast } from "sonner";
 import { Button, Column, Row } from "./ui";
+import { SidebarMinimalistic } from "@solar-icons/react";
 
 type LayoutProps = {
   children?: React.ReactNode;
@@ -108,6 +109,10 @@ export default function Layout({ children }: LayoutProps) {
   }, [navigation, launchWatcher]);
 
   return (
-    <Column className="w-full h-screen bg-neutral-50 p-2">{children}</Column>
+    <Column className="w-full h-screen bg-neutral-50 p-2">
+      <SidebarMinimalistic size={17} />
+      {children}
+      <div className="rounded-lg border-solid border-2 border-neutral-200 corner-superellipse/1 bg-color-450 w-[100px] h-[200px]" />
+    </Column>
   );
 }

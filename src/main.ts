@@ -97,17 +97,6 @@ const createWindow = () => {
     });
   }
 
-  // load app settings
-  // pipe(
-  //   Effect.try({
-  //     try: () => path.join(data_dir, "config.json"),
-  //     catch: (error) => console.log(error),
-  //   }).pipe(Effect.runSync),
-  //   (_) => fs.readFileSync(_, { encoding: "utf-8" }),
-  //   (_) => JSON.parse(_) as GlobalState,
-  //   globalState$.set,
-  // );
-
   // mainWindow.webContents.openDevTools({ mode: "bottom" });
 };
 
@@ -115,16 +104,6 @@ app.whenReady().then(() => createWindow());
 
 app.once("window-all-closed", () => {
   const config = globalState$.get();
-
-  // save app settings to disk
-  // pipe(
-  //   path.join(data_dir, "config.json"),
-  //   (path) => ({
-  //     path,
-  //     config: JSON.stringify(config),
-  //   }),
-  //   (_) => fs.writeFileSync(_.path, _.config, { encoding: "utf-8" }),
-  // );
 
   app.quit();
 });

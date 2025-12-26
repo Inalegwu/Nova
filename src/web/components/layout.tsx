@@ -112,7 +112,7 @@ export default function Layout({ children }: LayoutProps) {
     <Column className="w-full h-screen bg-neutral-50 p-2">
       <SidebarMinimalistic size={17} />
       {children}
-      <div className="rounded-lg border-solid border-2 border-neutral-200 corner-superellipse/1 bg-color-450 w-[100px] h-[200px]" />
+      <div className="rounded-lg border-solid border-2 border-neutral-200 corner-superellipse/3 bg-color-450 w-50 h-60" />
     </Column>
   );
 }

@@ -7,13 +7,14 @@ export const Route = createRootRoute({
   component: () => (
     <SolarProvider
       value={{
-        size: 17,
-        weight: "Outline",
+        size: 13,
+        weight: "Bold",
+        color: "navy",
       }}
     >
       <Layout>
         <Outlet />
-        <Toaster/>
+        <Toaster />
         {/* <TanStackRouterDevtools /> */}
       </Layout>
     </SolarProvider>

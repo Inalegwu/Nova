@@ -9,14 +9,9 @@ import {
   issues as issueSchema,
 } from "@/shared/schema";
 import { sortPages } from "@/shared/utils";
-import { watcher, cache } from "@/shared/workers";
 
 const libraryRouter = router({
   launchWatcher: publicProcedure.mutation(async () => {
-    watcher.postMessage({
-      activate: true,
-    });
-
     return {
       success: true,
     };
@@ -216,8 +211,6 @@ const libraryRouter = router({
         ),
     ),
   emptyCache: publicProcedure.mutation(async ({ ctx }) => {
-    cache.postMessage({});
-
     return {
       success: true,
     };

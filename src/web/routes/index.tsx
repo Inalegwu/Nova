@@ -5,6 +5,7 @@ import React, { memo } from "react";
 import { toast } from "sonner";
 import { useTimeout } from "../hooks";
 import { globalState$ } from "../state";
+import { Tabs } from "radix-ui";
 
 export const Route = createFileRoute("/")({
   component: memo(Component),
@@ -33,5 +34,11 @@ function Component() {
 
   console.log({ data });
 
-  return <div>under construction</div>;
+  return (
+    <div className="w-full h-full">
+      <Tabs.Content value="all">all</Tabs.Content>
+      <Tabs.Content value="collections">collections</Tabs.Content>
+      <Tabs.Content value="issues">issues</Tabs.Content>
+    </div>
+  );
 }

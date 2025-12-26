@@ -9,7 +9,6 @@ import z from "zod";
 import { Fs } from "../fs";
 import { issues as issuesSchema } from "../schema";
 import { convertToImageUrl } from "../utils";
-import { parser, deleter } from "../workers";
 
 const issueRouter = router({
   addIssue: publicProcedure.mutation(async () => {
@@ -27,10 +26,6 @@ const issueRouter = router({
 
     for (const parsePath of filePaths) {
       console.log({ parsePath });
-      parser.postMessage({
-        parsePath,
-        action: "LINK",
-      } satisfies ParserSchema);
     }
 
     return {
@@ -45,9 +40,6 @@ const issueRouter = router({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      deleter.postMessage({
-        issueId: input.issueId,
-      });
       return true;
     }),
   getPages: publicProcedure

@@ -8,8 +8,17 @@ import { v4 } from "uuid";
 import { useWindow } from "../hooks";
 import { globalState$ } from "../state";
 import { toast } from "sonner";
-import { Button, Column, Row } from "./ui";
-import { SidebarMinimalistic } from "@solar-icons/react";
+import icon from "@/assets/images/win.png";
+import { Flex } from "@radix-ui/themes";
+import { X, Minus, Maximize } from "lucide-react";
+import { Tabs } from "radix-ui";
+import {
+  AddSquare,
+  File,
+  Library,
+  List,
+  SidebarMinimalistic,
+} from "@solar-icons/react";
 
 type LayoutProps = {
   children?: React.ReactNode;
@@ -23,10 +32,12 @@ export default function Layout({ children }: LayoutProps) {
   const { mutate: minimize } = t.window.minimize.useMutation();
   const { mutate: maximize } = t.window.maximize.useMutation();
   const { mutate: close } = t.window.closeWindow.useMutation();
-  const { mutate: launchWatcher } = t.library.launchWatcher.useMutation();
+  const { mutate: addIssue } = t.issue.addIssue.useMutation();
 
   const isNotHome = computed(() => routerState.location.pathname !== "/").get();
   const isFullscreen = globalState$.isFullscreen.get();
+
+  const continueReading = false;
 
   // track the process of adding issues to the library
   // from background processes
@@ -96,7 +107,6 @@ export default function Layout({ children }: LayoutProps) {
   });
 
   useEffect(() => {
-    launchWatcher();
     if (globalState$.isFullscreen.get()) globalState$.isFullscreen.set(false);
     // if (globalState$.firstLaunch.get()) {
     //   navigation.navigate({
@@ -106,13 +116,60 @@ export default function Layout({ children }: LayoutProps) {
     if (globalState$.appId.get() === null) {
       globalState$.appId.set(v4());
     }
-  }, [launchWatcher]);
+  }, []);
 
   return (
-    <Column className="w-full h-screen bg-neutral-50 p-2">
-      <SidebarMinimalistic size={17} />
-      {children}
-      <div className="rounded-lg border-solid border-2 border-neutral-200 corner-superellipse/3 bg-color-450 w-50 h-60" />
-    </Column>
+    <Tabs.Root>
+      <div className="w-full h-screen bg-neutral-100 p-2 space-y-2">
+        <div className="w-full flex items-center justify-between space-x-3">
+          <div className="flex items-center justify-start space-x-4">
+            <img src={icon} alt="icon" className="w-5 h-5" />
+            <button>
+              <SidebarMinimalistic weight="BoldDuotone" size={16} />
+            </button>
+            <button onClick={() => addIssue()}>
+              <AddSquare weight="BoldDuotone" size={16} />
+            </button>
+          </div>
+          <Tabs.List
+            defaultValue="issues"
+            className="flex items-center justify-center space-x-2"
+          >
+            <Tabs.Trigger className="tabTrigger" value="collections">
+              <Library weight="BoldDuotone" size={13} />
+              <span>Collections</span>
+            </Tabs.Trigger>
+            <Tabs.Trigger className="tabTrigger" value="issues">
+              <File weight="BoldDuotone" size={13} />
+              <span>Issues</span>
+            </Tabs.Trigger>
+          </Tabs.List>
+          <div className="p-3 grow flex" id="drag-region" />
+          <div className="flex items-center justify-end space-x-4">
+            <button onClick={() => minimize()}>
+              <Minus size={14} />
+            </button>
+            <button onClick={() => maximize()}>
+              <Maximize size={14} />
+            </button>
+            <button onClick={() => close()}>
+              <X size={14} />
+            </button>
+          </div>
+        </div>
+        <div
+          className={`w-full grow ${
+            continueReading ? "h-[87.5vh]" : "h-[92vh]"
+          } bg-neutral-50 rounded-md corner-superellipse/1 p-2 text-sm font-medium`}
+        >
+          {children}
+        </div>
+        {continueReading && (
+          <div className="bg-neutral-50 rounded-md corner-superellipse/1 p-1 text-sm font-medium">
+            continue reading
+          </div>
+        )}
+      </div>
+    </Tabs.Root>
   );
 }

@@ -89,10 +89,6 @@ const createWindow = () => {
 
         console.log("DEEPLINK PATH RECEIVED");
         console.log({ path });
-
-        deeplinkChannel.postMessage({
-          path,
-        });
       }
     });
   }

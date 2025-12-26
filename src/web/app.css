@@ -6,6 +6,15 @@
     src: url("../assets/fonts/commit.ttf");
 }
 
+.radix-themes {
+	--default-font-family: Font;
+	--heading-font-family:Font;
+	--code-font-family:Font;
+	--strong-font-family:Font;
+	--em-font-family:Font;
+	--quote-font-family:Font;
+}
+
 @theme{
     --font-sans: Font;
     --color-50: oklch(6.341 0.000 89.9);
@@ -25,6 +34,10 @@
     src: url("../assets/fonts/commit.ttf");
 }
 
+body{
+    font-family: Font;
+}
+
 #drag-region {
     user-select: none;
     -webkit-user-select: none;
@@ -35,4 +48,18 @@
 ::-webkit-scrollbar {
     width: 0;
     background: none;
+}
+
+button{
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.tabTrigger{
+    @apply text-xs font-medium text-neutral-800 flex items-center justify-center space-x-1 px-3 py-1 rounded-md corner-superellipse
+}
+
+.tabTrigger[data-state="active"]{
+    @apply bg-white/70
 }

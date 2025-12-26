@@ -81,8 +81,6 @@ port.on("message", (message) =>
     Effect.matchEffect({
       onSuccess: ({ activate }) =>
         (() => {
-          console.log({ activate });
-
           return watchFS(process.env.source_dir!).pipe(
             Effect.schedule(Schedule.duration(Duration.seconds(10))),
             Effect.catchTags({

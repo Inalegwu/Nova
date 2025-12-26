@@ -2,17 +2,14 @@ import { publicProcedure, router } from "@/trpc";
 import { observable } from "@trpc/server/observable";
 import { deeplinkChannel, parserChannel, deletionChannel } from "../channels";
 import { parseFileNameFromPath } from "../utils";
-import { history } from "./history";
 import issueRouter from "./issue";
 import libraryRouter from "./library";
 import { windowRouter } from "./window";
-import { parser } from "../workers";
 
 export const appRouter = router({
   window: windowRouter,
   issue: issueRouter,
   library: libraryRouter,
-  history,
   deeplink: publicProcedure.subscription(({ ctx }) =>
     observable<{
       issueId: string;
@@ -27,10 +24,7 @@ export const appRouter = router({
         });
 
         if (!exists) {
-          parser.postMessage({
-            parsePath: evt.path,
-            action: "LINK",
-          } satisfies ParserSchema);
+          console.log("not previously saved");
           return;
         }
 

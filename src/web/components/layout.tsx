@@ -106,7 +106,7 @@ export default function Layout({ children }: LayoutProps) {
     if (globalState$.appId.get() === null) {
       globalState$.appId.set(v4());
     }
-  }, [navigation, launchWatcher]);
+  }, [launchWatcher]);
 
   return (
     <Column className="w-full h-screen bg-neutral-50 p-2">

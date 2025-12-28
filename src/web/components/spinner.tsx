@@ -18,7 +18,7 @@ export default function Spinner({ size, className, style }: Props) {
       }}
     >
       <div
-        className={`border-1 rounded-full border-1 border-dashed ${className}`}
+        className={`border rounded-full border-dashed ${className}`}
         style={{ width: size || 10, height: size || 10, ...style }}
       />
     </motion.div>

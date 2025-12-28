@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @plugin "@toolwind/corner-shape";
 
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
 @font-face{
     font-family: Font;
     src: url("../assets/fonts/commit.ttf");
@@ -64,5 +66,9 @@ button{
 }
 
 .tabTrigger[data-active]{
-    @apply text-neutral-900 bg-white/80 font-medium
+    @apply text-neutral-900 dark:text-neutral-200 bg-white/80 dark:bg-neutral-800/80 font-medium
+}
+
+div{
+    outline: none;
 }

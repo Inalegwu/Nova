@@ -24,6 +24,7 @@ import { Tabs } from "@base-ui/react/tabs";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@base-ui/react/button";
 import { Link } from "./ui/link";
+import ThemeButton from "./theme-button";
 
 type LayoutProps = {
   children?: React.ReactNode;
@@ -101,10 +102,10 @@ export default function Layout({ children }: LayoutProps) {
 
   useObserveEffect(() => {
     if (globalState$.colorMode.get() === "dark") {
-      document.body.classList.add("dark");
-      globalState$.colorMode.set("dark");
+      document.body.setAttribute("data-theme", "dark");
+      // globalState$.colorMode.set("dark");
     } else {
-      document.body.classList.remove("dark");
+      document.body.setAttribute("data-theme", "light");
       globalState$.colorMode.set("light");
     }
   });
@@ -145,7 +146,7 @@ export default function Layout({ children }: LayoutProps) {
     <AnimatePresence>
       <Tabs.Root
         defaultValue="collections"
-        className=" bg-neutral-100 flex flex-col w-full h-screen p-2 space-y-2"
+        className=" bg-neutral-100 dark:bg-neutral-950 flex flex-col w-full h-screen p-2 space-y-2"
       >
         <motion.div
           className="w-full flex items-center justify-between"
@@ -164,13 +165,13 @@ export default function Layout({ children }: LayoutProps) {
                 <Button
                   disabled={!!isHome}
                   onClick={() => navigation.history.back()}
-                  className="bg-white rounded-md p-1 text-black disabled:text-neutral-400 disabled:bg-transparent"
+                  className="bg-white dark:bg-neutral-800 rounded-md p-1 text-black dark:text-neutral-300 disabled:text-neutral-400 disabled:bg-transparent"
                 >
                   <ArrowLeft size={13} weight="Linear" />
                 </Button>
                 <Button
                   onClick={() => navigation.history.forward()}
-                  className="bg-white rounded-md p-1"
+                  className="bg-white dark:bg-neutral-800 dark:text-neutral-300 rounded-md p-1"
                 >
                   <ArrowRight size={13} weight="Linear" />
                 </Button>
@@ -191,22 +192,23 @@ export default function Layout({ children }: LayoutProps) {
             </Button>
           </div>
           <div className="flex items-center justify-end space-x-3 text-neutral-500">
+            <ThemeButton />
             <Link to="/settings">
-              <Settings weight="Linear" size={17} />
+              <Settings weight="Bold" size={15} />
             </Link>
             <Button onClick={() => minimize()}>
-              <MinusSquare weight="Outline" size={17} />
+              <MinusSquare weight="Bold" size={15} />
             </Button>
             <Button onClick={() => maximize()}>
-              <MaximizeSquare3 weight="Outline" size={17} />
+              <MaximizeSquare3 weight="Bold" size={15} />
             </Button>
             <Button className="text-red-800" onClick={() => close()}>
-              <CloseCircle weight="Bold" size={17} />
+              <CloseCircle weight="Bold" size={15} />
             </Button>
           </div>
         </motion.div>
         <motion.div
-          className="bg-white w-full rounded-md corner-superellipse/2 overflow-hidden"
+          className="bg-white dark:bg-neutral-900 dark:text-neutral-200 w-full rounded-md corner-superellipse/2 overflow-hidden"
           initial={{
             height: "100%",
           }}

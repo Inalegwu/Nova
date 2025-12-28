@@ -32,5 +32,5 @@ function RouteComponent() {
     );
   }
 
-  return <div>content</div>;
+  return <div className="w-full h-full">content</div>;
 }

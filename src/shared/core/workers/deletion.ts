@@ -1,7 +1,7 @@
-import { issues } from "@/shared/schema";
-import db from "@/shared/storage";
-import { deletionChannel } from "@/shared/channels";
-import { Fs } from "@/shared/fs";
+import { issues } from "../../schema";
+import db from "../../storage";
+import { deletionChannel } from "../../channels";
+import { Fs } from "../../fs";
 import { eq } from "drizzle-orm";
 import { Effect } from "effect";
 import { parentPort } from "node:worker_threads";

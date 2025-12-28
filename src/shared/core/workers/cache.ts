@@ -1,8 +1,8 @@
-import { deletionChannel } from "@/shared/channels";
-import { Fs } from "@/shared/fs";
-import { collections, issues } from "@/shared/schema";
-import db from "@/shared/storage";
-import { transformMessage } from "@/shared/utils";
+import { deletionChannel } from "../../channels";
+import { Fs } from "../../fs";
+import { collections, issues } from "../../schema";
+import db from "../../storage";
+import { transformMessage } from "../../utils";
 import { Effect } from "effect";
 import { parentPort } from "node:worker_threads";
 import { cacheWorkerSchema } from "../../validations";

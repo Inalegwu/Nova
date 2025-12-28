@@ -7,9 +7,8 @@ export const Route = createRootRoute({
   component: () => (
     <SolarProvider
       value={{
-        size: 13,
-        weight: "Bold",
-        color: "navy",
+        size: 18,
+        weight: "BoldDuotone",
       }}
     >
       <Layout>

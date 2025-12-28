@@ -1,11 +1,20 @@
-import { Fs } from "@/shared/fs";
+import { Fs } from "../../fs";
 import db from "@/shared/storage";
 import { Duration, Effect, Mailbox, Schedule } from "effect";
 import { parentPort } from "node:worker_threads";
 import { z } from "zod";
 import { parseFileNameFromPath, transformMessage } from "../../utils";
 import * as chokidar from "chokidar";
-import { parser } from "@/shared/workers";
+// @ts-ignore: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
+import parseWorker from "../core/workers/parser?url&worker";
+import workerpool from "workerpool";
+
+const parserPool = workerpool.pool(parseWorker, {
+  maxWorkers: 2,
+  workerOpts: {
+    type: import.meta.env.PROD ? undefined : "module",
+  },
+});
 
 const port = parentPort;
 
@@ -55,22 +64,30 @@ const watchFS = Effect.fn(function* (directory: string | null) {
 
   yield* Effect.forever(
     Effect.try(() =>
-      chokidar_watcher.on("add", (parsePath) =>
-        parser.postMessage({
-          parsePath,
-          action: "LINK",
-        } satisfies ParserSchema),
+      chokidar_watcher.on(
+        "add",
+        async (parsePath) =>
+          await parserPool.exec("parse", [
+            {
+              parsePath,
+              action: "LINK",
+            } satisfies ParserSchema,
+          ]),
       ),
     ),
   ).pipe(Effect.forkDaemon);
 
   yield* Effect.forever(
     Effect.try(() =>
-      chokidar_watcher.on("unlink", (parsePath) =>
-        parser.postMessage({
-          parsePath,
-          action: "UNLINK",
-        } satisfies ParserSchema),
+      chokidar_watcher.on(
+        "unlink",
+        async (parsePath) =>
+          await parserPool.exec("parse", [
+            {
+              parsePath,
+              action: "UNLINK",
+            } satisfies ParserSchema,
+          ]),
       ),
     ),
   ).pipe(Effect.forkDaemon);

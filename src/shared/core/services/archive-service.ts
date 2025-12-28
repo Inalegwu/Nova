@@ -1,10 +1,9 @@
-import { parserChannel } from "@/shared/channels";
-import { Fs } from "@/shared/fs";
-import { convertToImageUrl, parseFileNameFromPath } from "@/shared/utils";
+import { parserChannel } from "../../channels";
+import { Fs } from "../../fs";
+import { convertToImageUrl, parseFileNameFromPath } from "../../utils";
 import { Console, Context, Effect } from "effect";
 import type { UnknownException } from "effect/Cause";
 import path from "node:path";
-import { v4 } from "uuid";
 import type { FSError } from "../utils/errors";
 import {
   createRarExtractor,

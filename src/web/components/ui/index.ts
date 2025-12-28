@@ -1,6 +1,4 @@
-import { Button } from "./button";
-import { Link } from "./link";
-import { Column } from "./column";
-import { Row } from "./row";
+import { Text } from "./text";
+import { Box } from "./box";
 
-export { Button, Link, Column, Row };
+export { Text, Box };

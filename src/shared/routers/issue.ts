@@ -9,6 +9,13 @@ import z from "zod";
 import { Fs } from "../fs";
 import { issues as issuesSchema } from "../schema";
 import { convertToImageUrl } from "../utils";
+// @ts-ignore: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
+// import parseWorker from "../core/workers/parser?url&worker";
+// import workerpool from "workerpool";
+
+// const parserPool = workerpool.pool(parseWorker, {
+//   maxWorkers: 2,
+// });
 
 const issueRouter = router({
   addIssue: publicProcedure.mutation(async () => {
@@ -26,6 +33,9 @@ const issueRouter = router({
 
     for (const parsePath of filePaths) {
       console.log({ parsePath });
+      // await parserPool.exec("parse", [
+      //   { parsePath, action: "LINK" } satisfies ParserSchema,
+      // ]);
     }
 
     return {

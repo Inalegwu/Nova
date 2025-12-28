@@ -1,24 +1,31 @@
 import { computed } from "@legendapp/state";
-import { useObserveEffect } from "@legendapp/state/react";
+import { useObservable, useObserveEffect } from "@legendapp/state/react";
 import t from "@/shared/config";
 import { useRouter, useRouterState } from "@tanstack/react-router";
 import type React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { v4 } from "uuid";
-import { useWindow } from "../hooks";
+import { useInterval, useWindow } from "../hooks";
 import { globalState$ } from "../state";
 import { toast } from "sonner";
 import icon from "@/assets/images/win.png";
-import { Flex } from "@radix-ui/themes";
-import { X, Minus, Maximize } from "lucide-react";
-import { Tabs } from "radix-ui";
 import {
-  AddSquare,
-  File,
+  CloseCircle,
+  MaximizeSquare3,
   Library,
-  List,
-  SidebarMinimalistic,
+  Book,
+  AddSquare,
+  MinimizeSquare3,
+  MinusSquare,
+  Settings,
+  ArrowLeft,
+  ArrowRight,
 } from "@solar-icons/react";
+import { Box, Text } from "./ui";
+import { Tabs } from "@base-ui/react/tabs";
+import { motion, AnimatePresence } from "motion/react";
+import { Button } from "@base-ui/react/button";
+import { Link } from "./ui/link";
 
 type LayoutProps = {
   children?: React.ReactNode;
@@ -34,8 +41,12 @@ export default function Layout({ children }: LayoutProps) {
   const { mutate: close } = t.window.closeWindow.useMutation();
   const { mutate: addIssue } = t.issue.addIssue.useMutation();
 
-  const isNotHome = computed(() => routerState.location.pathname !== "/").get();
-  const isFullscreen = globalState$.isFullscreen.get();
+  // const isNotHome = computed(() => routerState.location.pathname !== "/").get();
+
+  const isHome = routerState.location.pathname === "/";
+
+  const [showTop, setShowTop] = useState(false);
+  const [mouseOver, setMouseOver] = useState(false);
 
   const continueReading = false;
 
@@ -100,11 +111,26 @@ export default function Layout({ children }: LayoutProps) {
     }
   });
 
+  useWindow("mousemove", (e) => {
+    console.log(e.clientY);
+    if (e.clientY < 30) {
+      setShowTop(true);
+    } else {
+      setShowTop(false);
+    }
+  });
+
   useWindow("keypress", (e) => {
     if (e.keyCode === 16) {
       console.log("search command pressed");
     }
   });
+
+  useInterval(() => {
+    if (showTop && !mouseOver) {
+      setShowTop(false);
+    }
+  }, 3000);
 
   useEffect(() => {
     if (globalState$.isFullscreen.get()) globalState$.isFullscreen.set(false);
@@ -119,57 +145,79 @@ export default function Layout({ children }: LayoutProps) {
   }, []);
 
   return (
-    <Tabs.Root>
-      <div className="w-full h-screen bg-neutral-100 p-2 space-y-2">
-        <div className="w-full flex items-center justify-between space-x-3">
+    <AnimatePresence>
+      <Tabs.Root
+        defaultValue="collections"
+        className=" bg-neutral-100 flex flex-col w-full h-screen p-2 space-y-2"
+      >
+        <motion.div
+          className="w-full flex items-center justify-between"
+          initial={{ height: "0%", display: "none" }}
+          onMouseOver={() => setMouseOver(true)}
+          onMouseLeave={() => setMouseOver(false)}
+          animate={{
+            height: showTop ? "3%" : "0%",
+            display: showTop ? "flex" : "none",
+          }}
+        >
           <div className="flex items-center justify-start space-x-4">
-            <img src={icon} alt="icon" className="w-5 h-5" />
-            <button>
-              <SidebarMinimalistic weight="BoldDuotone" size={16} />
-            </button>
-            <button onClick={() => addIssue()}>
-              <AddSquare weight="BoldDuotone" size={16} />
-            </button>
+            <div className="flex items-center justify-start space-x-3">
+              <img src={icon} alt="icon" className="w-5 h-5" />
+              <div className="flex items-center justify-center space-x-2">
+                <Button
+                  disabled={!!isHome}
+                  onClick={() => navigation.history.back()}
+                  className="bg-white rounded-md p-1 text-black disabled:text-neutral-400 disabled:bg-transparent"
+                >
+                  <ArrowLeft size={13} weight="Linear" />
+                </Button>
+                <Button
+                  onClick={() => navigation.history.forward()}
+                  className="bg-white rounded-md p-1"
+                >
+                  <ArrowRight size={13} weight="Linear" />
+                </Button>
+              </div>
+            </div>
+            <Tabs.List className="flex items-center justify-start space-x-2">
+              <Tabs.Tab className="tabTrigger" value="issues">
+                <Book size={13} />
+                <span>Issues</span>
+              </Tabs.Tab>
+              <Tabs.Tab className="tabTrigger" value="collections">
+                <Library size={13} />
+                <span>Collections</span>
+              </Tabs.Tab>
+            </Tabs.List>
+            <Button onClick={() => addIssue()} className="text-black">
+              <AddSquare weight="LineDuotone" size={16} />
+            </Button>
           </div>
-          <Tabs.List
-            defaultValue="issues"
-            className="flex items-center justify-center space-x-2"
-          >
-            <Tabs.Trigger className="tabTrigger" value="collections">
-              <Library weight="BoldDuotone" size={13} />
-              <span>Collections</span>
-            </Tabs.Trigger>
-            <Tabs.Trigger className="tabTrigger" value="issues">
-              <File weight="BoldDuotone" size={13} />
-              <span>Issues</span>
-            </Tabs.Trigger>
-          </Tabs.List>
-          <div className="p-3 grow flex" id="drag-region" />
-          <div className="flex items-center justify-end space-x-4">
-            <button onClick={() => minimize()}>
-              <Minus size={14} />
-            </button>
-            <button onClick={() => maximize()}>
-              <Maximize size={14} />
-            </button>
-            <button onClick={() => close()}>
-              <X size={14} />
-            </button>
+          <div className="flex items-center justify-end space-x-3 text-neutral-500">
+            <Link to="/settings">
+              <Settings size={17} />
+            </Link>
+            <Button onClick={() => minimize()}>
+              <MinusSquare weight="Outline" size={17} />
+            </Button>
+            <Button onClick={() => maximize()}>
+              <MaximizeSquare3 weight="Outline" size={17} />
+            </Button>
+            <Button className="text-red-800" onClick={() => close()}>
+              <CloseCircle weight="Bold" size={17} />
+            </Button>
           </div>
-        </div>
-        <div
-          className={`w-full grow ${
-            continueReading ? "h-[87.5vh]" : "h-[92vh]"
-          } bg-neutral-50 rounded-md corner-superellipse/1 p-2 text-sm font-medium`}
+        </motion.div>
+        <motion.div
+          className="bg-white w-full rounded-md corner-superellipse/2 overflow-hidden"
+          initial={{
+            height: "100%",
+          }}
+          animate={{ height: showTop ? "97%" : "100%" }}
         >
           {children}
-        </div>
-        {continueReading && (
-          <div className="bg-neutral-50 rounded-md corner-superellipse/1 p-1 text-sm font-medium">
-            continue reading
-          </div>
-        )}
-      </div>
-    </Tabs.Root>
+        </motion.div>
+      </Tabs.Root>
+    </AnimatePresence>
   );
 }

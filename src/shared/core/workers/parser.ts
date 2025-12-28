@@ -1,20 +1,15 @@
-import { parserChannel } from "@/shared/channels";
-import { parseFileNameFromPath, transformMessage } from "@/shared/utils";
-import db from "@/shared/storage";
-import { parserSchema } from "@/shared/validations";
+import { parserChannel } from "../../channels";
+import { parseFileNameFromPath, transformMessage } from "../../utils";
+import db from "../../storage";
 import { Effect, Match } from "effect";
-import { parentPort } from "node:worker_threads";
 import {
   ArchiveService,
   databaseArchiveService,
 } from "../services/archive-service";
-import { issues } from "@/shared/schema";
+import { issues } from "../../schema";
 import { eq } from "drizzle-orm";
 import path from "node:path";
-
-const port = parentPort;
-
-if (!port) throw new Error("Parse Process Port is Missing");
+import workerpool from "workerpool";
 
 const handleMessage = Effect.fnUntraced(function* ({
   action,
@@ -90,17 +85,28 @@ const handleMessage = Effect.fnUntraced(function* ({
   );
 });
 
-port.on("message", (message) =>
-  transformMessage(parserSchema, message).pipe(
-    Effect.matchEffect({
-      onSuccess: (message) => handleMessage(message),
-      onFailure: Effect.logFatal,
-    }),
-    Effect.annotateLogs({
-      worker: "parser-worker",
-    }),
-    Effect.provideService(ArchiveService, databaseArchiveService),
-    Effect.orDie,
-    Effect.runPromise,
-  ),
-);
+// port.on("message", (message) =>
+//   transformMessage(parserSchema, message).pipe(
+//     Effect.matchEffect({
+//       onSuccess: (message) => handleMessage(message),
+//       onFailure: Effect.logFatal,
+//     }),
+//     Effect.annotateLogs({
+//       worker: "parser-worker",
+//     }),
+//     Effect.provideService(ArchiveService, databaseArchiveService),
+//     Effect.orDie,
+//     Effect.runPromise,
+//   ),
+// );
+workerpool.worker({
+  parse: (event: ParserSchema) =>
+    handleMessage(event).pipe(
+      Effect.catchAll(Effect.logFatal),
+      Effect.annotateLogs({
+        worker: "parser",
+      }),
+      Effect.provideService(ArchiveService, databaseArchiveService),
+      Effect.runPromise,
+    ),
+});

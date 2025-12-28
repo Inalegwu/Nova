@@ -1174,15 +1174,6 @@
   dependencies:
     use-sync-external-store "^1.2.0"
 
-"@libsql/client-wasm@^0.15.15":
-  version "0.15.15"
-  resolved "https://registry.yarnpkg.com/@libsql/client-wasm/-/client-wasm-0.15.15.tgz#d5d263f5d8f6f8aa02d15467657b6595d3027c2f"
-  integrity sha512-ah71HHAsywWRSinJg7SKbJc+mTIgw7wHPYLE9DfW79wa+CSQXX1rEbrDNQx0HvHC1YFd2IpVpVASBFlqh54vVA==
-  dependencies:
-    "@libsql/core" "^0.15.14"
-    "@libsql/libsql-wasm-experimental" "^0.0.2"
-    js-base64 "^3.7.5"
-
 "@libsql/client@^0.15.15":
   version "0.15.15"
   resolved "https://registry.yarnpkg.com/@libsql/client/-/client-0.15.15.tgz#70196a0109f8cec41a32e42d9085386900e1943b"
@@ -1233,11 +1224,6 @@
   dependencies:
     "@types/ws" "^8.5.4"
     ws "^8.13.0"
-
-"@libsql/libsql-wasm-experimental@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@libsql/libsql-wasm-experimental/-/libsql-wasm-experimental-0.0.2.tgz#cb8bcc22c005208c6f9393fbafb790099cac90e2"
-  integrity sha512-xkiu88QwozGr3KEt9h0zeHLYUIWkeDchXmuOUW4/Wh/mRZkDlNtIIePAR0FiLl1j0o4OyTEOtPnvmaXQ5MNTKQ==
 
 "@libsql/linux-arm-gnueabihf@0.5.22":
   version "0.5.22"

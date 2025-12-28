@@ -39,13 +39,6 @@ export const issues = sqliteTable(
   }),
 );
 
-export const readingHistory = sqliteTable("reading_history", {
-  id: text("id").notNull().unique().primaryKey(),
-  issueId: text("issue_id").references(() => issues.id),
-  currentPage: integer("currentPage").notNull().default(0),
-  state: text("state").notNull().default("done_reading"),
-});
-
 export const metadata = sqliteTable("metadata", {
   id: text("id").notNull().primaryKey(),
   issueId: text("issueId").references(() => issues.id, {
@@ -62,17 +55,6 @@ export const metadata = sqliteTable("metadata", {
   Year: integer("year"),
   Summary: text("summary"),
 });
-
-export const historyToIssue = relations(readingHistory, ({ one }) => ({
-  issue: one(issues, {
-    fields: [readingHistory.issueId],
-    references: [issues.id],
-  }),
-}));
-
-export const issueToHistory = relations(issues, ({ one }) => ({
-  history: one(readingHistory),
-}));
 
 export const collectionToIssue = relations(collections, ({ many }) => ({
   issues: many(issues),

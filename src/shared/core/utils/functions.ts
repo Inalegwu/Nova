@@ -53,6 +53,16 @@ export const saveIssue = Effect.fn(function* (
   thumbnailUrl: string,
   path: string,
 ) {
+  const _ = yield* Effect.tryPromise(
+    async () => await db.query.issues.findMany({}),
+  ).pipe(
+    Effect.flatMap((result) =>
+      Effect.succeed(result.map((res) => res.issueTitle)),
+    ),
+  );
+
+  yield* Effect.log(_);
+
   const newIssue = yield* Effect.tryPromise(
     async () =>
       await db

@@ -30,7 +30,6 @@
     "@heroicons/react": "^2.2.0",
     "@legendapp/state": "^2.1.15",
     "@libsql/client": "^0.15.15",
-    "@libsql/client-wasm": "^0.15.15",
     "@solar-icons/react": "^1.0.1",
     "@stitches/react": "^1.2.8",
     "@tailwindcss/vite": "^4.1.18",

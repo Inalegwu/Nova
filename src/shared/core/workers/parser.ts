@@ -1,6 +1,5 @@
 import { parserChannel } from "../../channels";
 import { parseFileNameFromPath, transformMessage } from "../../utils";
-import db from "../../storage";
 import { Effect, Match } from "effect";
 import { parentPort } from "node:worker_threads";
 import {
@@ -11,6 +10,7 @@ import { issues } from "../../schema";
 import { eq } from "drizzle-orm";
 import path from "node:path";
 import { parserSchema } from "../../validations";
+import db from "../../storage";
 
 const port = parentPort;
 
@@ -28,8 +28,6 @@ const handleMessage = Effect.fnUntraced(function* ({
       ? "cbz"
       : "none";
 
-  yield* Effect.log({ action, parsePath, ext });
-
   parserChannel.postMessage({
     isCompleted: false,
     state: "SUCCESS",
@@ -46,7 +44,7 @@ const handleMessage = Effect.fnUntraced(function* ({
   );
 
   if (exists) {
-    yield* Effect.log(exists);
+    yield* Effect.log(parseFileNameFromPath(parsePath), "already exists");
     parserChannel.postMessage({
       isCompleted: true,
       error: `${exists.issueTitle} is already in your library`,

@@ -24,6 +24,7 @@ declare global {
     reader: {
       direction: "horizontal" | "vertical";
     };
+    lastOpenedTab: "issues" | "collections";
   };
 
   export type Issue = Omit<
@@ -107,7 +108,7 @@ declare global {
   export type DeeplinkListener = {
     exists: boolean;
     name: string;
-  }
+  };
 
   export type Extractor = {
     name: string;

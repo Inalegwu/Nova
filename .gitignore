@@ -19,3 +19,5 @@ _scratch.md
 nova_db
 .yarn
 .tanstack
+.env
+.env.*

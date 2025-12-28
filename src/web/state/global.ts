@@ -15,6 +15,7 @@ const globalState = observable<GlobalState>({
   isFullscreen: false,
   libraryView: "issues",
   appId: null,
+  lastOpenedTab: "issues",
   reader: {
     direction: "horizontal",
   },

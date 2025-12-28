@@ -13,17 +13,17 @@ app.setName("Nova");
 
 const data_dir = path.join(app.getPath("appData"), "Nova");
 
-Fs.makeDirectory(path.join(data_dir, "LibraryCache")).pipe(
-  Effect.catchTag("FSError", () => Effect.void),
-  Effect.runPromise,
-);
-Fs.makeDirectory(path.join(data_dir, "Library")).pipe(
-  Effect.catchTag("FSError", () => Effect.void),
-  Effect.runPromise,
-);
+// Fs.makeDirectory(path.join(data_dir, "LibraryCache")).pipe(
+//   Effect.catchTag("FSError", () => Effect.void),
+//   Effect.runPromise,
+// );
+// Fs.makeDirectory(path.join(data_dir, "Library")).pipe(
+//   Effect.catchTag("FSError", () => Effect.void),
+//   Effect.runPromise,
+// );
 
 process.env.db_url = path.join(data_dir, "nova.db");
-process.env.cache_dir = path.join(data_dir, "LibraryCache");
+process.env.cache_dir = path.join(data_dir, "Library");
 process.env.data_dir = data_dir;
 process.env.source_dir = path.join(`${os.homedir()}/Downloads`, "Comics");
 process.env.lib_dir = path.join(data_dir, "Library");

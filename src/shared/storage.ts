@@ -3,11 +3,12 @@ import { migrate } from "drizzle-orm/libsql/migrator";
 import * as Effect from "effect/Effect";
 import { pipe } from "effect/Function";
 import * as schema from "./schema";
+// import Database from "better-sqlite3";
 import { createClient } from "@libsql/client";
 
 const db = pipe(
   createClient({
-    url: `file:${process.env.db_url!}`,
+    url: "file:nova.db",
   }),
   (client) => drizzle(client, { schema }),
 );

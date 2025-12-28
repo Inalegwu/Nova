@@ -11,6 +11,7 @@ import { issues as issuesSchema } from "../schema";
 import { convertToImageUrl } from "../utils";
 // @ts-ignore: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
 import deletionWorker from "../core/workers/deletion?nodeWorker";
+// @ts-ignore: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
 import parseWorker from "../core/workers/parser?nodeWorker";
 
 const issueRouter = router({
@@ -28,7 +29,6 @@ const issueRouter = router({
     }
 
     for (const parsePath of filePaths) {
-      console.log({ parsePath });
       parseWorker({
         name: `parse-worker-${parsePath}`,
       })

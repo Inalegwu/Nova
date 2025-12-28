@@ -47,8 +47,6 @@ export default function Layout({ children }: LayoutProps) {
   const [showTop, setShowTop] = useState(false);
   const [mouseOver, setMouseOver] = useState(false);
 
-  const continueReading = false;
-
   // track the process of adding issues to the library
   // from background processes
   t.additions.useSubscription(undefined, {
@@ -145,7 +143,7 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <AnimatePresence>
       <Tabs.Root
-        defaultValue="collections"
+        defaultValue={globalState$.lastOpenedTab.get()}
         className=" bg-neutral-100 dark:bg-neutral-950 flex flex-col w-full h-screen p-2 space-y-2"
       >
         <motion.div
@@ -178,17 +176,28 @@ export default function Layout({ children }: LayoutProps) {
               </div>
             </div>
             <Tabs.List className="flex items-center justify-start space-x-2">
-              <Tabs.Tab className="tabTrigger" value="issues">
+              <Tabs.Tab
+                onClick={() => globalState$.lastOpenedTab.set("issues")}
+                className="tabTrigger"
+                value="issues"
+              >
                 <Book size={13} />
                 <span>Issues</span>
               </Tabs.Tab>
-              <Tabs.Tab className="tabTrigger" value="collections">
+              <Tabs.Tab
+                onClick={() => globalState$.lastOpenedTab.set("collections")}
+                className="tabTrigger"
+                value="collections"
+              >
                 <Library size={13} />
                 <span>Collections</span>
               </Tabs.Tab>
             </Tabs.List>
-            <Button onClick={() => addIssue()} className="text-black">
-              <AddSquare weight="Linear" size={17} />
+            <Button
+              onClick={() => addIssue()}
+              className="bg-white dark:bg-neutral-800 dark:text-neutral-300 rounded-md p-1"
+            >
+              <AddSquare weight="Bold" size={17} />
             </Button>
           </div>
           <div className="flex items-center justify-end space-x-3 text-neutral-500">

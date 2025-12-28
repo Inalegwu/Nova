@@ -36,10 +36,18 @@ function Component() {
 
   return (
     <div className="w-full h-full p-2">
-      <Tabs.Panel value="collections">collections</Tabs.Panel>
+      <Tabs.Panel value="collections">
+        {JSON.stringify(data?.collections, null, 2)}
+      </Tabs.Panel>
       <Tabs.Panel value="issues">
-        {JSON.stringify(data?.issues, null, 2)}
+        <Issues issues={data?.issues || []} />
       </Tabs.Panel>
     </div>
+  );
+}
+
+function Issues({ issues }: { issues: Array<Partial<Issue>> }) {
+  return (
+    <div className="w-full h-full bg-red-100">{JSON.stringify(issues)}</div>
   );
 }

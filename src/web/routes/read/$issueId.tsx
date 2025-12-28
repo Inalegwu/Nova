@@ -1,9 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/read/$issueId')({
+export const Route = createFileRoute("/read/$issueId")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
-  return <div>Hello "/read/$issueId"!</div>
+  const { issueId } = Route.useParams();
+
+  return <div>Hello {issueId}!</div>;
 }

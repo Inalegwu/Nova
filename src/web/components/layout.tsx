@@ -144,7 +144,7 @@ export default function Layout({ children }: LayoutProps) {
     <AnimatePresence>
       <Tabs.Root
         defaultValue={globalState$.lastOpenedTab.get()}
-        className=" bg-neutral-100 dark:bg-neutral-950 flex flex-col w-full h-screen p-2 space-y-2"
+        className=" bg-neutral-100 dark:bg-neutral-950 flex flex-col w-full h-screen p-2 space-y-2 root"
       >
         <motion.div
           className="w-full flex items-center justify-between"

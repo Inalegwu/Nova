@@ -72,3 +72,7 @@ button{
 div{
     outline: none;
 }
+
+.root{
+    isolation:isolate;
+}

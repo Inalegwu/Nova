@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useTimeout } from "../hooks";
 import { globalState$ } from "../state";
 import { Tabs } from "@base-ui/react/tabs";
+import { IssueBox } from "../components";
 
 export const Route = createFileRoute("/")({
   component: memo(Component),
@@ -48,6 +49,10 @@ function Component() {
 
 function Issues({ issues }: { issues: Array<Partial<Issue>> }) {
   return (
-    <div className="w-full h-full bg-red-100">{JSON.stringify(issues)}</div>
+    <div className="w-full h-full flex items-start justify-start flex-wrap space-x-4">
+      {issues.map((issue) => (
+        <IssueBox key={issue.id} {...issue} />
+      ))}
+    </div>
   );
 }

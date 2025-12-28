@@ -32,5 +32,11 @@ function RouteComponent() {
     );
   }
 
-  return <div className="w-full h-full">content</div>;
+  return (
+    <div className="w-full h-full relative">
+      <div className="absolute z-10 top-2 right-2 bg-neutral-100 dark:bg-neutral-900 rounded-md corner-superellipse/2">
+        toolbar
+      </div>
+    </div>
+  );
 }

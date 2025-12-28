@@ -2,6 +2,7 @@ import { parserChannel } from "../../channels";
 import { parseFileNameFromPath, transformMessage } from "../../utils";
 import db from "../../storage";
 import { Effect, Match } from "effect";
+import { parentPort } from "node:worker_threads";
 import {
   ArchiveService,
   databaseArchiveService,
@@ -9,7 +10,11 @@ import {
 import { issues } from "../../schema";
 import { eq } from "drizzle-orm";
 import path from "node:path";
-import workerpool from "workerpool";
+import { parserSchema } from "../../validations";
+
+const port = parentPort;
+
+if (!port) throw new Error("Parse Process Port is Missing");
 
 const handleMessage = Effect.fnUntraced(function* ({
   action,
@@ -17,15 +22,13 @@ const handleMessage = Effect.fnUntraced(function* ({
 }: ParserSchema) {
   const archive = yield* ArchiveService;
 
-  yield* Effect.log({ parsePath });
-
-  yield* Effect.log({ action, parsePath });
-
   const ext = parsePath.includes("cbr")
     ? "cbr"
     : parsePath.includes("cbz")
       ? "cbz"
       : "none";
+
+  yield* Effect.log({ action, parsePath, ext });
 
   parserChannel.postMessage({
     isCompleted: false,
@@ -85,28 +88,17 @@ const handleMessage = Effect.fnUntraced(function* ({
   );
 });
 
-// port.on("message", (message) =>
-//   transformMessage(parserSchema, message).pipe(
-//     Effect.matchEffect({
-//       onSuccess: (message) => handleMessage(message),
-//       onFailure: Effect.logFatal,
-//     }),
-//     Effect.annotateLogs({
-//       worker: "parser-worker",
-//     }),
-//     Effect.provideService(ArchiveService, databaseArchiveService),
-//     Effect.orDie,
-//     Effect.runPromise,
-//   ),
-// );
-workerpool.worker({
-  parse: (event: ParserSchema) =>
-    handleMessage(event).pipe(
-      Effect.catchAll(Effect.logFatal),
-      Effect.annotateLogs({
-        worker: "parser",
-      }),
-      Effect.provideService(ArchiveService, databaseArchiveService),
-      Effect.runPromise,
-    ),
-});
+port.on("message", (message) =>
+  transformMessage(parserSchema, message).pipe(
+    Effect.matchEffect({
+      onSuccess: (message) => handleMessage(message),
+      onFailure: Effect.logFatal,
+    }),
+    Effect.annotateLogs({
+      worker: "parser-worker",
+    }),
+    Effect.provideService(ArchiveService, databaseArchiveService),
+    Effect.orDie,
+    Effect.runPromise,
+  ),
+);

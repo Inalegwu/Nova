@@ -15,7 +15,7 @@ const DRAG_BUFFER = 50;
 const welcomeMessages = [
   {
     id: 0,
-    title: "Welcome To Vision",
+    title: "Welcome To Nova",
     subtitle: "Your Comic Book Reader from The Future 🔮",
   },
   {

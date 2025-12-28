@@ -15,13 +15,11 @@ import {
   Library,
   Book,
   AddSquare,
-  MinimizeSquare3,
   MinusSquare,
   Settings,
   ArrowLeft,
   ArrowRight,
 } from "@solar-icons/react";
-import { Box, Text } from "./ui";
 import { Tabs } from "@base-ui/react/tabs";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@base-ui/react/button";
@@ -112,7 +110,6 @@ export default function Layout({ children }: LayoutProps) {
   });
 
   useWindow("mousemove", (e) => {
-    console.log(e.clientY);
     if (e.clientY < 30) {
       setShowTop(true);
     } else {
@@ -190,12 +187,12 @@ export default function Layout({ children }: LayoutProps) {
               </Tabs.Tab>
             </Tabs.List>
             <Button onClick={() => addIssue()} className="text-black">
-              <AddSquare weight="LineDuotone" size={16} />
+              <AddSquare weight="Linear" size={17} />
             </Button>
           </div>
           <div className="flex items-center justify-end space-x-3 text-neutral-500">
             <Link to="/settings">
-              <Settings size={17} />
+              <Settings weight="Linear" size={17} />
             </Link>
             <Button onClick={() => minimize()}>
               <MinusSquare weight="Outline" size={17} />

@@ -17,9 +17,10 @@ export type IArchiveService = {
   zip: (filePath: string) => Effect.Effect<void, FSError | UnknownException>;
 };
 
-export class ArchiveService extends Context.Tag(
-  "@vision/Core/Services/Archive",
-)<ArchiveService, IArchiveService>() {}
+export class ArchiveService extends Context.Tag("@nova/Core/Services/Archive")<
+  ArchiveService,
+  IArchiveService
+>() {}
 
 export const databaseArchiveService = {
   rar: Effect.fnUntraced(function* (filePath: string) {
@@ -30,6 +31,8 @@ export const databaseArchiveService = {
     );
 
     const savePath = path.join(process.env.cache_dir!, issueTitle);
+
+    yield* Effect.logInfo(issueTitle, savePath);
 
     const thumbnailUrl = yield* Effect.sync(() =>
       convertToImageUrl(files[0].data || files[1].data || files[2].data!),

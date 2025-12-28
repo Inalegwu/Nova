@@ -6,8 +6,8 @@ Effect.tryPromise({
   try: async () =>
     await build({
       config: {
-        appId: "com.vision.app",
-        productName: "Vision",
+        appId: "com.nova.app",
+        productName: "Nova",
         artifactName: "${productName}-${version}-${platform}-${arch}.${ext}",
         buildDependenciesFromSource: true,
         files: ["out/**/*"],

@@ -13,9 +13,9 @@ drizzle
 scratch.*
 scratchpad.*
 .temp
-vision
+nova
 _scratch.ts
 _scratch.md
-vision_db
+nova_db
 .yarn
 .tanstack

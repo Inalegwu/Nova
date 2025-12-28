@@ -60,9 +60,9 @@ button{
 }
 
 .tabTrigger{
-    @apply text-[11px] font-medium text-neutral-400 px-4 py-1 flex items-center justify-center space-x-1 rounded-md
+    @apply text-xs font-light text-neutral-400 px-4 py-1 flex items-center justify-center space-x-1 rounded-md
 }
 
 .tabTrigger[data-active]{
-    @apply text-neutral-900 bg-white/80
+    @apply text-neutral-900 bg-white/80 font-medium
 }

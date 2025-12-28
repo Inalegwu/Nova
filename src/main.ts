@@ -1,19 +1,17 @@
-import * as fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { createContext } from "@/shared/context";
 import { appRouter } from "@/shared/routers/_app";
 import { Effect } from "effect";
-import { pipe } from "effect/Function";
 import { BrowserWindow, app, screen } from "electron";
 import { createIPCHandler } from "electron-trpc/main";
 import { deeplinkChannel } from "@/shared/channels";
 import { Fs } from "@/shared/fs";
 import { globalState$ } from "./web/state";
 
-app.setName("Vision");
+app.setName("Nova");
 
-const data_dir = path.join(app.getPath("appData"), "Vision");
+const data_dir = path.join(app.getPath("appData"), "Nova");
 
 Fs.makeDirectory(path.join(data_dir, "LibraryCache")).pipe(
   Effect.catchTag("FSError", () => Effect.void),
@@ -24,21 +22,21 @@ Fs.makeDirectory(path.join(data_dir, "Library")).pipe(
   Effect.runPromise,
 );
 
-process.env.db_url = path.join(data_dir, "vision.db");
+process.env.db_url = path.join(data_dir, "nova.db");
 process.env.cache_dir = path.join(data_dir, "LibraryCache");
 process.env.data_dir = data_dir;
 process.env.source_dir = path.join(`${os.homedir()}/Downloads`, "Comics");
 process.env.lib_dir = path.join(data_dir, "Library");
-process.env.error_dump = path.join(data_dir, "Vision", "ErrorDump.json");
+process.env.error_dump = path.join(data_dir, "Nova", "ErrorDump.json");
 
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
-    app.setAsDefaultProtocolClient("vision", process.execPath, [
+    app.setAsDefaultProtocolClient("nova", process.execPath, [
       path.resolve(process.argv[1]),
     ]);
   }
 } else {
-  app.setAsDefaultProtocolClient("vision");
+  app.setAsDefaultProtocolClient("nova");
 }
 
 const createWindow = () => {
@@ -89,6 +87,10 @@ const createWindow = () => {
 
         console.log("DEEPLINK PATH RECEIVED");
         console.log({ path });
+
+        deeplinkChannel.postMessage({
+          path,
+        });
       }
     });
   }

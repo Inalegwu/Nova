@@ -10,12 +10,8 @@ import { Fs } from "../fs";
 import { issues as issuesSchema } from "../schema";
 import { convertToImageUrl } from "../utils";
 // @ts-ignore: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
-// import parseWorker from "../core/workers/parser?url&worker";
-// import workerpool from "workerpool";
-
-// const parserPool = workerpool.pool(parseWorker, {
-//   maxWorkers: 2,
-// });
+import deletionWorker from "../core/workers/deletion?nodeWorker";
+import parseWorker from "../core/workers/parser?nodeWorker";
 
 const issueRouter = router({
   addIssue: publicProcedure.mutation(async () => {
@@ -33,9 +29,14 @@ const issueRouter = router({
 
     for (const parsePath of filePaths) {
       console.log({ parsePath });
-      // await parserPool.exec("parse", [
-      //   { parsePath, action: "LINK" } satisfies ParserSchema,
-      // ]);
+      parseWorker({
+        name: `parse-worker-${parsePath}`,
+      })
+        .on("message", console.log)
+        .postMessage({
+          parsePath,
+          action: "LINK",
+        } satisfies ParserSchema);
     }
 
     return {
@@ -49,9 +50,13 @@ const issueRouter = router({
         issueId: z.string(),
       }),
     )
-    .mutation(async ({ ctx, input }) => {
-      return true;
-    }),
+    .mutation(async ({ ctx, input }) =>
+      deletionWorker({
+        name: "deletion-worker",
+      }).postMessage({
+        issueId: input.issueId,
+      }),
+    ),
   getPages: publicProcedure
     .input(
       z.object({

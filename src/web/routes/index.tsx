@@ -35,9 +35,11 @@ function Component() {
   console.log({ data });
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full p-2">
       <Tabs.Panel value="collections">collections</Tabs.Panel>
-      <Tabs.Panel value="issues">issues</Tabs.Panel>
+      <Tabs.Panel value="issues">
+        {JSON.stringify(data?.issues, null, 2)}
+      </Tabs.Panel>
     </div>
   );
 }

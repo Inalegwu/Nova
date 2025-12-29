@@ -35,7 +35,7 @@ export const databaseArchiveService = {
     yield* Effect.logInfo(issueTitle, savePath);
 
     const thumbnailUrl = yield* Effect.sync(() =>
-      convertToImageUrl(files[0].data || files[1].data || files[2].data!),
+      convertToImageUrl(files.find((file) => file.isFirst)?.data!),
     );
 
     const newIssue = yield* saveIssue(issueTitle, thumbnailUrl, savePath);
@@ -77,8 +77,10 @@ export const databaseArchiveService = {
 
     const savePath = path.join(process.env.cache_dir!, issueTitle);
 
+    yield* Effect.log(files.find((file) => file.isFirst));
+
     const thumbnailUrl = yield* Effect.sync(() =>
-      convertToImageUrl(files[0].data || files[1].data || files[2].data),
+      convertToImageUrl(files.find((file) => file.isFirst)?.data!),
     );
 
     const newIssue = yield* saveIssue(issueTitle, thumbnailUrl, savePath);

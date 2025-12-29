@@ -20,6 +20,7 @@ import {
   ArrowLeft,
   ArrowRight,
   AltArrowDown,
+  History,
 } from "@solar-icons/react";
 import { Tabs } from "@base-ui/react/tabs";
 import { motion, AnimatePresence } from "motion/react";
@@ -27,6 +28,7 @@ import { Button } from "@base-ui/react/button";
 import { Link } from "./ui/link";
 import ThemeButton from "./theme-button";
 import { Popover } from "@base-ui/react/popover";
+import { Dialog } from "@base-ui/react/dialog";
 import { Input } from "@base-ui/react/input";
 
 type LayoutProps = {
@@ -118,7 +120,7 @@ export default function Layout({ children }: LayoutProps) {
   });
 
   useWindow("mousemove", (e) => {
-    if (e.clientY < 30) {
+    if (e.clientY < 30 && !globalState$.isFullscreen.get()) {
       setShowTop(true);
     } else {
       setShowTop(false);
@@ -165,7 +167,7 @@ export default function Layout({ children }: LayoutProps) {
             display: showTop ? "flex" : "none",
           }}
         >
-          <div className="flex items-center justify-start space-x-4">
+          <div className="flex items-center justify-start space-x-3">
             <div className="flex items-center justify-start space-x-3">
               <img src={icon} alt="icon" className="w-5 h-5" />
               <div className="flex items-center justify-center space-x-2">
@@ -202,50 +204,81 @@ export default function Layout({ children }: LayoutProps) {
                 <span>Collections</span>
               </Tabs.Tab>
             </Tabs.List>
-            <Button
-              onClick={() => addIssue()}
-              className="bg-white dark:bg-neutral-900 dark:text-neutral-300 rounded-md p-1"
-            >
-              <AddSquare weight="Bold" size={17} />
-            </Button>
-            {isCollectionView && (
-              <Popover.Root>
-                <Popover.Trigger className="bg-white dark:bg-neutral-900 dark:text-neutral-400 rounded-md pl-2 pr-5 py-1 text-xs">
-                  Create Collection
-                </Popover.Trigger>
-                <Popover.Portal>
-                  <Popover.Positioner side="bottom" sideOffset={2}>
-                    <Popover.Popup
-                      onMouseOver={() => setMouseOver(true)}
-                      onMouseLeave={() => setMouseOver(false)}
-                      className="origin-(--transform-origin) space-y-1 rounded-lg bg-neutral-100 dark:bg-neutral-950 p-1 text-neutral-900 dark:text-neutral-300 shadow-lg shadow-gray-200 outline outline-gray-200 transition-[transform,scale,opacity] data-ending-style:scale-90 data-ending-style:opacity-0 data-starting-style:scale-90 data-starting-style:opacity-0 dark:shadow-none dark:-outline-offset-1 dark:outline-gray-300"
-                    >
-                      <Popover.Title className="text-xs font-bold">
-                        Create Collection
-                      </Popover.Title>
-                      <Input
-                        disabled={isCreating}
-                        placeholder="Collection Name"
-                        onChange={(e) =>
-                          setCollectionName(e.currentTarget.value)
-                        }
-                        className="w-full h-7 text-xs px-3 py-1 rounded-md corner-superellipse/2 outline-none bg-white dark:bg-neutral-900 border border-solid border-neutral-200 dark:border-neutral-800"
+            <AnimatePresence mode="sync">
+              {isCollectionView && (
+                <Popover.Root>
+                  <Popover.Trigger
+                    render={
+                      <motion.button
+                        initial={{
+                          opacity: 0,
+                          display: "none",
+                          translateY: "-50px",
+                        }}
+                        animate={{
+                          opacity: 1,
+                          display: "flex",
+                          translateY: "0px",
+                        }}
+                        exit={{
+                          opacity: 0,
+                          display: "none",
+                          translateY: "-50px",
+                        }}
                       />
-                      <Button
-                        onClick={() =>
-                          createCollection({
-                            collectionName,
-                          })
-                        }
-                        className="text-xs text-black dark:text-neutral-300 w-full flex item-center justify-center p-1 rounded-md bg-white corner-superellipse/2 dark:bg-neutral-900"
+                    }
+                    className="bg-white dark:bg-neutral-900 dark:text-neutral-400 rounded-md pl-2 pr-5 py-1 text-xs"
+                  >
+                    Create Collection
+                  </Popover.Trigger>
+                  <Popover.Portal>
+                    <Popover.Positioner side="bottom" sideOffset={2}>
+                      <Popover.Popup
+                        onMouseOver={() => setMouseOver(true)}
+                        onMouseLeave={() => setMouseOver(false)}
+                        className="origin-(--transform-origin) space-y-1 rounded-lg bg-neutral-100 dark:bg-neutral-950 p-1 text-neutral-900 dark:text-neutral-300 shadow-lg shadow-gray-200 outline outline-gray-200 transition-[transform,scale,opacity] data-ending-style:scale-90 data-ending-style:opacity-0 data-starting-style:scale-90 data-starting-style:opacity-0 dark:shadow-none dark:-outline-offset-1 dark:outline-gray-300"
                       >
-                        Create
-                      </Button>
-                    </Popover.Popup>
-                  </Popover.Positioner>
-                </Popover.Portal>
-              </Popover.Root>
-            )}
+                        <Popover.Title className="text-xs font-bold">
+                          Create Collection
+                        </Popover.Title>
+                        <Input
+                          disabled={isCreating}
+                          placeholder="Collection Name"
+                          onChange={(e) =>
+                            setCollectionName(e.currentTarget.value)
+                          }
+                          className="w-full h-7 text-xs px-3 py-1 rounded-md corner-superellipse/2 outline-none bg-white dark:bg-neutral-900 border border-solid border-neutral-200 dark:border-neutral-800"
+                        />
+                        <Button
+                          onClick={() =>
+                            createCollection({
+                              collectionName,
+                            })
+                          }
+                          className="text-xs text-black dark:text-neutral-300 w-full flex item-center justify-center p-1 rounded-md bg-white corner-superellipse/2 dark:bg-neutral-900"
+                        >
+                          Create
+                        </Button>
+                      </Popover.Popup>
+                    </Popover.Positioner>
+                  </Popover.Portal>
+                </Popover.Root>
+              )}
+            </AnimatePresence>
+            <div className="flex items-center justify-start gap-2">
+              <Button
+                onClick={() => addIssue()}
+                className="bg-white dark:bg-neutral-900 dark:text-neutral-300 rounded-md p-1"
+              >
+                <AddSquare weight="Bold" size={17} />
+              </Button>
+              <Link
+                href="/history"
+                className="bg-white dark:bg-neutral-900 dark:text-neutral-300 rounded-md p-1"
+              >
+                <History weight="Bold" size={17} />
+              </Link>
+            </div>
           </div>
           <div className="flex items-center justify-end space-x-3 text-neutral-500">
             <ThemeButton />
@@ -264,11 +297,15 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </motion.div>
         <motion.div
-          className="bg-white dark:bg-neutral-900 dark:text-neutral-200 w-full rounded-md corner-superellipse/2 overflow-hidden"
+          className="bg-white dark:bg-neutral-900 dark:text-neutral-200 w-full corner-superellipse/2 overflow-hidden"
           initial={{
             height: "100%",
+            borderRadius: "0.375rem",
           }}
-          animate={{ height: showTop ? "97%" : "100%" }}
+          animate={{
+            height: showTop ? "97%" : "100%",
+            borderRadius: globalState$.isFullscreen.get() ? "0" : "0.375rem",
+          }}
         >
           {children}
         </motion.div>

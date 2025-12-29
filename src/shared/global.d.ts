@@ -51,26 +51,6 @@ declare global {
     message: string;
   };
 
-  type Reading = {
-    id: string;
-    title: string;
-    thumbnailUrl: string;
-  };
-
-  export type DoneReading = Reading & {
-    dateFinished: string;
-  };
-
-  export type CurrentlyReading = Reading & {
-    currentPage: number;
-    totalPages: number;
-  };
-
-  export type ReadingState = {
-    doneReading: Map<string, DoneReading>;
-    currentlyReading: Map<string, CurrentlyReading>;
-  };
-
   export type ParserChannel = {
     completed?: number;
     total?: number;
@@ -114,6 +94,7 @@ declare global {
     name: string;
     isDir: boolean;
     data: ArrayBufferLike | undefined;
+    isFirst: boolean;
   };
 
   export type ParserSchema = z.infer<typeof parserSchema>;

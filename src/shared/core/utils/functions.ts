@@ -15,6 +15,7 @@ export const parseXML = Effect.fn(function* (
   file: Option.Option<Extractor>,
   issueId: string,
 ) {
+  yield* Effect.log("here...");
   const xmlParser = new XMLParser();
 
   const data = Option.getOrUndefined(file);
@@ -25,7 +26,7 @@ export const parseXML = Effect.fn(function* (
     xmlParser.parse(Buffer.from(data.data!).toString()),
   ).pipe(
     Effect.andThen((file) =>
-      Schema.decodeUnknown(MetadataSchema)(file.comicInfo, {
+      Schema.decodeUnknown(MetadataSchema)(file.ComicInfo || file.comicInfo, {
         onExcessProperty: "ignore",
         exact: false,
       }),
@@ -53,16 +54,6 @@ export const saveIssue = Effect.fn(function* (
   thumbnailUrl: string,
   path: string,
 ) {
-  const _ = yield* Effect.tryPromise(
-    async () => await db.query.issues.findMany({}),
-  ).pipe(
-    Effect.flatMap((result) =>
-      Effect.succeed(result.map((res) => res.issueTitle)),
-    ),
-  );
-
-  yield* Effect.log(_);
-
   const newIssue = yield* Effect.tryPromise(
     async () =>
       await db
@@ -128,6 +119,7 @@ export const createRarExtractor = Effect.fn(function* (filePath: string) {
             name: file.fileHeader.name,
             isDir: file.fileHeader.flags.directory,
             data: file.extraction?.buffer,
+            isFirst: file.fileHeader.name.includes("001"),
           }) satisfies Extractor,
       ),
     ),
@@ -155,6 +147,7 @@ export const createZipExtractor = (filePath: string) =>
               name: entry.name,
               data: entry.getData().buffer,
               isDir: entry.isDirectory,
+              isFirst: entry.name.includes("001"),
             }) satisfies Extractor,
         ),
     ),

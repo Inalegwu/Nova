@@ -6,6 +6,8 @@ import { eq } from "drizzle-orm";
 import { Effect } from "effect";
 import { parentPort } from "node:worker_threads";
 import workerpool from "workerpool";
+import { deletionWorkerSchema } from "@/shared/validations";
+import { transformMessage } from "@/shared/utils";
 
 const port = parentPort;
 
@@ -13,6 +15,8 @@ if (!port) throw new Error("Illegal State");
 
 const deleteIssue = ({ issueId }: DeletionSchema) =>
   Effect.gen(function* () {
+    yield* Effect.log({ issueId });
+
     const issue = yield* Effect.tryPromise(
       async () =>
         await db.query.issues.findFirst({
@@ -44,14 +48,27 @@ const deleteIssue = ({ issueId }: DeletionSchema) =>
       ),
     );
 
-    const _ = yield* Effect.tryPromise(
+    yield* Effect.tryPromise(
       async () =>
         await db.delete(issues).where(eq(issues.id, issue.id)).returning(),
     );
 
-    yield* Effect.logInfo(_.at(0));
-  }).pipe(Effect.runPromise);
+    deletionChannel.postMessage({
+      isDone: true,
+      title: issue.issueTitle,
+    });
+  });
 
-workerpool.worker({
-  delete: deleteIssue,
-});
+port.on("message", (message) =>
+  transformMessage(deletionWorkerSchema, message).pipe(
+    Effect.matchEffect({
+      onSuccess: (message) => deleteIssue(message),
+      onFailure: Effect.logFatal,
+    }),
+    Effect.annotateLogs({
+      worker: "deletion-worker",
+    }),
+    Effect.orDie,
+    Effect.runPromise,
+  ),
+);

@@ -34,6 +34,10 @@
     --primary-1250: #000000;
 }
 
+@utility centered{
+    @apply items-center justify-center
+}
+
 @font-face {
     font-family: Font;
     src: url("../assets/fonts/commit.ttf");
@@ -67,6 +71,10 @@ button{
 
 .tabTrigger[data-active]{
     @apply text-neutral-900 dark:text-neutral-200 bg-white/80 dark:bg-neutral-800/80 font-medium
+}
+
+.ctxMenuRowItem{
+    @apply p-2 flex centered cursor-pointer rounded-md corner-superellipse/2
 }
 
 div{

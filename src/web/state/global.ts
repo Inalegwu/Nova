@@ -25,15 +25,6 @@ export const fullScreenState$ = observable<{ isFullscreen: boolean }>({
   isFullscreen: false,
 });
 
-const readingState = observable<ReadingState>({
-  doneReading: new Map<string, DoneReading>(),
-  currentlyReading: new Map<string, CurrentlyReading>(),
-});
-
 export const globalState$ = persistObservable(globalState, {
   local: "global_state",
-});
-
-export const readingState$ = persistObservable(readingState, {
-  local: "reading_state",
 });

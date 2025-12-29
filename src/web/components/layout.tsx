@@ -169,6 +169,7 @@ export default function Layout({ children }: LayoutProps) {
         >
           <div className="flex items-center justify-start space-x-3">
             <div className="flex items-center justify-start space-x-3">
+              {/*TODO: light mode variant*/}
               <img src={icon} alt="icon" className="w-5 h-5" />
               <div className="flex items-center justify-center space-x-2">
                 <Button

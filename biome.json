@@ -13,13 +13,13 @@
       },
       "a11y": {
         "useButtonType": "off",
-        "useKeyWithClickEvents":"off"
+        "useKeyWithClickEvents": "off"
       },
-      "suspicious":{
-        "noShadowRestrictedNames":"off"
+      "suspicious": {
+        "noShadowRestrictedNames": "off"
       },
-      "complexity":{
-        "noForEach":"off"
+      "complexity": {
+        "noForEach": "off"
       }
     }
   },
@@ -29,5 +29,10 @@
     "lineEnding": "crlf",
     "indentStyle": "space",
     "indentWidth": 2
+  },
+  "javascript": {
+    "formatter": {
+      "enabled": true
+    }
   }
 }

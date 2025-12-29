@@ -1,12 +1,10 @@
-import os from "node:os";
-import path from "node:path";
+import { deeplinkChannel } from "@/shared/channels";
 import { createContext } from "@/shared/context";
 import { appRouter } from "@/shared/routers/_app";
-import { Effect } from "effect";
 import { BrowserWindow, app, screen } from "electron";
 import { createIPCHandler } from "electron-trpc/main";
-import { deeplinkChannel } from "@/shared/channels";
-import { Fs } from "@/shared/fs";
+import os from "node:os";
+import path from "node:path";
 import { globalState$ } from "./web/state";
 
 app.setName("Nova");
@@ -101,7 +99,5 @@ const createWindow = () => {
 app.whenReady().then(() => createWindow());
 
 app.once("window-all-closed", () => {
-  const config = globalState$.get();
-
   app.quit();
 });

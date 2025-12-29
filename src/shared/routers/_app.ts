@@ -1,6 +1,7 @@
 import { publicProcedure, router } from "@/trpc";
 import { observable } from "@trpc/server/observable";
-import { deeplinkChannel, parserChannel, deletionChannel } from "../channels";
+import { deeplinkChannel, deletionChannel, parserChannel } from "../channels";
+import { comicVineClient } from "../core/services/metadata-service";
 import { parseFileNameFromPath } from "../utils";
 import issueRouter from "./issue";
 import libraryRouter from "./library";
@@ -66,6 +67,15 @@ export const appRouter = router({
       };
     }),
   ),
+  testMeta: publicProcedure.query(async () => {
+    const result = await comicVineClient.character.retrieve(1443, {
+      priority: "user",
+    });
+
+    console.log(result);
+
+    return result;
+  }),
 });
 
 export type AppRouter = typeof appRouter;

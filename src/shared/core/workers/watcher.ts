@@ -6,10 +6,10 @@ import { z } from "zod";
 import { parseFileNameFromPath, transformMessage } from "../../utils";
 import * as chokidar from "chokidar";
 // @ts-ignore: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
-import parseWorker from "../core/workers/parser?url&worker";
+import WorkerURL from "../core/workers/parser?nodeWorker";
 import workerpool from "workerpool";
 
-const parserPool = workerpool.pool(parseWorker, {
+const parserPool = workerpool.pool(WorkerURL, {
   maxWorkers: 2,
   workerOpts: {
     type: import.meta.env.PROD ? undefined : "module",

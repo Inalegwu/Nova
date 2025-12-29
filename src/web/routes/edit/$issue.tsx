@@ -30,13 +30,12 @@ function RouteComponent() {
           </Button>}
         </div>
         <div className="flex flex-col gap-2">
-          <span className="text-sm text-neutral-400 p-3 bg-neutral-50 space-y-2 rounded-xl squiricle">
+          <span className="text-sm text-neutral-400 p-3 bg-neutral-50 dark:bg-neutral-950 space-y-2 rounded-xl squiricle">
             {issue?.metadata?.Summary}
           </span>
           <div className="flex items-center justify-start gap-3">
             {issue?.metadata?.Summary?.includes("NSFW") && <Tag type="nsfw" />}
           </div>
-          {/*{JSON.stringify(issue?.metadata, null, 2)}*/}
         </div>
       </div>
       <div className="h-full w-2/6 flex centered p-4 ">

@@ -8,7 +8,8 @@ import { v4 } from "uuid";
 import { useInterval, useWindow } from "../hooks";
 import { globalState$ } from "../state";
 import { toast } from "sonner";
-import icon from "@/assets/images/win.png";
+import icon_dark from "@/assets/images/win_dark.png";
+import icon_light from "@/assets/images/win_light.png";
 import {
   CloseCircle,
   MaximizeSquare3,
@@ -169,8 +170,7 @@ export default function Layout({ children }: LayoutProps) {
         >
           <div className="flex items-center justify-start space-x-3">
             <div className="flex items-center justify-start space-x-3">
-              {/*TODO: light mode variant*/}
-              <img src={icon} alt="icon" className="w-5 h-5" />
+              <img src={globalState$.colorMode.get() === "dark" ? icon_dark : icon_light} alt="icon" className="w-5 h-5" />
               <div className="flex items-center justify-center space-x-2">
                 <Button
                   disabled={!!isHome}

@@ -89,7 +89,7 @@ export default function Layout({ children }: LayoutProps) {
   t.deletions.useSubscription(undefined, {
     onData: (data) => {
       if (!data.isDone) {
-        toast.info(`Removing ${data.title} from Library`);
+        toast.info(`deleting ${data.title} from my Library`);
       }
 
       if (!data.isDone && data.error) {
@@ -97,7 +97,7 @@ export default function Layout({ children }: LayoutProps) {
       }
 
       if (data.isDone) {
-        toast.success(`Successfully Removed ${data.title}`);
+        toast.success(`${data.title} has been deleted`);
         utils.library.invalidate();
         toast.dismiss();
       }

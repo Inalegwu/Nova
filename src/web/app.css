@@ -81,6 +81,12 @@ button{
     @apply p-2 flex centered cursor-pointer rounded-md corner-superellipse/2
 }
 
+body {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 div{
     outline: none;
 }

@@ -21,7 +21,7 @@ function RouteComponent() {
   return (
     <div className="flex w-full h-full p-2 gap-2">
       <div className="h-full w-4/6 flex flex-col items-start p-6 justify-center space-y-5">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between w-full">
           <span className="text-lg font-bold">
             {issue?.issue.issueTitle.replace(/\s*\([^)]*\)/, "")}
           </span>

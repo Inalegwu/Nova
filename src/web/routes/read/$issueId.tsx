@@ -91,7 +91,7 @@ function RouteComponent() {
             <img
               src={page.data}
               alt="page"
-              className="aspect-9/16 h-full w-[45%] object-contain"
+              className="aspect-9/16 h-full w-full object-contain"
             />
           </div>
         ))}

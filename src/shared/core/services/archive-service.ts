@@ -1,9 +1,9 @@
-import { parserChannel } from "../../channels";
-import { Fs } from "../../fs";
-import { convertToImageUrl, parseFileNameFromPath } from "../../utils";
 import { Console, Context, Effect } from "effect";
 import type { UnknownException } from "effect/Cause";
 import path from "node:path";
+import { parserChannel } from "../../channels";
+import { Fs } from "../../fs";
+import { convertToImageUrl, parseFileNameFromPath } from "../../utils";
 import type { FSError } from "../utils/errors";
 import {
   createRarExtractor,

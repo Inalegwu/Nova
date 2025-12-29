@@ -2,8 +2,6 @@ import { globalState$ } from "../state";
 import { Moon, Sun } from "@solar-icons/react";
 
 export default function ThemeButton() {
-  console.log(globalState$.colorMode.get());
-
   return (
     <button
       type="button"

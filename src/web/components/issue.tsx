@@ -5,9 +5,11 @@ import {
   Pen,
   TrashBinMinimalistic,
   InfoCircle,
+  AddCircle,
 } from "@solar-icons/react";
 import t from "@/shared/config";
 import { Dialog } from "@base-ui/react/dialog";
+import { motion } from "motion/react";
 
 export default function IssueBox(issue: Partial<Issue>) {
   const nav = useRouter();
@@ -37,16 +39,26 @@ export default function IssueBox(issue: Partial<Issue>) {
           alt={`thumb_${issue.id}`}
         />
         <span className="text-xs text-black dark:text-neutral-400 font-medium w-full">
-          {issue.issueTitle?.slice(0, issue.issueTitle?.length / 2)}
+          {issue.issueTitle?.slice(0, issue.issueTitle?.length / 2 + 3)}
         </span>
       </ContextMenu.Trigger>
       <ContextMenu.Portal className="outline-none">
         <ContextMenu.Positioner className="origin-(--transform-origin) rounded-md corner-superellipse/2 bg-neutral-100 dark:bg-neutral-900 text-neutral-950 dark:text-neutral-200 shadow-lg shadow-gray-200 outline outline-gray-200 transition-opacity data-ending-style:opacity-0 dark:shadow-none dark:-outline-offset-1 dark:outline-gray-300">
           <ContextMenu.Popup className="flex flex-col items-start justify-center space-y-1 p-1">
             <div className="flex w-full items-center justify-start gap-1 flex-wrap">
-              <ContextMenu.Item className="ctxMenuRowItem  hover:bg-neutral-500/10">
-                <AddToCollection />
-              </ContextMenu.Item>
+              <Dialog.Root>
+                <ContextMenu.Item render={<Dialog.Trigger />} className="ctxMenuRowItem  hover:bg-neutral-500/10">
+                  <AddToCollection />
+                </ContextMenu.Item>
+                <Dialog.Portal>
+                  <Dialog.Backdrop render={<motion.div initial={{ display: "none", opacity: 0 }} animate={{ display: "flex", opacity: 1 }} exit={{ display: "none", opacity: 0 }} />} className="w-full h-screen bg-black/30 flex-items-center justify-center" />
+                  <Dialog.Viewport>
+                    <Dialog.Popup className="bg-neutral-100 dark:bg-neutral-950 rounded-md corner-superellipse/1.3 border border-solid border-neutral-200 dark:border-neutral-800">
+                      <Dialog.Title>Add To Collection</Dialog.Title>
+                    </Dialog.Popup>
+                  </Dialog.Viewport>
+                </Dialog.Portal>
+              </Dialog.Root>
               <ContextMenu.Item
                 onClick={() =>
                   nav.navigate({
@@ -82,10 +94,10 @@ function AddToCollection() {
   return (
     <Dialog.Root>
       <Dialog.Trigger>
-        <AddSquare size={14} />
+        <AddCircle weight="Outline" size={14} />
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Backdrop>
+        <Dialog.Backdrop render={<motion.div initial={{ display: "none", opacity: 0 }} animate={{ display: "flex", opacity: 1 }} exit={{ display: "none", opacity: 0 }} />} className="w-full h-screen bg-black/30 flex-items-center justify-center">
           <Dialog.Popup>popup</Dialog.Popup>
         </Dialog.Backdrop>
       </Dialog.Portal>

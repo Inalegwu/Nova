@@ -33,8 +33,6 @@ function Component() {
 
   useTimeout(() => isEnabled.set(true), 500);
 
-  console.log({ data });
-
   return (
     <div className="w-full h-full p-2 overflow-y-scroll">
       <Tabs.Panel value="collections">

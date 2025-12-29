@@ -1,7 +1,7 @@
 import t from "@/shared/config";
+import { WiFiRouterMinimalistic } from "@solar-icons/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo } from "react";
-import { WiFiRouterMinimalistic } from "@solar-icons/react";
 
 export const Route = createFileRoute("/edit/$issue")({
   component: RouteComponent,

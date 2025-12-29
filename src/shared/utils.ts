@@ -1,6 +1,5 @@
 import { Option } from "effect";
 import * as Effect from "effect/Effect";
-import * as Either from "effect/Either";
 import type { z } from "zod";
 
 export const sortPages = (a: string, b: string) =>

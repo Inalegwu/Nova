@@ -1,13 +1,13 @@
-import { parserChannel } from "../../channels";
-import { Fs } from "../../fs";
-import { issues, metadata } from "../../schema";
-import db from "../../storage";
-import { extractMetaID, parseFileNameFromPath, sortPages } from "../../utils";
 import Zip from "adm-zip";
 import { Array, Effect, Option, Schema } from "effect";
 import { XMLParser } from "fast-xml-parser";
 import { createExtractorFromData } from "node-unrar-js";
 import { v4 } from "uuid";
+import { parserChannel } from "../../channels";
+import { Fs } from "../../fs";
+import { issues, metadata } from "../../schema";
+import db from "../../storage";
+import { extractMetaID, parseFileNameFromPath, sortPages } from "../../utils";
 import { MetadataSchema } from "../../validations";
 import { ArchiveError } from "./errors";
 
@@ -119,7 +119,9 @@ export const createRarExtractor = Effect.fn(function* (filePath: string) {
             name: file.fileHeader.name,
             isDir: file.fileHeader.flags.directory,
             data: file.extraction?.buffer,
-            isFirst: file.fileHeader.name.includes("001"),
+            isFirst: file.fileHeader.name.includes("000")
+              ? true
+              : file.fileHeader.name.includes("001"),
           }) satisfies Extractor,
       ),
     ),
@@ -147,7 +149,9 @@ export const createZipExtractor = (filePath: string) =>
               name: entry.name,
               data: entry.getData().buffer,
               isDir: entry.isDirectory,
-              isFirst: entry.name.includes("001"),
+              isFirst: entry.name.includes("000")
+                ? true
+                : entry.name.includes("001"),
             }) satisfies Extractor,
         ),
     ),

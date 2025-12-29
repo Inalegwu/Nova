@@ -1,7 +1,8 @@
+import CollectionBox from "./collection";
+import IssueBox from "./issue";
 import Layout from "./layout";
 import Skeleton from "./skeleton";
 import Spinner from "./spinner";
-import IssueBox from "./issue";
-import CollectionBox from "./collection";
+import Tag from "./tag";
 
-export { Layout, Skeleton, Spinner, IssueBox, CollectionBox };
+export { CollectionBox, IssueBox, Layout, Skeleton, Spinner, Tag };

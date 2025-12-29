@@ -16,6 +16,7 @@ const port = parentPort;
 
 if (!port) throw new Error("Parse Process Port is Missing");
 
+// TODO: implement a queue that allows for multiple issues to be worked on at a time
 const handleMessage = Effect.fnUntraced(function* ({
   action,
   parsePath,

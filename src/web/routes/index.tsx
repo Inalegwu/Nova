@@ -36,7 +36,7 @@ function Component() {
   console.log({ data });
 
   return (
-    <div className="w-full h-full p-2">
+    <div className="w-full h-full p-2 overflow-y-scroll">
       <Tabs.Panel value="collections">
         <Collections collections={data?.collections || []} />
       </Tabs.Panel>
@@ -49,7 +49,7 @@ function Component() {
 
 function Issues({ issues }: { issues: Array<Partial<Issue>> }) {
   return (
-    <div className="w-full h-full flex items-start justify-start flex-wrap space-x-4">
+    <div className="w-full h-full flex items-start justify-start flex-wrap space-x-4 overflow-y-scroll">
       {issues.map((issue) => (
         <IssueBox key={issue.id} {...issue} />
       ))}

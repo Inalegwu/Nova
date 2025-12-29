@@ -297,7 +297,7 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </motion.div>
         <motion.div
-          className="bg-white dark:bg-neutral-900 dark:text-neutral-200 w-full corner-superellipse/2 overflow-hidden"
+          className="bg-white dark:bg-neutral-900 overflow-y-scroll overflow-x-hidden dark:text-neutral-200 w-full corner-superellipse/1.3"
           initial={{
             height: "100%",
             borderRadius: "0.375rem",

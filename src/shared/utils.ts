@@ -38,6 +38,7 @@ export const parseFileNameFromPath = (filePath: string) =>
     .replace(/^.*[\\\/]/, "")
     .replace(/\.[^/.]+$/, "")
     .replace(/(\d+)$/, "")
+    .replace(/\s*\([^)]*\)/, "")
     .replace("-", "");
 
 // "Scraped metadata from Comixology [CMXDB852248], [RELDATE:2020-03-31]\"
@@ -58,7 +59,8 @@ export const transformMessage = <T extends z.ZodRawShape>(
     ),
   );
 
-export const formatNumber = (value: number) => value.toString().padStart(2, "0");
+export const formatNumber = (value: number) =>
+  value.toString().padStart(2, "0");
 
 export function debounce<A = unknown[], R = void>(
   fn: (args: A) => R,

@@ -19,7 +19,9 @@ function RouteComponent() {
   return (
     <div className="flex w-full h-full p-2 gap-2">
       <div className="h-full w-4/6 flex flex-col items-start p-6 justify-center space-y-5">
-        <span className="text-2xl font-bold">{issue?.issue.issueTitle}</span>
+        <span className="text-2xl font-bold">
+          {issue?.issue.issueTitle.replace(/\s*\([^)]*\)/, "")}
+        </span>
         <div className="flex flex-col space-y-2">
           <span className="text-lg text-neutral-400">
             {issue?.metadata?.Summary}

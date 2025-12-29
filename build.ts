@@ -2,6 +2,7 @@ import { Duration, Effect } from "effect";
 import { build } from "electron-builder";
 import { BuildError } from "./src/shared/core/utils/errors";
 
+// TODO rewrite to Effect.gen
 Effect.tryPromise({
   try: async () =>
     await build({

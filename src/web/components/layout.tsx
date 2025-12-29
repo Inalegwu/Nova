@@ -227,7 +227,7 @@ export default function Layout({ children }: LayoutProps) {
                         }}
                       />
                     }
-                    className="bg-white dark:bg-neutral-900 dark:text-neutral-400 rounded-md pl-2 pr-5 py-1 text-xs"
+                    className="bg-white dark:bg-neutral-900 dark:text-neutral-400 squiricle pl-2 pr-5 py-1 text-xs"
                   >
                     Create Collection
                   </Popover.Trigger>
@@ -268,13 +268,13 @@ export default function Layout({ children }: LayoutProps) {
             <div className="flex items-center justify-start gap-2">
               <Button
                 onClick={() => addIssue()}
-                className="bg-white dark:bg-neutral-900 dark:text-neutral-300 rounded-md p-1"
+                className="bg-white dark:bg-neutral-900 dark:text-neutral-300 rounded-md corner-superellipse/1.3 p-1"
               >
                 <AddSquare weight="Bold" size={17} />
               </Button>
               <Link
                 href="/history"
-                className="bg-white dark:bg-neutral-900 dark:text-neutral-300 rounded-md p-1"
+                className="bg-white text-black dark:bg-neutral-900 dark:text-neutral-300 rounded-md corner-superellipse/1.3 p-1"
               >
                 <History weight="Bold" size={17} />
               </Link>

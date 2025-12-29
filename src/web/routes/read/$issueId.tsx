@@ -100,16 +100,16 @@ function RouteComponent() {
       <div className="absolute z-10 p-1 top-0 left-0 flex items-center justify-start space-x-2">
         <button
           onClick={() => nav.history.back()}
-          className="bg-neutral-100 p-2 text-neutral-950 dark:text-neutral-300 items-center justify-center dark:bg-neutral-950 rounded-md"
+          className="bg-neutral-100 p-2 text-neutral-950 dark:text-neutral-300 items-center justify-center dark:bg-neutral-950 rounded-md corner-superellipse/1.3"
         >
           <ArrowLeft size={17} weight="Bold" />
         </button>
       </div>
       <div className="absolute z-10 bottom-3 left-0 w-full p-2 items-center justify-center">
-        <div className="w-full bg-neutral-400/20 backdrop-blur-3xl rounded-md corner-superellipse/2">
+        <div className="w-full bg-neutral-400/20 backdrop-blur-3xl squiricle">
           <motion.div
             animate={{ width: `${width}%` }}
-            className="rounded-md corner-superellipse/2 bg-white/20 p-2"
+            className="squiricle bg-white/20 p-2"
           />
         </div>
       </div>

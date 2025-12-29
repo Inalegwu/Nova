@@ -156,7 +156,7 @@ export const createZipExtractor = (filePath: string) =>
         files.find((file) => file.name.includes(".xml")),
       ),
       files: files
-        .filter((file) => !file.name.includes(".xmk"))
+        .filter((file) => !file.name.includes(".xml"))
         .filter((file) => !file.isDir),
     })),
   );

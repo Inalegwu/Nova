@@ -121,7 +121,7 @@ export default function Layout({ children }: LayoutProps) {
   });
 
   useWindow("mousemove", (e) => {
-    if (e.clientY < 30 && !globalState$.isFullscreen.get()) {
+    if (e.clientY < 20 && !globalState$.isFullscreen.get()) {
       setShowTop(true);
     } else {
       setShowTop(false);

@@ -8,7 +8,7 @@ export const Route = createRootRoute({
     <SolarProvider
       value={{
         size: 18,
-        weight: "BoldDuotone",
+        weight: "Bold",
       }}
     >
       <Layout>

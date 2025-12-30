@@ -2,19 +2,21 @@ import t from "@/shared/config";
 import { Spinner } from "@/web/components";
 import { useKeyPress, useTimeout } from "@/web/hooks";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useMotionValue, motion } from "motion/react";
 import { Toolbar } from "@base-ui/react/toolbar";
 import { Toggle } from "@base-ui/react/toggle";
 import { ToggleGroup } from "@base-ui/react/toggle-group";
 import {
-  AltArrowLeft,
+  Bookmark,
+  Hearts,
+  SliderMinimalisticHorizontal,
+  SliderVerticalMinimalistic,
   AltArrowRight,
-  AltArrowUp,
-  AltArrowDown,
-  ArrowLeft,
-  Maximize,
+  RoundAltArrowRight,
+  AltArrowLeft
 } from "@solar-icons/react";
+import { globalState$ } from "@/web/state";
 
 const DRAG_BUFFER = 50;
 
@@ -27,6 +29,11 @@ function RouteComponent() {
   const nav = useRouter();
 
   const [isEnabled, setIsEnabled] = useState(false);
+  const [expanded, setExpanded] = useState(true);
+
+  const readerDirection = globalState$.reader.direction.get();
+
+  console.log({ readerDirection });
 
   const { data, isLoading: fetchingPages } = t.issue.getPages.useQuery(
     {
@@ -64,6 +71,10 @@ function RouteComponent() {
     }
   });
 
+  const saveBookmark = useCallback(() => {
+    console.log("saving bookmark");
+  }, []);
+
   if (fetchingPages) {
     return (
       <div className="w-full h-full flex items-center justify-center">
@@ -97,14 +108,30 @@ function RouteComponent() {
         ))}
       </motion.div>
       {/*TODO:toolbar*/}
-      <div className="absolute z-10 p-1 top-0 right-0 flex items-center justify-start space-x-2">
-        toolbar
-      </div>
+      <Toolbar.Root render={<motion.div animate={{ width: expanded ? "13.3%" : "2.3%" }} />} className="flex centered overflow-hidden absolute z-10 top-2 right-2 gap-1 bg-neutral-100 dark:bg-neutral-950 rounded-md squiricle">
+        <motion.button onClick={() => setExpanded(ex => !ex)} className="p-2 flex centered">
+          {expanded ? <AltArrowRight size={16} weight="Bold" /> : <AltArrowLeft size={16} weight="Bold" />}
+        </motion.button>
+        <ToggleGroup render={<motion.div animate={{ transform: expanded ? "translateX(0px)" : "translateX(130px)", display: expanded ? "flex" : "none" }} />} className="flex centered gap-1">
+          <Toolbar.Button onClick={() => globalState$.reader.direction.set("vertical")} className="toolbarToggle" render={<Toggle pressed={readerDirection === "vertical"} />} aria-label="reader-vertical">
+            <SliderVerticalMinimalistic weight={readerDirection === "vertical" ? "Bold" : "Outline"} size={16} />
+          </Toolbar.Button>
+          <Toolbar.Button onClick={() => globalState$.reader.direction.set("horizontal")} className="toolbarToggle" render={<Toggle pressed={readerDirection === "horizontal"} />} aria-label="reader-vertical">
+            <SliderMinimalisticHorizontal weight={readerDirection === "horizontal" ? "Bold" : "Outline"} size={16} />
+          </Toolbar.Button>
+        </ToggleGroup>
+        <Toolbar.Button onClick={saveBookmark} render={<Toggle render={<motion.button animate={{ display: expanded ? "flex" : "none" }} />} />} className="toolbarToggle">
+          <Bookmark weight="Outline" size={16} />
+        </Toolbar.Button>
+        <Toolbar.Button render={<Toggle render={<motion.button animate={{ display: expanded ? "flex" : "none" }} />} />} className="toolbarToggle">
+          <Hearts weight="Outline" size={16} />
+        </Toolbar.Button>
+      </Toolbar.Root>
       <div className="absolute z-10 bottom-3 left-0 w-full p-2 items-center justify-center">
         <div className="w-full bg-neutral-400/20 backdrop-blur-3xl squiricle">
           <motion.div
             animate={{ width: `${width}%` }}
-            className="squiricle bg-white/20 p-2"
+            className="squiricle bg-linear-to-r from-neutral-400/30 dark:from-neutral-100 to-fuchsia-300 p-2"
           />
         </div>
       </div>

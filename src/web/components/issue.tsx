@@ -48,7 +48,7 @@ export default function IssueBox(issue: Partial<Issue>) {
             <div className="flex w-full items-center justify-start gap-1 flex-wrap">
               <Dialog.Root>
                 <ContextMenu.Item render={<Dialog.Trigger />} className="ctxMenuRowItem  hover:bg-neutral-500/10">
-                  <AddToCollection />
+                  <AddCircle size={14} weight="Outline" />
                 </ContextMenu.Item>
                 <Dialog.Portal>
                   <Dialog.Backdrop render={<motion.div initial={{ display: "none", opacity: 0 }} animate={{ display: "flex", opacity: 1 }} exit={{ display: "none", opacity: 0 }} />} className="w-full h-screen bg-black/30 flex-items-center justify-center" />
@@ -90,17 +90,17 @@ export default function IssueBox(issue: Partial<Issue>) {
   );
 }
 
-function AddToCollection() {
-  return (
-    <Dialog.Root>
-      <Dialog.Trigger>
-        <AddCircle weight="Outline" size={14} />
-      </Dialog.Trigger>
-      <Dialog.Portal>
-        <Dialog.Backdrop render={<motion.div initial={{ display: "none", opacity: 0 }} animate={{ display: "flex", opacity: 1 }} exit={{ display: "none", opacity: 0 }} />} className="w-full h-screen bg-black/30 flex-items-center justify-center">
-          <Dialog.Popup>popup</Dialog.Popup>
-        </Dialog.Backdrop>
-      </Dialog.Portal>
-    </Dialog.Root>
-  );
-}
+// function AddToCollection() {
+//   return (
+//     <Dialog.Root>
+//       <Dialog.Trigger>
+//         <AddCircle weight="Outline" size={14} />
+//       </Dialog.Trigger>
+//       <Dialog.Portal>
+//         <Dialog.Backdrop render={<motion.div initial={{ display: "none", opacity: 0 }} animate={{ display: "flex", opacity: 1 }} exit={{ display: "none", opacity: 0 }} />} className="w-full h-screen bg-black/30 flex-items-center justify-center">
+//           <Dialog.Popup>popup</Dialog.Popup>
+//         </Dialog.Backdrop>
+//       </Dialog.Portal>
+//     </Dialog.Root>
+//   );
+// }

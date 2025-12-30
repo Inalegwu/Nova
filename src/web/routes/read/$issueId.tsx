@@ -131,7 +131,7 @@ function RouteComponent() {
         <div className="w-full bg-neutral-400/20 backdrop-blur-3xl squiricle">
           <motion.div
             animate={{ width: `${width}%` }}
-            className="squiricle bg-linear-to-r from-neutral-400/30 dark:from-neutral-100 to-fuchsia-300 p-2"
+            className="squiricle bg-linear-to-r from-neutral-400/30 dark:from-neutral-100/30 to-fuchsia-300/30 p-2"
           />
         </div>
       </div>

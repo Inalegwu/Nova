@@ -15,7 +15,6 @@ export const parseXML = Effect.fn(function* (
   file: Option.Option<Extractor>,
   issueId: string,
 ) {
-  yield* Effect.log("here...");
   const xmlParser = new XMLParser();
 
   const data = Option.getOrUndefined(file);

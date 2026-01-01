@@ -45,6 +45,7 @@ export default function Layout({ children }: LayoutProps) {
   const { mutate: maximize } = t.window.maximize.useMutation();
   const { mutate: close } = t.window.closeWindow.useMutation();
   const { mutate: addIssue } = t.issue.addIssue.useMutation();
+  const { mutate: launchWatcher } = t.library.launchWatcher.useMutation();
   const { mutate: createCollection, isPending: isCreating } =
     t.library.createCollection.useMutation({
       onSuccess: (_) => utils.library.getLibrary.invalidate(),
@@ -142,6 +143,7 @@ export default function Layout({ children }: LayoutProps) {
 
   useEffect(() => {
     if (globalState$.isFullscreen.get()) globalState$.isFullscreen.set(false);
+    launchWatcher()
     // if (globalState$.firstLaunch.get()) {
     //   navigation.navigate({
     //     to: "/first-launch",
@@ -150,7 +152,7 @@ export default function Layout({ children }: LayoutProps) {
     if (globalState$.appId.get() === null) {
       globalState$.appId.set(v4());
     }
-  }, []);
+  }, [launchWatcher]);
 
   return (
     <AnimatePresence>

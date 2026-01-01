@@ -5,20 +5,10 @@ import { BrowserWindow, app, screen } from "electron";
 import { createIPCHandler } from "electron-trpc/main";
 import os from "node:os";
 import path from "node:path";
-import { globalState$ } from "./web/state";
 
 app.setName("Nova");
 
 const data_dir = path.join(app.getPath("appData"), "Nova");
-
-// Fs.makeDirectory(path.join(data_dir, "LibraryCache")).pipe(
-//   Effect.catchTag("FSError", () => Effect.void),
-//   Effect.runPromise,
-// );
-// Fs.makeDirectory(path.join(data_dir, "Library")).pipe(
-//   Effect.catchTag("FSError", () => Effect.void),
-//   Effect.runPromise,
-// );
 
 process.env.db_url = path.join(data_dir, "nova.db");
 process.env.cache_dir = path.join(data_dir, "Library");
@@ -93,7 +83,7 @@ const createWindow = () => {
     });
   }
 
-  // mainWindow.webContents.openDevTools({ mode: "bottom" });
+  mainWindow.webContents.openDevTools({ mode: "bottom" });
 };
 
 app.whenReady().then(() => createWindow());

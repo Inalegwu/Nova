@@ -1,36 +1,33 @@
-import { computed } from "@legendapp/state";
-import { useObservable, useObserveEffect } from "@legendapp/state/react";
+import icon_dark from "@/assets/images/win_dark.png";
+import icon_light from "@/assets/images/win_light.png";
 import t from "@/shared/config";
+import { Button } from "@base-ui/react/button";
+import { Input } from "@base-ui/react/input";
+import { Popover } from "@base-ui/react/popover";
+import { Tabs } from "@base-ui/react/tabs";
+import { useObserveEffect } from "@legendapp/state/react";
+import {
+  AddSquare,
+  ArrowLeft,
+  ArrowRight,
+  Book,
+  CloseCircle,
+  History,
+  Library,
+  MaximizeSquare3,
+  MinusSquare,
+  Settings
+} from "@solar-icons/react";
 import { useRouter, useRouterState } from "@tanstack/react-router";
+import { AnimatePresence, motion } from "motion/react";
 import type React from "react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { v4 } from "uuid";
 import { useInterval, useWindow } from "../hooks";
 import { globalState$ } from "../state";
-import { toast } from "sonner";
-import icon_dark from "@/assets/images/win_dark.png";
-import icon_light from "@/assets/images/win_light.png";
-import {
-  CloseCircle,
-  MaximizeSquare3,
-  Library,
-  Book,
-  AddSquare,
-  MinusSquare,
-  Settings,
-  ArrowLeft,
-  ArrowRight,
-  AltArrowDown,
-  History,
-} from "@solar-icons/react";
-import { Tabs } from "@base-ui/react/tabs";
-import { motion, AnimatePresence } from "motion/react";
-import { Button } from "@base-ui/react/button";
-import { Link } from "./ui/link";
 import ThemeButton from "./theme-button";
-import { Popover } from "@base-ui/react/popover";
-import { Dialog } from "@base-ui/react/dialog";
-import { Input } from "@base-ui/react/input";
+import { Link } from "./ui/link";
 
 type LayoutProps = {
   children?: React.ReactNode;
@@ -143,7 +140,7 @@ export default function Layout({ children }: LayoutProps) {
 
   useEffect(() => {
     if (globalState$.isFullscreen.get()) globalState$.isFullscreen.set(false);
-    launchWatcher()
+    // launchWatcher()
     // if (globalState$.firstLaunch.get()) {
     //   navigation.navigate({
     //     to: "/first-launch",

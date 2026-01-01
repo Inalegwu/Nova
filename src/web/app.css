@@ -98,3 +98,8 @@ div{
 .root{
     isolation:isolate;
 }
+
+button{
+    appearance:none;
+    cursor: pointer;
+}

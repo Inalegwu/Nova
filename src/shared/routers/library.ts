@@ -1,17 +1,27 @@
-import { publicProcedure, router } from "@/trpc";
-import { eq } from "drizzle-orm";
-import { Effect, Array } from "effect";
-import { dialog } from "electron";
-import { v4 } from "uuid";
-import { z } from "zod";
 import {
   collections as collectionsSchema,
   issues as issueSchema,
 } from "@/shared/schema";
 import { sortPages } from "@/shared/utils";
+import { publicProcedure, router } from "@/trpc";
+import { eq } from "drizzle-orm";
+import { Array, Effect } from "effect";
+import { dialog } from "electron";
+import { v4 } from "uuid";
+import { z } from "zod";
+// @ts-ignore: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
+import watcher from "../core/workers/watcher?nodeWorker";
 
 const libraryRouter = router({
   launchWatcher: publicProcedure.mutation(async () => {
+    watcher({
+      name: "watcher-worker",
+    })
+      .on("message", console.log)
+      .postMessage({
+        activate: true,
+      });
+
     return {
       success: true,
     };

@@ -1,30 +1,20 @@
-import { Fs } from "../../fs";
 import db from "@/shared/storage";
-import { Duration, Effect, Mailbox, Schedule } from "effect";
+import * as chokidar from "chokidar";
+import { Duration, Effect, Queue, Schedule } from "effect";
 import { parentPort } from "node:worker_threads";
 import { z } from "zod";
+import { Fs } from "../../fs";
 import { parseFileNameFromPath, transformMessage } from "../../utils";
-import * as chokidar from "chokidar";
 // @ts-ignore: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
-import WorkerURL from "../core/workers/parser?nodeWorker";
-import workerpool from "workerpool";
-
-const parserPool = workerpool.pool(WorkerURL, {
-  maxWorkers: 2,
-  workerOpts: {
-    type: import.meta.env.PROD ? undefined : "module",
-  },
-});
+import parseWorker from "../core/workers/parser?nodeWorker";
 
 const port = parentPort;
 
 if (!port) throw new Error("Parse Process Port is Missing");
 
 const watchFS = Effect.fn(function* (directory: string | null) {
-  const mailbox = yield* Mailbox.make<string>({
-    strategy: "sliding",
-    capacity: 200,
-  });
+  yield* Effect.logInfo("Starting watcher");
+  const unparsedQueue = yield* Queue.unbounded<string>();
 
   if (!directory) return;
 
@@ -53,7 +43,7 @@ const watchFS = Effect.fn(function* (directory: string | null) {
 
   yield* Effect.log(unsavedIssues);
 
-  yield* mailbox.offerAll(unsavedIssues);
+  yield* unparsedQueue.offerAll(unsavedIssues);
 
   yield* Effect.logInfo(`watching ${directory} for changes`);
   const chokidar_watcher = yield* Effect.try(() =>
@@ -64,33 +54,34 @@ const watchFS = Effect.fn(function* (directory: string | null) {
 
   yield* Effect.forever(
     Effect.try(() =>
-      chokidar_watcher.on(
-        "add",
-        async (parsePath) =>
-          await parserPool.exec("parse", [
-            {
-              parsePath,
-              action: "LINK",
-            } satisfies ParserSchema,
-          ]),
+      chokidar_watcher.on("add", (parsePath) =>
+        Queue.unsafeOffer(unparsedQueue, parsePath),
       ),
     ),
   ).pipe(Effect.forkDaemon);
 
   yield* Effect.forever(
     Effect.try(() =>
-      chokidar_watcher.on(
-        "unlink",
-        async (parsePath) =>
-          await parserPool.exec("parse", [
-            {
-              parsePath,
-              action: "UNLINK",
-            } satisfies ParserSchema,
-          ]),
+      chokidar_watcher.on("unlink", async (parsePath) =>
+        unparsedQueue.unsafeOffer(parsePath),
       ),
     ),
   ).pipe(Effect.forkDaemon);
+
+  while (!(yield* unparsedQueue.isEmpty)) {
+    const unparsedPath = yield* Queue.take(unparsedQueue);
+
+    yield* Effect.logInfo(`Saving ${unparsedPath}`);
+
+    parseWorker({
+      name: `parse-worker-${unparsedPath}`,
+    })
+      .on("message", console.log)
+      .postMessage({
+        parsePath: unparsedPath,
+        action: "LINK",
+      } satisfies ParserSchema);
+  }
 });
 
 port.on("message", (message) =>

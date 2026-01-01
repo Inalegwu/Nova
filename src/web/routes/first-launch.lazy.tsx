@@ -30,6 +30,7 @@ const welcomeMessages = [
   },
 ];
 
+// TODO: stepper setup screen
 function Component() {
   const dragX = useMotionValue(0);
   const [itemIndex, setItemIndex] = useState<number>(0);

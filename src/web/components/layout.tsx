@@ -12,11 +12,14 @@ import {
   ArrowRight,
   Book,
   CloseCircle,
+  FolderOpen,
+  Heart,
   History,
   Library,
   MaximizeSquare3,
   MinusSquare,
   Settings,
+  SidebarMinimalistic,
 } from '@solar-icons/react';
 import { useRouter, useRouterState } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
@@ -56,6 +59,7 @@ export default function Layout({ children }: LayoutProps) {
   const [showTop, setShowTop] = useState(false);
   const [mouseOver, setMouseOver] = useState(false);
   const [collectionName, setCollectionName] = useState('');
+  const [sidebar, setSidebar] = useState(false);
 
   // track the process of adding issues to the library
   // from background processes
@@ -179,6 +183,12 @@ export default function Layout({ children }: LayoutProps) {
                 className='w-5 h-5'
               />
               <div className='flex items-center justify-center space-x-2'>
+                <Button
+                  onClick={() => setSidebar((sidebar) => !sidebar)}
+                  className='bg-white dark:bg-neutral-800 rounded-md p-1 text-black dark:text-neutral-300 disabled:text-neutral-400 disabled:bg-transparent'
+                >
+                  <SidebarMinimalistic size={13} weight='Linear' />
+                </Button>
                 <Button
                   disabled={!!isHome}
                   onClick={() => navigation.history.back()}
@@ -305,7 +315,7 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </motion.div>
         <motion.div
-          className='bg-white dark:bg-neutral-900 overflow-y-scroll overflow-x-hidden dark:text-neutral-200 w-full corner-superellipse/1.3'
+          className='bg-white flex p-1 gap-2 dark:bg-neutral-900 overflow-y-scroll overflow-x-hidden dark:text-neutral-200 w-full corner-superellipse/1.3'
           initial={{
             height: '100%',
             borderRadius: '0.375rem',
@@ -315,7 +325,31 @@ export default function Layout({ children }: LayoutProps) {
             borderRadius: globalState$.isFullscreen.get() ? '0' : '0.375rem',
           }}
         >
-          {children}
+          <motion.div
+            className='bg-neutral-100 p-2 flex flex-col items-center justify-start gap-3 dark:bg-neutral-950 rounded-lg squiricle'
+            initial={{ width: '0%', display: 'none', opacity: 0 }}
+            animate={{
+              opacity: sidebar ? 1 : 0,
+              width: sidebar ? '3%' : '0%',
+              display: sidebar ? 'flex' : 'none',
+            }}
+          >
+            <Link className='p-1 rounded-lg squiricle flex centered'>
+              <History weight='BoldDuotone' size={16} />
+            </Link>
+            <Link className='p-1 rounded-lg squiricle flex centered'>
+              <Heart weight='BoldDuotone' size={16} />
+            </Link>
+            <Link className='p-1 rounded-lg squiricle flex centered'>
+              <FolderOpen weight='BoldDuotone' size={16} />
+            </Link>
+          </motion.div>
+          <motion.div
+            initial={{ width: '100%' }}
+            animate={{ width: sidebar ? '97%' : '100%' }}
+          >
+            {children}
+          </motion.div>
         </motion.div>
       </Tabs.Root>
     </AnimatePresence>

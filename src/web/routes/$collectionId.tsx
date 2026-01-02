@@ -2,7 +2,7 @@ import t from '@/shared/config';
 import { Checkbox } from '@base-ui/react/checkbox';
 import { Dialog } from '@base-ui/react/dialog';
 import { ScrollArea } from '@base-ui/react/scroll-area';
-import { AddSquare, CheckCircle } from '@solar-icons/react';
+import { AddSquare, CheckCircle, Hearts } from '@solar-icons/react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useState } from 'react';
 
@@ -11,6 +11,7 @@ export const Route = createFileRoute('/$collectionId')({
 });
 
 function RouteComponent() {
+  const utils = t.useUtils();
   const { collectionId } = Route.useParams();
 
   const [toAdd, setToAdd] = useState<Array<string>>([]);
@@ -20,33 +21,28 @@ function RouteComponent() {
   const { data: unmatched, isLoading: gettingUnmatched } =
     t.library.getLibrary.useQuery();
 
-  console.log({ toAdd });
+  const { mutate: addToCollection, isPending: adding } =
+    t.library.addToCollection.useMutation({
+      onSuccess: () => utils.invalidate(),
+    });
 
   return (
     <div className='w-full h-full p-2 flex flex-col items-start justify-start space-y-2'>
       {/* TODO: fill in collection metadata from comic vine */}
-      <div className='flex items-center justify-start gap-5'>
+      <div className='flex items-center justify-start gap-5 w-full'>
         <img
           src={data?.issues?.at(0)?.thumbnailUrl}
           alt={`cover__${data?.collection?.id}`}
-          className='w-lg h-90 border border-solid border-neutral-200 dark:border-neutral-800 rounded-lg corner-superellipse/1.3'
+          className='w-1.8/6 h-96 border border-solid border-neutral-200 dark:border-neutral-800 rounded-2xl squircle'
         />
-        <div className='flex flex-col items-start justify-start gap-2'>
+        <div className='flex flex-col items-start justify-center gap-2 w-full h-full'>
           <p className='text-2xl font-bold'>
             {data?.collection?.collectionName}
           </p>
-          <p>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Architecto
-            asperiores eum ut veritatis adipisci ipsum nostrum obcaecati fuga
-            corporis deleniti maiores, recusandae at atque nam porro placeat
-            provident deserunt saepe.
-          </p>
           <div className='flex items-center justify-start gap-2'>
             <Dialog.Root>
-              <Dialog.Trigger>
-                <button className='my-2 text-neutral-900 dark:text-neutral-300'>
-                  <AddSquare size={25} />
-                </button>
+              <Dialog.Trigger className='my-2 text-neutral-900 dark:text-neutral-300'>
+                <AddSquare size={25} />
               </Dialog.Trigger>
               <Dialog.Portal>
                 <Dialog.Backdrop className='fixed inset-0 min-h-dvh bg-black opacity-20 transition-all duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 dark:opacity-70 supports-[-webkit-touch-callout:none]:absolute' />
@@ -54,14 +50,14 @@ function RouteComponent() {
                   <Dialog.Title className='font-bold text-lg'>
                     Add Issue To Collection
                   </Dialog.Title>
-                  <ScrollArea.Root className='h-42 w-full max-w-[calc(100vw-8rem)] my-3'>
+                  <ScrollArea.Root className='h-50 w-full max-w-[calc(100vw-8rem)] my-3'>
                     <ScrollArea.Viewport className='h-full overscroll-contain rounded-md outline bg-neutral-100 dark:bg-neutral-900 p-1 gap-2 -outline-offset-1 outline-gray-200 focus-visible:outline focus-visible:outline-blue-800'>
                       {unmatched?.issues?.map((issue) => (
                         <div
                           key={issue.id}
                           className='flex items-center justify-between py-1 px-2'
                         >
-                          <p className='text-sm text-neutral-800 dark:text-neutral-200'>
+                          <p className='text-xs font-bold text-neutral-800 dark:text-neutral-200'>
                             {issue.issueTitle}
                           </p>
                           <Checkbox.Root
@@ -82,24 +78,47 @@ function RouteComponent() {
                       ))}
                     </ScrollArea.Viewport>
                   </ScrollArea.Root>
+                  <button
+                    disabled={adding}
+                    className='flex centered gap-2'
+                    onClick={() =>
+                      addToCollection({
+                        // @ts-expect-error
+                        collectionId: data?.collection?.id,
+                        issues: toAdd,
+                      })
+                    }
+                  >
+                    <p className='text-sm'>
+                      Add To {data?.collection?.collectionName}
+                    </p>
+                    <AddSquare size={12} />
+                  </button>
                 </Dialog.Popup>
               </Dialog.Portal>
             </Dialog.Root>
           </div>
         </div>
       </div>
-      <div className='flex flex-col items-start justify-start'>
+      <div className='flex flex-col my-4 items-start justify-start w-full'>
         {data?.issues?.map((issue, idx) => (
-          <Link
-            to='/read/$issueId'
-            params={{ issueId: issue.id }}
-            className='w-full items-center justify-between'
-          >
-            <div className='flex items-center justify-start gap-1'>
-              <p>{idx + 1}</p>
-              <p>{issue.issueTitle}</p>
+          <div key={issue.id} className='w-full items-center justify-between'>
+            <div className='flex items-center p-2 hover:bg-neutral-100/40 dark:hover:bg-neutral-950/20 rounded-lg corner-superellipse/1.3 w-full justify-between gap-3 text-sm text-neutral-950 dark:text-neutral-200'>
+              <Link
+                to='/read/$issueId'
+                params={{ issueId: issue.id }}
+                className='flex items-center justify-start gap-2 hover:underline'
+              >
+                <p>{idx + 1}.</p> {'   '}
+                <p>{issue.issueTitle}</p>
+              </Link>
+              <div className='flex items-center justify-end gap-2'>
+                <button className='p-2 rounded-lg hover:bg-neutral-200/60 corner-superellipse/1.3'>
+                  <Hearts weight='Outline' size={17} />
+                </button>
+              </div>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </div>

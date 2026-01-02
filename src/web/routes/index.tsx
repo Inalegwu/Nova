@@ -1,12 +1,12 @@
-import { useObservable } from '@legendapp/state/react';
 import t from '@/shared/config';
+import { Tabs } from '@base-ui/react/tabs';
+import { useObservable } from '@legendapp/state/react';
 import { createFileRoute } from '@tanstack/react-router';
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { toast } from 'sonner';
+import { CollectionBox, IssueBox } from '../components';
 import { useTimeout } from '../hooks';
 import { globalState$ } from '../state';
-import { Tabs } from '@base-ui/react/tabs';
-import { CollectionBox, IssueBox } from '../components';
 
 export const Route = createFileRoute('/')({
   component: memo(Component),
@@ -34,7 +34,7 @@ function Component() {
   useTimeout(() => isEnabled.set(true), 500);
 
   return (
-    <div className='w-full h-full p-2 overflow-y-scroll'>
+    <div className='w-full h-full p-1 overflow-y-scroll'>
       <Tabs.Panel value='collections'>
         <Collections collections={data?.collections || []} />
       </Tabs.Panel>

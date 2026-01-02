@@ -1,5 +1,5 @@
-import { debounce } from "@/shared/utils";
-import { useEffect, useMemo } from "react";
+import { debounce } from '@/shared/utils';
+import { useEffect, useMemo } from 'react';
 
 export const useDebounce = <A = unknown[], R = void>(
   fn: (args: A) => R,

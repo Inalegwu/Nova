@@ -1,17 +1,17 @@
-import { issues } from "../../schema";
-import db from "../../storage";
-import { deletionChannel } from "../../channels";
-import { Fs } from "../../fs";
-import { eq } from "drizzle-orm";
-import { Effect } from "effect";
-import { parentPort } from "node:worker_threads";
-import workerpool from "workerpool";
-import { deletionWorkerSchema } from "@/shared/validations";
-import { transformMessage } from "@/shared/utils";
+import { issues } from '../../schema';
+import db from '../../storage';
+import { deletionChannel } from '../../channels';
+import { Fs } from '../../fs';
+import { eq } from 'drizzle-orm';
+import { Effect } from 'effect';
+import { parentPort } from 'node:worker_threads';
+import workerpool from 'workerpool';
+import { deletionWorkerSchema } from '@/shared/validations';
+import { transformMessage } from '@/shared/utils';
 
 const port = parentPort;
 
-if (!port) throw new Error("Illegal State");
+if (!port) throw new Error('Illegal State');
 
 const deleteIssue = ({ issueId }: DeletionSchema) =>
   Effect.gen(function* () {
@@ -37,7 +37,7 @@ const deleteIssue = ({ issueId }: DeletionSchema) =>
     });
 
     yield* Fs.removeDirectory(issue.path).pipe(
-      Effect.catchTag("FSError", (error) =>
+      Effect.catchTag('FSError', (error) =>
         Effect.succeed(
           deletionChannel.postMessage({
             isDone: false,
@@ -59,14 +59,14 @@ const deleteIssue = ({ issueId }: DeletionSchema) =>
     });
   });
 
-port.on("message", (message) =>
+port.on('message', (message) =>
   transformMessage(deletionWorkerSchema, message).pipe(
     Effect.matchEffect({
       onSuccess: (message) => deleteIssue(message),
       onFailure: Effect.logFatal,
     }),
     Effect.annotateLogs({
-      worker: "deletion-worker",
+      worker: 'deletion-worker',
     }),
     Effect.orDie,
     Effect.runPromise,

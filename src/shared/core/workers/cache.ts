@@ -1,17 +1,17 @@
-import { deletionChannel } from "../../channels";
-import { Fs } from "../../fs";
-import { collections, issues } from "../../schema";
-import db from "../../storage";
-import { transformMessage } from "../../utils";
-import { Effect } from "effect";
-import { parentPort } from "node:worker_threads";
-import { cacheWorkerSchema } from "../../validations";
+import { deletionChannel } from '../../channels';
+import { Fs } from '../../fs';
+import { collections, issues } from '../../schema';
+import db from '../../storage';
+import { transformMessage } from '../../utils';
+import { Effect } from 'effect';
+import { parentPort } from 'node:worker_threads';
+import { cacheWorkerSchema } from '../../validations';
 
 const port = parentPort;
 
-if (!port) throw new Error("Illegal State");
+if (!port) throw new Error('Illegal State');
 
-port.on("message", (message) =>
+port.on('message', (message) =>
   transformMessage(cacheWorkerSchema, message).pipe(
     Effect.match({
       onSuccess: () =>
@@ -22,7 +22,7 @@ port.on("message", (message) =>
               await db.delete(collections);
             }),
           ),
-          Effect.catchTag("FSError", (error) =>
+          Effect.catchTag('FSError', (error) =>
             Effect.succeed(
               deletionChannel.postMessage({
                 isDone: false,

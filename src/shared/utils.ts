@@ -1,15 +1,15 @@
-import { Option } from "effect";
-import * as Effect from "effect/Effect";
-import type { z } from "zod";
+import { Option } from 'effect';
+import * as Effect from 'effect/Effect';
+import type { z } from 'zod';
 
 export const sortPages = (a: string, b: string) =>
   Effect.Do.pipe(
-    Effect.bind("aName", () => Effect.succeed(a.replace(/\.[^/.]+$/, ""))),
-    Effect.bind("bName", () => Effect.succeed(b.replace(/\.[^/.]+$/, ""))),
-    Effect.bind("aMatch", ({ aName }) =>
+    Effect.bind('aName', () => Effect.succeed(a.replace(/\.[^/.]+$/, ''))),
+    Effect.bind('bName', () => Effect.succeed(b.replace(/\.[^/.]+$/, ''))),
+    Effect.bind('aMatch', ({ aName }) =>
       Effect.succeed(aName.match(/(\d+)$g/)),
     ),
-    Effect.bind("bMatch", ({ aName }) =>
+    Effect.bind('bMatch', ({ aName }) =>
       Effect.succeed(aName.match(/(\d+)$g/)),
     ),
     Effect.flatMap(({ aMatch, bMatch, aName, bName }) =>
@@ -30,27 +30,27 @@ export const sortPages = (a: string, b: string) =>
   );
 
 export const convertToImageUrl = (buffer: ArrayBufferLike) =>
-  `data:image/png;base64,${Buffer.from(buffer).toString("base64")}`;
+  `data:image/png;base64,${Buffer.from(buffer).toString('base64')}`;
 
 export const parseFileNameFromPath = (filePath: string) =>
   filePath
-    .replace(/^.*[\\\/]/, "")
-    .replace(/\.[^/.]+$/, "")
-    .replace(/(\d+)$/, "")
-    .replace(/\s*\([^)]*\)/, "")
-    .replace("-", "");
+    .replace(/^.*[\\\/]/, '')
+    .replace(/\.[^/.]+$/, '')
+    .replace(/(\d+)$/, '')
+    .replace(/\s*\([^)]*\)/, '')
+    .replace('-', '');
 
 // "Scraped metadata from Comixology [CMXDB852248], [RELDATE:2020-03-31]\"
 // TODO: find a way to extract       ^ this value from this string
 export const extractMetaID = (noteString?: string) =>
-  Option.fromNullable(noteString?.replace(/^/, ""));
+  Option.fromNullable(noteString?.replace(/^/, ''));
 
 export const transformMessage = <T extends z.ZodRawShape>(
   schema: z.ZodObject<T>,
   message: unknown,
 ) =>
   Effect.Do.pipe(
-    Effect.bind("message", () => Effect.succeed(schema.safeParse(message))),
+    Effect.bind('message', () => Effect.succeed(schema.safeParse(message))),
     Effect.flatMap(({ message }) =>
       !message.success
         ? Effect.fail(message.error.flatten())
@@ -59,7 +59,7 @@ export const transformMessage = <T extends z.ZodRawShape>(
   );
 
 export const formatNumber = (value: number) =>
-  value.toString().padStart(2, "0");
+  value.toString().padStart(2, '0');
 
 export function debounce<A = unknown[], R = void>(
   fn: (args: A) => R,

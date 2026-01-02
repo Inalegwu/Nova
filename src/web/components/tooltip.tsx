@@ -1,4 +1,4 @@
-import { Tooltip as RTooltip } from "radix-ui";
+import { Tooltip as RTooltip } from 'radix-ui';
 
 type Props = {
   content: string;

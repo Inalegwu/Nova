@@ -1,48 +1,47 @@
-import db from "@/shared/storage";
-import * as chokidar from "chokidar";
-import { Duration, Effect, Match, Queue, Schedule, Stream } from "effect";
-import { EventEmitter } from "node:stream";
-import { parentPort } from "node:worker_threads";
-import { z } from "zod";
-import { Fs } from "../../fs";
-import { parseFileNameFromPath, transformMessage } from "../../utils";
+import db from '@/shared/storage';
+import * as chokidar from 'chokidar';
+import { Duration, Effect, Match, Queue, Schedule, Stream } from 'effect';
+import { EventEmitter } from 'node:stream';
+import { parentPort } from 'node:worker_threads';
+import { z } from 'zod';
+import { Fs } from '../../fs';
+import { parseFileNameFromPath, transformMessage } from '../../utils';
 // @ts-ignore: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
 // import parseWorker from "../core/workers/parser?nodeWorker";
-import { FileSystem } from "@effect/platform";
+import { FileSystem } from '@effect/platform';
 
 EventEmitter.setMaxListeners(200);
 
 const port = parentPort;
 
-if (!port) throw new Error("Parse Process Port is Missing");
+if (!port) throw new Error('Parse Process Port is Missing');
 
 const watchFS = Effect.fn(function* (directory: string | null) {
-  yield* Effect.logInfo("Starting watcher");
+  yield* Effect.logInfo('Starting watcher');
   const unparsedQueue = yield* Queue.unbounded<string>();
 
-  const fs=yield* FileSystem.FileSystem;
+  const fs = yield* FileSystem.FileSystem;
 
-  if(!directory) return;
+  if (!directory) return;
 
-  const watchStream=fs.watch(directory,{
-    recursive:true
-  }).pipe(
-    Stream.map(event=>{
-
-      Match.value(event._tag).pipe(
-        Match.when("Create",()=>{
-          console.log(event.path)
-        }),
-        Match.when("Remove",()=>{}),
-        Match.orElse(()=>{
-          console.log("This action has no bearing on the library")
-        })
-      )
-
-    }),
-    Stream.runDrain
-  );
-
+  const watchStream = fs
+    .watch(directory, {
+      recursive: true,
+    })
+    .pipe(
+      Stream.map((event) => {
+        Match.value(event._tag).pipe(
+          Match.when('Create', () => {
+            console.log(event.path);
+          }),
+          Match.when('Remove', () => {}),
+          Match.orElse(() => {
+            console.log('This action has no bearing on the library');
+          }),
+        );
+      }),
+      Stream.runDrain,
+    );
 
   if (!directory) return;
 
@@ -82,7 +81,7 @@ const watchFS = Effect.fn(function* (directory: string | null) {
 
   yield* Effect.forever(
     Effect.try(() =>
-      chokidar_watcher.on("add", (parsePath) =>
+      chokidar_watcher.on('add', (parsePath) =>
         Queue.unsafeOffer(unparsedQueue, parsePath),
       ),
     ),
@@ -90,7 +89,7 @@ const watchFS = Effect.fn(function* (directory: string | null) {
 
   yield* Effect.forever(
     Effect.try(() =>
-      chokidar_watcher.on("unlink", async (parsePath) =>
+      chokidar_watcher.on('unlink', async (parsePath) =>
         unparsedQueue.unsafeOffer(parsePath),
       ),
     ),
@@ -112,7 +111,7 @@ const watchFS = Effect.fn(function* (directory: string | null) {
   }
 });
 
-port.on("message", (message) =>
+port.on('message', (message) =>
   transformMessage(z.object({ activate: z.boolean() }), message).pipe(
     Effect.matchEffect({
       onSuccess: ({ activate }) =>
@@ -138,7 +137,7 @@ port.on("message", (message) =>
       onFailure: Effect.logFatal,
     }),
     Effect.annotateLogs({
-      worker: "watcher",
+      worker: 'watcher',
     }),
     Effect.runPromise,
   ),

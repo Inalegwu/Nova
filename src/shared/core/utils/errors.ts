@@ -1,25 +1,25 @@
-import { Data, Effect, Encoding } from "effect";
-import { Dump } from "./dump";
+import { Data, Effect, Encoding } from 'effect';
+import { Dump } from './dump';
 
-export class FSError extends Data.TaggedError("FSError")<{
+export class FSError extends Data.TaggedError('FSError')<{
   cause: unknown;
   message: string;
 }> {}
 
-export class ArchiveError extends Data.TaggedError("ArchiveError")<{
+export class ArchiveError extends Data.TaggedError('ArchiveError')<{
   cause: unknown;
 }> {}
 
-export class TaskError extends Data.TaggedError("TaskError")<{
+export class TaskError extends Data.TaggedError('TaskError')<{
   cause: unknown;
   message: string;
 }> {}
 
-export class DeletionError extends Data.TaggedError("DeletionError")<{
+export class DeletionError extends Data.TaggedError('DeletionError')<{
   cause: unknown;
 }> {}
 
-export class BuildError extends Data.TaggedError("BuildError")<{
+export class BuildError extends Data.TaggedError('BuildError')<{
   error: unknown;
 }> {}
 

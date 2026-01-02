@@ -1,23 +1,23 @@
 import {
   collections as collectionsSchema,
   issues as issueSchema,
-} from "@/shared/schema";
-import { sortPages } from "@/shared/utils";
-import { publicProcedure, router } from "@/trpc";
-import { eq } from "drizzle-orm";
-import { Array, Effect } from "effect";
-import { dialog } from "electron";
-import { v4 } from "uuid";
-import { z } from "zod";
+} from '@/shared/schema';
+import { sortPages } from '@/shared/utils';
+import { publicProcedure, router } from '@/trpc';
+import { eq } from 'drizzle-orm';
+import { Array, Effect } from 'effect';
+import { dialog } from 'electron';
+import { v4 } from 'uuid';
+import { z } from 'zod';
 // @ts-ignore: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
-import watcher from "../core/workers/watcher?nodeWorker";
+import watcher from '../core/workers/watcher?nodeWorker';
 
 const libraryRouter = router({
   launchWatcher: publicProcedure.mutation(async () => {
     watcher({
-      name: "watcher-worker",
+      name: 'watcher-worker',
     })
-      .on("message", console.log)
+      .on('message', console.log)
       .postMessage({
         activate: true,
       });
@@ -61,7 +61,7 @@ const libraryRouter = router({
     .query(
       async ({ ctx, input }) =>
         await Effect.Do.pipe(
-          Effect.bind("collection", () =>
+          Effect.bind('collection', () =>
             Effect.tryPromise(
               async () =>
                 await ctx.db.query.collections.findFirst({
@@ -103,7 +103,7 @@ const libraryRouter = router({
     .mutation(
       async ({ ctx, input }) =>
         await Effect.Do.pipe(
-          Effect.bind("deleted", () =>
+          Effect.bind('deleted', () =>
             Effect.tryPromise(
               async () =>
                 await ctx.db
@@ -127,7 +127,7 @@ const libraryRouter = router({
     .mutation(
       async ({ ctx, input }) =>
         await Effect.Do.pipe(
-          Effect.bind("added", () =>
+          Effect.bind('added', () =>
             Effect.tryPromise(
               async () =>
                 await ctx.db
@@ -151,7 +151,7 @@ const libraryRouter = router({
     .mutation(
       async ({ ctx, input }) =>
         await Effect.Do.pipe(
-          Effect.bind("updated", () =>
+          Effect.bind('updated', () =>
             Effect.tryPromise(
               async () =>
                 await ctx.db
@@ -175,7 +175,7 @@ const libraryRouter = router({
     .mutation(
       async ({ ctx, input }) =>
         await Effect.Do.pipe(
-          Effect.bind("newCollection", () =>
+          Effect.bind('newCollection', () =>
             Effect.tryPromise(
               async () =>
                 await ctx.db
@@ -195,7 +195,7 @@ const libraryRouter = router({
           Effect.runPromise,
         ),
     ),
-  bulkAddToCollection: publicProcedure
+  addToCollection: publicProcedure
     .input(
       z.object({
         collectionId: z.string(),
@@ -215,7 +215,7 @@ const libraryRouter = router({
                 .where(eq(issueSchema.id, issueId)),
           ),
         ).pipe(
-          Effect.catchTag("UnknownException", Effect.logFatal),
+          Effect.catchTag('UnknownException', Effect.logFatal),
           Effect.orDie,
           Effect.runPromise,
         ),
@@ -227,8 +227,8 @@ const libraryRouter = router({
   }),
   addSourceDirectory: publicProcedure.mutation(async ({ ctx }) => {
     const { canceled, filePaths } = await dialog.showOpenDialog({
-      buttonLabel: "Select Folder",
-      properties: ["openDirectory", "dontAddToRecent"],
+      buttonLabel: 'Select Folder',
+      properties: ['openDirectory', 'dontAddToRecent'],
     });
 
     if (canceled) {

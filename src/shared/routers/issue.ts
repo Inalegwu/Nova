@@ -1,24 +1,24 @@
-import { publicProcedure, router } from "@/trpc";
-import { TRPCError } from "@trpc/server";
-import { eq } from "drizzle-orm";
-import { Effect } from "effect";
-import { dialog } from "electron";
-import path from "node:path";
-import { v4 } from "uuid";
-import z from "zod";
-import { Fs } from "../fs";
-import { issues as issuesSchema } from "../schema";
-import { convertToImageUrl } from "../utils";
+import { publicProcedure, router } from '@/trpc';
+import { TRPCError } from '@trpc/server';
+import { eq } from 'drizzle-orm';
+import { Effect } from 'effect';
+import { dialog } from 'electron';
+import path from 'node:path';
+import { v4 } from 'uuid';
+import z from 'zod';
+import { Fs } from '../fs';
+import { issues as issuesSchema } from '../schema';
+import { convertToImageUrl } from '../utils';
 // @ts-ignore: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
-import deletionWorker from "../core/workers/deletion?nodeWorker";
+import deletionWorker from '../core/workers/deletion?nodeWorker';
 // @ts-ignore: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
-import parseWorker from "../core/workers/parser?nodeWorker";
+import parseWorker from '../core/workers/parser?nodeWorker';
 
 const issueRouter = router({
   addIssue: publicProcedure.mutation(async () => {
     const { canceled, filePaths } = await dialog.showOpenDialog({
-      filters: [{ name: "Comic Book Archive", extensions: ["cbz", "cbr"] }],
-      properties: ["multiSelections"],
+      filters: [{ name: 'Comic Book Archive', extensions: ['cbz', 'cbr'] }],
+      properties: ['multiSelections'],
     });
 
     if (canceled) {
@@ -32,10 +32,10 @@ const issueRouter = router({
       parseWorker({
         name: `parse-worker-${parsePath}`,
       })
-        .on("message", console.log)
+        .on('message', console.log)
         .postMessage({
           parsePath,
-          action: "LINK",
+          action: 'LINK',
         } satisfies ParserSchema);
     }
 
@@ -52,7 +52,7 @@ const issueRouter = router({
     )
     .mutation(async ({ ctx, input }) =>
       deletionWorker({
-        name: "deletion-worker",
+        name: 'deletion-worker',
       }).postMessage({
         issueId: input.issueId,
       }),
@@ -75,7 +75,7 @@ const issueRouter = router({
       if (!issue)
         throw new TRPCError({
           message: "Issue doesn't exist",
-          code: "NOT_FOUND",
+          code: 'NOT_FOUND',
         });
 
       const pages = await Fs.readDirectory(issue.path).pipe(
@@ -112,8 +112,8 @@ const issueRouter = router({
       if (!issue)
         throw new TRPCError({
           message: "Couldn't find issue",
-          code: "NOT_FOUND",
-          cause: "Invalid or missing issueId",
+          code: 'NOT_FOUND',
+          cause: 'Invalid or missing issueId',
         });
 
       const metadata = await ctx.db.query.metadata.findFirst({
@@ -135,7 +135,7 @@ const issueRouter = router({
     .mutation(
       async ({ ctx, input }) =>
         await Effect.Do.pipe(
-          Effect.bind("result", () =>
+          Effect.bind('result', () =>
             Effect.tryPromise(
               async () =>
                 await ctx.db

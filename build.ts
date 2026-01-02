@@ -1,50 +1,50 @@
-import { Duration, Effect } from "effect";
-import { build } from "electron-builder";
-import { BuildError } from "./src/shared/core/utils/errors";
+import { Duration, Effect } from 'effect';
+import { build } from 'electron-builder';
+import { BuildError } from './src/shared/core/utils/errors';
 
 // TODO rewrite to Effect.gen
 Effect.tryPromise({
   try: async () =>
     await build({
       config: {
-        appId: "com.nova.app",
-        productName: "Nova",
-        artifactName: "${productName}-${version}-${platform}-${arch}.${ext}",
+        appId: 'com.nova.app',
+        productName: 'Nova',
+        artifactName: '${productName}-${version}-${platform}-${arch}.${ext}',
         buildDependenciesFromSource: true,
-        files: ["out/**/*"],
+        files: ['out/**/*'],
         extraFiles: {
-          from: "drizzle/",
-          to: "drizzle/",
+          from: 'drizzle/',
+          to: 'drizzle/',
         },
         extraResources: {
-          from: "drizzle/",
-          to: "drizzle/",
+          from: 'drizzle/',
+          to: 'drizzle/',
         },
         directories: {
-          output: "release/${version}",
+          output: 'release/${version}',
         },
         mac: {
-          target: ["dmg"],
+          target: ['dmg'],
           hardenedRuntime: true,
-          category: "entertaiment",
+          category: 'entertaiment',
         },
         win: {
-          icon: "build/win.png",
+          icon: 'build/win.png',
           target: [
             {
-              target: "msi",
-              arch: ["x64"],
+              target: 'msi',
+              arch: ['x64'],
             },
           ],
         },
         linux: {
-          icon: "build/win.png",
+          icon: 'build/win.png',
           target: [
             {
-              target: "AppImage",
+              target: 'AppImage',
             },
           ],
-          category: "entertainment",
+          category: 'entertainment',
         },
         msi: {
           oneClick: true,
@@ -52,7 +52,7 @@ Effect.tryPromise({
           runAfterFinish: true,
         },
       },
-    }).then((paths) => paths.join(",")),
+    }).then((paths) => paths.join(',')),
   catch: (error) => new BuildError({ error }),
 }).pipe(
   Effect.andThen((paths) => Effect.logInfo(`Built executable @ ${paths}`)),
@@ -67,9 +67,9 @@ Effect.tryPromise({
   Effect.tap(([duration]) =>
     Effect.logInfo(`Build took ${Duration.format(duration)}`),
   ),
-  Effect.withLogSpan("app.build"),
+  Effect.withLogSpan('app.build'),
   Effect.annotateLogs({
-    script: "app.build",
+    script: 'app.build',
   }),
   Effect.runPromise,
 );

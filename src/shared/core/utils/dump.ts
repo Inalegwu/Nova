@@ -1,13 +1,13 @@
-import { Effect, Schema } from "effect";
-import { Fs } from "../../fs";
-import { dumpFileSchema, dumpSchema } from "../../validations";
+import { Effect, Schema } from 'effect';
+import { Fs } from '../../fs';
+import { dumpFileSchema, dumpSchema } from '../../validations';
 
-export class Dump extends Effect.Service<Dump>()("Dump", {
+export class Dump extends Effect.Service<Dump>()('Dump', {
   effect: Effect.gen(function* () {
     const writeToDump = (data: DumpSchema) =>
       Effect.Do.pipe(
-        Effect.bind("dumpData", () => Schema.decodeUnknown(dumpSchema)(data)),
-        Effect.bind("previousDumpData", () =>
+        Effect.bind('dumpData', () => Schema.decodeUnknown(dumpSchema)(data)),
+        Effect.bind('previousDumpData', () =>
           Fs.readFile(process.env.error_dump!).pipe(
             Effect.andThen(Schema.decodeUnknown(dumpFileSchema)),
           ),

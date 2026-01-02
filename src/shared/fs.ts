@@ -1,8 +1,8 @@
-import { Effect } from "effect";
-import * as NodeFS from "node:fs";
-import { join } from "node:path";
-import { FSError } from "./core/utils/errors";
-import { parseFileNameFromPath } from "./utils";
+import { Effect } from 'effect';
+import * as NodeFS from 'node:fs';
+import { join } from 'node:path';
+import { FSError } from './core/utils/errors';
+import { parseFileNameFromPath } from './utils';
 
 type File = Uint8Array<ArrayBuffer>;
 
@@ -62,7 +62,7 @@ export namespace Fs {
       NodeFS.readFile(
         path,
         {
-          encoding: "utf-8",
+          encoding: 'utf-8',
         },
         (cause, data) => {
           if (cause)
@@ -123,7 +123,7 @@ export namespace Fs {
       NodeFS.readdir(
         filePath,
         {
-          encoding: "utf-8",
+          encoding: 'utf-8',
           recursive: true,
         },
         (error, files) => {

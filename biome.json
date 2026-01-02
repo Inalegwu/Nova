@@ -1,8 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.4.1/schema.json",
-  "organizeImports": {
-    "enabled": true
-  },
+  "$schema": "https://biomejs.dev/schemas/2.3.0/schema.json",
   "linter": {
     "enabled": true,
     "rules": {
@@ -32,7 +29,15 @@
   },
   "javascript": {
     "formatter": {
-      "enabled": true
+      "enabled": true,
+      "indentStyle": "space",
+      "quoteStyle": "single",
+      "jsxQuoteStyle": "single"
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
     }
   }
 }

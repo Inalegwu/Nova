@@ -1,23 +1,23 @@
-import { observable } from "@legendapp/state";
+import { observable } from '@legendapp/state';
 import {
   configureObservablePersistence,
   persistObservable,
-} from "@legendapp/state/persist";
-import { ObservablePersistLocalStorage } from "@legendapp/state/persist-plugins/local-storage";
+} from '@legendapp/state/persist';
+import { ObservablePersistLocalStorage } from '@legendapp/state/persist-plugins/local-storage';
 
 configureObservablePersistence({
   pluginLocal: ObservablePersistLocalStorage,
 });
 
 const globalState = observable<GlobalState>({
-  colorMode: "light",
+  colorMode: 'light',
   firstLaunch: true,
   isFullscreen: false,
-  libraryView: "issues",
+  libraryView: 'issues',
   appId: null,
-  lastOpenedTab: "issues",
+  lastOpenedTab: 'issues',
   reader: {
-    direction: "horizontal",
+    direction: 'horizontal',
   },
 });
 
@@ -26,5 +26,5 @@ export const fullScreenState$ = observable<{ isFullscreen: boolean }>({
 });
 
 export const globalState$ = persistObservable(globalState, {
-  local: "global_state",
+  local: 'global_state',
 });

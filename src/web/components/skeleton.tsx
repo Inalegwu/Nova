@@ -1,4 +1,4 @@
-import { type MotionStyle, motion } from "motion/react";
+import { type MotionStyle, motion } from 'motion/react';
 
 type SkeletonProps = {
   style?: MotionStyle;

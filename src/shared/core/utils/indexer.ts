@@ -1,10 +1,10 @@
-import { Array, Duration, Effect, HashSet, Schedule } from "effect";
-import type * as fs from "node:fs";
-import path from "node:path";
-import { Fs } from "../../fs";
+import { Array, Duration, Effect, HashSet, Schedule } from 'effect';
+import type * as fs from 'node:fs';
+import path from 'node:path';
+import { Fs } from '../../fs';
 
 export class WatcherIndex extends Effect.Service<WatcherIndex>()(
-  "WatcherIndex",
+  'WatcherIndex',
   {
     effect: Effect.gen(function* () {
       const store = HashSet.empty<string>();
@@ -25,10 +25,10 @@ export class WatcherIndex extends Effect.Service<WatcherIndex>()(
 
       // TODO:saving index
       yield* Fs.writeFile(
-        path.join(process.env.lib_dir!, "index.json"),
+        path.join(process.env.lib_dir!, 'index.json'),
         JSON.stringify({ data: Array.fromIterable(store) }),
         {
-          encoding: "utf-8",
+          encoding: 'utf-8',
         },
       ).pipe(Effect.repeat(Schedule.spaced(Duration.seconds(4))));
 

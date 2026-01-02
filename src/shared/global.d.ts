@@ -9,27 +9,27 @@ import type {
   fetchPagesWorkerSchema,
   parserSchema,
   workerResponseSchema,
-} from "@/shared/validations";
-import type * as Schema from "effect/Schema";
-import type z from "zod";
-import type { collections, issues } from "./schema";
+} from '@/shared/validations';
+import type * as Schema from 'effect/Schema';
+import type z from 'zod';
+import type { collections, issues } from './schema';
 
 declare global {
   export type GlobalState = {
-    colorMode: "dark" | "light";
+    colorMode: 'dark' | 'light';
     firstLaunch: boolean;
     isFullscreen: boolean;
-    libraryView: "issues" | "collections";
+    libraryView: 'issues' | 'collections';
     appId: string | null;
     reader: {
-      direction: "horizontal" | "vertical";
+      direction: 'horizontal' | 'vertical';
     };
-    lastOpenedTab: "issues" | "collections";
+    lastOpenedTab: 'issues' | 'collections';
   };
 
   export type Issue = Omit<
     typeof issues.$inferSelect,
-    "dateCreated" | "dateUpdated"
+    'dateCreated' | 'dateUpdated'
   > & {
     dateCreated: string | null;
     dateUpdated: string | null;
@@ -37,7 +37,7 @@ declare global {
 
   export type Collection = Omit<
     typeof collections.$inferSelect,
-    "dateCreated" | "dateUpdated"
+    'dateCreated' | 'dateUpdated'
   > & {
     dateCreated: string | null;
     dateUpdated: string | null;
@@ -56,7 +56,7 @@ declare global {
     total?: number;
     error: string | null;
     isCompleted?: boolean;
-    state: "ERROR" | "SUCCESS";
+    state: 'ERROR' | 'SUCCESS';
     issue?: string;
   };
 
@@ -73,12 +73,12 @@ declare global {
   };
 
   export type ThemeSubscription = {
-    theme: "dark" | "light";
+    theme: 'dark' | 'light';
   };
 
   export type Task = Readonly<{
     path: string;
-    ext: "cbr" | "cbz" | "none";
+    ext: 'cbr' | 'cbz' | 'none';
   }>;
 
   export type DeeplinkChannel = {

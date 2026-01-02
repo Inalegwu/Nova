@@ -1,15 +1,15 @@
-import Zip from "adm-zip";
-import { Array, Effect, Option, Schema } from "effect";
-import { XMLParser } from "fast-xml-parser";
-import { createExtractorFromData } from "node-unrar-js";
-import { v4 } from "uuid";
-import { parserChannel } from "../../channels";
-import { Fs } from "../../fs";
-import { issues, metadata } from "../../schema";
-import db from "../../storage";
-import { extractMetaID, parseFileNameFromPath, sortPages } from "../../utils";
-import { MetadataSchema } from "../../validations";
-import { ArchiveError } from "./errors";
+import Zip from 'adm-zip';
+import { Array, Effect, Option, Schema } from 'effect';
+import { XMLParser } from 'fast-xml-parser';
+import { createExtractorFromData } from 'node-unrar-js';
+import { v4 } from 'uuid';
+import { parserChannel } from '../../channels';
+import { Fs } from '../../fs';
+import { issues, metadata } from '../../schema';
+import db from '../../storage';
+import { extractMetaID, parseFileNameFromPath, sortPages } from '../../utils';
+import { MetadataSchema } from '../../validations';
+import { ArchiveError } from './errors';
 
 export const parseXML = Effect.fn(function* (
   file: Option.Option<Extractor>,
@@ -26,7 +26,7 @@ export const parseXML = Effect.fn(function* (
   ).pipe(
     Effect.andThen((file) =>
       Schema.decodeUnknown(MetadataSchema)(file.ComicInfo || file.comicInfo, {
-        onExcessProperty: "ignore",
+        onExcessProperty: 'ignore',
         exact: false,
       }),
     ),
@@ -70,11 +70,11 @@ export const saveIssue = Effect.fn(function* (
     parserChannel.postMessage({
       isCompleted: true,
       error: "Couldn't save Issue",
-      state: "ERROR",
+      state: 'ERROR',
       issue: parseFileNameFromPath(path),
     });
     return yield* Effect.die(
-      new ArchiveError({ cause: "Unable to Save Issue" }),
+      new ArchiveError({ cause: 'Unable to Save Issue' }),
     );
   }
 
@@ -83,7 +83,7 @@ export const saveIssue = Effect.fn(function* (
 
 export const createRarExtractor = Effect.fn(function* (filePath: string) {
   const wasmBinary = yield* Fs.readFile(
-    require.resolve("node-unrar-js/dist/js/unrar.wasm"),
+    require.resolve('node-unrar-js/dist/js/unrar.wasm'),
   ).pipe(Effect.andThen((binary) => binary.buffer));
 
   return yield* Fs.readFile(filePath).pipe(
@@ -118,18 +118,18 @@ export const createRarExtractor = Effect.fn(function* (filePath: string) {
             name: file.fileHeader.name,
             isDir: file.fileHeader.flags.directory,
             data: file.extraction?.buffer,
-            isFirst: file.fileHeader.name.includes("000")
+            isFirst: file.fileHeader.name.includes('000')
               ? true
-              : file.fileHeader.name.includes("001"),
+              : file.fileHeader.name.includes('001'),
           }) satisfies Extractor,
       ),
     ),
     Effect.map((files) => ({
       meta: Option.fromNullable(
-        files.find((file) => file.name.includes(".xml")),
+        files.find((file) => file.name.includes('.xml')),
       ),
       files: files
-        .filter((file) => !file.name.includes(".xml"))
+        .filter((file) => !file.name.includes('.xml'))
         .filter((file) => !file.isDir),
     })),
   );
@@ -148,18 +148,18 @@ export const createZipExtractor = (filePath: string) =>
               name: entry.name,
               data: entry.getData().buffer,
               isDir: entry.isDirectory,
-              isFirst: entry.name.includes("000")
+              isFirst: entry.name.includes('000')
                 ? true
-                : entry.name.includes("001"),
+                : entry.name.includes('001'),
             }) satisfies Extractor,
         ),
     ),
     Effect.map((files) => ({
       meta: Option.fromNullable(
-        files.find((file) => file.name.includes(".xml")),
+        files.find((file) => file.name.includes('.xml')),
       ),
       files: files
-        .filter((file) => !file.name.includes(".xml"))
+        .filter((file) => !file.name.includes('.xml'))
         .filter((file) => !file.isDir),
     })),
   );

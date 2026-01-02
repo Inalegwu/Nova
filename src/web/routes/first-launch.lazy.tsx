@@ -1,12 +1,12 @@
-import { useObservable } from "@legendapp/state/react";
-import { Link, createLazyFileRoute } from "@tanstack/react-router";
-import { AnimatePresence, motion, useMotionValue } from "motion/react";
-import { memo, useEffect, useState } from "react";
-import { useDebounce, useKeyPress, useTimeout } from "../hooks";
-import { globalState$ } from "../state";
-import { SquareArrowRight } from "@solar-icons/react";
+import { useObservable } from '@legendapp/state/react';
+import { Link, createLazyFileRoute } from '@tanstack/react-router';
+import { AnimatePresence, motion, useMotionValue } from 'motion/react';
+import { memo, useEffect, useState } from 'react';
+import { useDebounce, useKeyPress, useTimeout } from '../hooks';
+import { globalState$ } from '../state';
+import { SquareArrowRight } from '@solar-icons/react';
 
-export const Route = createLazyFileRoute("/first-launch")({
+export const Route = createLazyFileRoute('/first-launch')({
   component: memo(Component),
 });
 
@@ -15,18 +15,18 @@ const DRAG_BUFFER = 50;
 const welcomeMessages = [
   {
     id: 0,
-    title: "Welcome To Nova",
-    subtitle: "Your Comic Book Reader from The Future 🔮",
+    title: 'Welcome To Nova',
+    subtitle: 'Your Comic Book Reader from The Future 🔮',
   },
   {
     id: 1,
-    title: "Sleek and Modern",
-    subtitle: "Designed to be Beautiful 💅🏾",
+    title: 'Sleek and Modern',
+    subtitle: 'Designed to be Beautiful 💅🏾',
   },
   {
     id: 2,
-    title: "Built for Speed",
-    subtitle: "Enjoy your comics now 🏃🏾‍♂️‍➡️",
+    title: 'Built for Speed',
+    subtitle: 'Enjoy your comics now 🏃🏾‍♂️‍➡️',
   },
 ];
 
@@ -64,5 +64,5 @@ function Component() {
 
   useKeyPress(debounceKeyPress);
 
-  return <div className="font-medium text-lg">first launch screen</div>;
+  return <div className='font-medium text-lg'>first launch screen</div>;
 }

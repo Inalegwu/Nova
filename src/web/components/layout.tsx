@@ -1,11 +1,11 @@
-import icon_dark from "@/assets/images/win_dark.png";
-import icon_light from "@/assets/images/win_light.png";
-import t from "@/shared/config";
-import { Button } from "@base-ui/react/button";
-import { Input } from "@base-ui/react/input";
-import { Popover } from "@base-ui/react/popover";
-import { Tabs } from "@base-ui/react/tabs";
-import { useObserveEffect } from "@legendapp/state/react";
+import icon_dark from '@/assets/images/win_dark.png';
+import icon_light from '@/assets/images/win_light.png';
+import t from '@/shared/config';
+import { Button } from '@base-ui/react/button';
+import { Input } from '@base-ui/react/input';
+import { Popover } from '@base-ui/react/popover';
+import { Tabs } from '@base-ui/react/tabs';
+import { useObserveEffect } from '@legendapp/state/react';
 import {
   AddSquare,
   ArrowLeft,
@@ -16,18 +16,18 @@ import {
   Library,
   MaximizeSquare3,
   MinusSquare,
-  Settings
-} from "@solar-icons/react";
-import { useRouter, useRouterState } from "@tanstack/react-router";
-import { AnimatePresence, motion } from "motion/react";
-import type React from "react";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import { v4 } from "uuid";
-import { useInterval, useWindow } from "../hooks";
-import { globalState$ } from "../state";
-import ThemeButton from "./theme-button";
-import { Link } from "./ui/link";
+  Settings,
+} from '@solar-icons/react';
+import { useRouter, useRouterState } from '@tanstack/react-router';
+import { AnimatePresence, motion } from 'motion/react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { v4 } from 'uuid';
+import { useInterval, useWindow } from '../hooks';
+import { globalState$ } from '../state';
+import ThemeButton from './theme-button';
+import { Link } from './ui/link';
 
 type LayoutProps = {
   children?: React.ReactNode;
@@ -50,33 +50,33 @@ export default function Layout({ children }: LayoutProps) {
 
   // const isNotHome = computed(() => routerState.location.pathname !== "/").get();
 
-  const isHome = routerState.location.pathname === "/";
-  const isCollectionView = globalState$.lastOpenedTab.get() === "collections";
+  const isHome = routerState.location.pathname === '/';
+  const isCollectionView = globalState$.lastOpenedTab.get() === 'collections';
 
   const [showTop, setShowTop] = useState(false);
   const [mouseOver, setMouseOver] = useState(false);
-  const [collectionName, setCollectionName] = useState("");
+  const [collectionName, setCollectionName] = useState('');
 
   // track the process of adding issues to the library
   // from background processes
   t.additions.useSubscription(undefined, {
     onData: (data) => {
-      if (!data.isCompleted && data.state === "SUCCESS") {
-        toast.success(`Adding ${data.issue || "issue"} To Library`);
+      if (!data.isCompleted && data.state === 'SUCCESS') {
+        toast.success(`Adding ${data.issue || 'issue'} To Library`);
       }
 
-      if (data.isCompleted && data.state === "SUCCESS") {
-        toast.success(`Added ${data.issue || "issue"} to library`);
+      if (data.isCompleted && data.state === 'SUCCESS') {
+        toast.success(`Added ${data.issue || 'issue'} to library`);
         utils.library.getLibrary.invalidate();
       }
 
-      if (data.isCompleted && data.state === "ERROR") {
+      if (data.isCompleted && data.state === 'ERROR') {
         console.log(data.error);
-        toast.error(data.error || "Something went wrong");
+        toast.error(data.error || 'Something went wrong');
       }
 
-      if (!data.isCompleted && data.state === "ERROR") {
-        toast.error(data.error || "Unknown Error Occurred");
+      if (!data.isCompleted && data.state === 'ERROR') {
+        toast.error(data.error || 'Unknown Error Occurred');
       }
 
       return;
@@ -109,16 +109,16 @@ export default function Layout({ children }: LayoutProps) {
   });
 
   useObserveEffect(() => {
-    if (globalState$.colorMode.get() === "dark") {
-      document.body.setAttribute("data-theme", "dark");
+    if (globalState$.colorMode.get() === 'dark') {
+      document.body.setAttribute('data-theme', 'dark');
       // globalState$.colorMode.set("dark");
     } else {
-      document.body.setAttribute("data-theme", "light");
-      globalState$.colorMode.set("light");
+      document.body.setAttribute('data-theme', 'light');
+      globalState$.colorMode.set('light');
     }
   });
 
-  useWindow("mousemove", (e) => {
+  useWindow('mousemove', (e) => {
     if (e.clientY < 20 && !globalState$.isFullscreen.get()) {
       setShowTop(true);
     } else {
@@ -126,9 +126,9 @@ export default function Layout({ children }: LayoutProps) {
     }
   });
 
-  useWindow("keypress", (e) => {
+  useWindow('keypress', (e) => {
     if (e.keyCode === 16) {
-      console.log("search command pressed");
+      console.log('search command pressed');
     }
   });
 
@@ -155,56 +155,64 @@ export default function Layout({ children }: LayoutProps) {
     <AnimatePresence>
       <Tabs.Root
         defaultValue={globalState$.lastOpenedTab.get()}
-        className=" bg-neutral-100 dark:bg-neutral-950 flex flex-col w-full h-screen p-2 space-y-2 root"
+        className=' bg-neutral-100 dark:bg-neutral-950 flex flex-col w-full h-screen p-2 space-y-2 root'
       >
         <motion.div
-          className="w-full flex items-center justify-between"
-          initial={{ height: "0%", display: "none" }}
+          className='w-full flex items-center justify-between'
+          initial={{ height: '0%', display: 'none' }}
           onMouseOver={() => setMouseOver(true)}
           onMouseLeave={() => setMouseOver(false)}
           animate={{
-            height: showTop ? "3%" : "0%",
-            display: showTop ? "flex" : "none",
+            height: showTop ? '3%' : '0%',
+            display: showTop ? 'flex' : 'none',
           }}
         >
-          <div className="flex items-center justify-start space-x-3">
-            <div className="flex items-center justify-start space-x-3">
-              <img src={globalState$.colorMode.get() === "dark" ? icon_dark : icon_light} alt="icon" className="w-5 h-5" />
-              <div className="flex items-center justify-center space-x-2">
+          <div className='flex items-center justify-start space-x-3'>
+            <div className='flex items-center justify-start space-x-3'>
+              <img
+                src={
+                  globalState$.colorMode.get() === 'dark'
+                    ? icon_dark
+                    : icon_light
+                }
+                alt='icon'
+                className='w-5 h-5'
+              />
+              <div className='flex items-center justify-center space-x-2'>
                 <Button
                   disabled={!!isHome}
                   onClick={() => navigation.history.back()}
-                  className="bg-white dark:bg-neutral-800 rounded-md p-1 text-black dark:text-neutral-300 disabled:text-neutral-400 disabled:bg-transparent"
+                  className='bg-white dark:bg-neutral-800 rounded-md p-1 text-black dark:text-neutral-300 disabled:text-neutral-400 disabled:bg-transparent'
                 >
-                  <ArrowLeft size={13} weight="Linear" />
+                  <ArrowLeft size={13} weight='Linear' />
                 </Button>
                 <Button
                   onClick={() => navigation.history.forward()}
-                  className="bg-white dark:bg-neutral-800 dark:text-neutral-300 rounded-md p-1"
+                  className='bg-white dark:bg-neutral-800 dark:text-neutral-300 rounded-md p-1'
                 >
-                  <ArrowRight size={13} weight="Linear" />
+                  <ArrowRight size={13} weight='Linear' />
                 </Button>
               </div>
             </div>
-            <Tabs.List className="flex items-center justify-start space-x-2">
+            <Tabs.List className='flex items-center justify-start space-x-2'>
               <Tabs.Tab
-                onClick={() => globalState$.lastOpenedTab.set("issues")}
-                className="tabTrigger"
-                value="issues"
+                onClick={() => globalState$.lastOpenedTab.set('issues')}
+                className='tabTrigger'
+                value='issues'
               >
                 <Book size={13} />
                 <span>Issues</span>
               </Tabs.Tab>
               <Tabs.Tab
-                onClick={() => globalState$.lastOpenedTab.set("collections")}
-                className="tabTrigger"
-                value="collections"
+                onClick={() => globalState$.lastOpenedTab.set('collections')}
+                className='tabTrigger'
+                value='collections'
               >
                 <Library size={13} />
                 <span>Collections</span>
               </Tabs.Tab>
             </Tabs.List>
-            <AnimatePresence mode="sync">
+            <AnimatePresence mode='sync'>
               {isCollectionView && (
                 <Popover.Root>
                   <Popover.Trigger
@@ -212,42 +220,42 @@ export default function Layout({ children }: LayoutProps) {
                       <motion.button
                         initial={{
                           opacity: 0,
-                          display: "none",
-                          translateY: "-50px",
+                          display: 'none',
+                          translateY: '-50px',
                         }}
                         animate={{
                           opacity: 1,
-                          display: "flex",
-                          translateY: "0px",
+                          display: 'flex',
+                          translateY: '0px',
                         }}
                         exit={{
                           opacity: 0,
-                          display: "none",
-                          translateY: "-50px",
+                          display: 'none',
+                          translateY: '-50px',
                         }}
                       />
                     }
-                    className="bg-white dark:bg-neutral-900 dark:text-neutral-400 squiricle pl-2 pr-5 py-1 text-xs"
+                    className='bg-white dark:bg-neutral-900 dark:text-neutral-400 squiricle pl-2 pr-5 py-1 text-xs'
                   >
                     Create Collection
                   </Popover.Trigger>
                   <Popover.Portal>
-                    <Popover.Positioner side="bottom" sideOffset={2}>
+                    <Popover.Positioner side='bottom' sideOffset={2}>
                       <Popover.Popup
                         onMouseOver={() => setMouseOver(true)}
                         onMouseLeave={() => setMouseOver(false)}
-                        className="origin-(--transform-origin) space-y-1 rounded-lg bg-neutral-100 dark:bg-neutral-950 p-1 text-neutral-900 dark:text-neutral-300 shadow-lg shadow-gray-200 outline outline-gray-200 transition-[transform,scale,opacity] data-ending-style:scale-90 data-ending-style:opacity-0 data-starting-style:scale-90 data-starting-style:opacity-0 dark:shadow-none dark:-outline-offset-1 dark:outline-gray-300"
+                        className='origin-(--transform-origin) space-y-1 rounded-lg bg-neutral-100 dark:bg-neutral-950 p-1 text-neutral-900 dark:text-neutral-300 shadow-lg shadow-gray-200 outline outline-gray-200 transition-[transform,scale,opacity] data-ending-style:scale-90 data-ending-style:opacity-0 data-starting-style:scale-90 data-starting-style:opacity-0 dark:shadow-none dark:-outline-offset-1 dark:outline-gray-300'
                       >
-                        <Popover.Title className="text-xs font-bold">
+                        <Popover.Title className='text-xs font-bold'>
                           Create Collection
                         </Popover.Title>
                         <Input
                           disabled={isCreating}
-                          placeholder="Collection Name"
+                          placeholder='Collection Name'
                           onChange={(e) =>
                             setCollectionName(e.currentTarget.value)
                           }
-                          className="w-full h-7 text-xs px-3 py-1 rounded-md corner-superellipse/2 outline-none bg-white dark:bg-neutral-900 border border-solid border-neutral-200 dark:border-neutral-800"
+                          className='w-full h-7 text-xs px-3 py-1 rounded-md corner-superellipse/2 outline-none bg-white dark:bg-neutral-900 border border-solid border-neutral-200 dark:border-neutral-800'
                         />
                         <Button
                           onClick={() =>
@@ -255,7 +263,7 @@ export default function Layout({ children }: LayoutProps) {
                               collectionName,
                             })
                           }
-                          className="text-xs text-black dark:text-neutral-300 w-full flex item-center justify-center p-1 rounded-md bg-white corner-superellipse/2 dark:bg-neutral-900"
+                          className='text-xs text-black dark:text-neutral-300 w-full flex item-center justify-center p-1 rounded-md bg-white corner-superellipse/2 dark:bg-neutral-900'
                         >
                           Create
                         </Button>
@@ -265,46 +273,46 @@ export default function Layout({ children }: LayoutProps) {
                 </Popover.Root>
               )}
             </AnimatePresence>
-            <div className="flex items-center justify-start gap-2">
+            <div className='flex items-center justify-start gap-2'>
               <Button
                 onClick={() => addIssue()}
-                className="bg-white dark:bg-neutral-900 dark:text-neutral-300 rounded-md corner-superellipse/1.3 p-1"
+                className='bg-white dark:bg-neutral-900 dark:text-neutral-300 rounded-md corner-superellipse/1.3 p-1'
               >
-                <AddSquare weight="Bold" size={17} />
+                <AddSquare weight='Bold' size={17} />
               </Button>
               <Link
-                href="/history"
-                className="bg-white text-black dark:bg-neutral-900 dark:text-neutral-300 rounded-md corner-superellipse/1.3 p-1"
+                href='/history'
+                className='bg-white text-black dark:bg-neutral-900 dark:text-neutral-300 rounded-md corner-superellipse/1.3 p-1'
               >
-                <History weight="Bold" size={17} />
+                <History weight='Bold' size={17} />
               </Link>
             </div>
           </div>
-          <div className="flex items-center justify-end space-x-3 text-neutral-500">
+          <div className='flex items-center justify-end space-x-3 text-neutral-500'>
             <ThemeButton />
-            <Link to="/settings">
-              <Settings weight="Bold" size={15} />
+            <Link to='/settings'>
+              <Settings weight='Bold' size={15} />
             </Link>
             <Button onClick={() => minimize()}>
-              <MinusSquare weight="Bold" size={15} />
+              <MinusSquare weight='Bold' size={15} />
             </Button>
             <Button onClick={() => maximize()}>
-              <MaximizeSquare3 weight="Bold" size={15} />
+              <MaximizeSquare3 weight='Bold' size={15} />
             </Button>
-            <Button className="text-red-800" onClick={() => close()}>
-              <CloseCircle weight="Bold" size={15} />
+            <Button className='text-red-800' onClick={() => close()}>
+              <CloseCircle weight='Bold' size={15} />
             </Button>
           </div>
         </motion.div>
         <motion.div
-          className="bg-white dark:bg-neutral-900 overflow-y-scroll overflow-x-hidden dark:text-neutral-200 w-full corner-superellipse/1.3"
+          className='bg-white dark:bg-neutral-900 overflow-y-scroll overflow-x-hidden dark:text-neutral-200 w-full corner-superellipse/1.3'
           initial={{
-            height: "100%",
-            borderRadius: "0.375rem",
+            height: '100%',
+            borderRadius: '0.375rem',
           }}
           animate={{
-            height: showTop ? "97%" : "100%",
-            borderRadius: globalState$.isFullscreen.get() ? "0" : "0.375rem",
+            height: showTop ? '97%' : '100%',
+            borderRadius: globalState$.isFullscreen.get() ? '0' : '0.375rem',
           }}
         >
           {children}

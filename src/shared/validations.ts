@@ -1,9 +1,9 @@
-import * as Schema from "effect/Schema";
-import { z } from "zod";
+import * as Schema from 'effect/Schema';
+import { z } from 'zod';
 
 export const parserSchema = z.object({
   parsePath: z.string(),
-  action: z.enum(["LINK", "UNLINK"]),
+  action: z.enum(['LINK', 'UNLINK']),
 });
 
 export const deletionWorkerSchema = z.object({

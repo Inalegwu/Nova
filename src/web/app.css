@@ -1,105 +1,85 @@
 @import "tailwindcss";
 @plugin "@toolwind/corner-shape";
 
-@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-@font-face{
-    font-family: Font;
-    src: url("../assets/fonts/commit.ttf");
+@font-face {
+  font-family: Font;
+  src: url("../assets/fonts/commit.ttf");
 }
 
 .radix-themes {
-	--default-font-family: Font;
-	--heading-font-family:Font;
-	--code-font-family:Font;
-	--strong-font-family:Font;
-	--em-font-family:Font;
-	--quote-font-family:Font;
+  --default-font-family: Font;
+  --heading-font-family: Font;
+  --code-font-family: Font;
+  --strong-font-family: Font;
+  --em-font-family: Font;
+  --quote-font-family: Font;
 }
 
-@theme{
-    --font-sans: Font;
-    --primary-50: #ffffff;
-    --primary-150: #ffffff;
-    --primary-250: #ffffff;
-    --primary-350: #dcedff;
-    --primary-450: #b8c9ff;
-    --primary-550: #94a5df;
-    --primary-650: #7081bb;
-    --primary-750: #4c5d97;
-    --primary-850: #283973;
-    --primary-950: #04154f;
-    --primary-1050: #00002b;
-    --primary-1150: #000007;
-    --primary-1250: #000000;
+@theme {
+  --font-sans: Font;
+  --primary-50: #ffffff;
+  --primary-150: #ffffff;
+  --primary-250: #ffffff;
+  --primary-350: #dcedff;
+  --primary-450: #b8c9ff;
+  --primary-550: #94a5df;
+  --primary-650: #7081bb;
+  --primary-750: #4c5d97;
+  --primary-850: #283973;
+  --primary-950: #04154f;
+  --primary-1050: #00002b;
+  --primary-1150: #000007;
+  --primary-1250: #000000;
 }
 
-@utility centered{
-    @apply items-center justify-center
-}
-
-@utility squiricle{
-    @apply rounded-md corner-superellipse/1.3
-}
-
-@utility toolbarToggle{
-    @apply p-2 hover:bg-neutral-200/40 dark:hover:bg-neutral-200/5 squiricle dark:text-neutral-500 focus-visible:bg-none focus-visible:outline focus-visible:-outline-offset-1 focus-visible:outline-neutral-400 dark:focus-visible:outline-neutral-500 active:bg-neutral-100;
+@utility centered {
+  @apply items-center justify-center } @utility squiricle{ @apply rounded-md corner-superellipse/1.3 } @utility toolbarToggle{ @apply p-2 hover:bg-neutral-200/40 dark:hover:bg-neutral-200/5 squiricle dark:text-neutral-500 focus-visible:bg-none focus-visible:outline focus-visible:-outline-offset-1 focus-visible:outline-neutral-400 dark:focus-visible:outline-neutral-500 active:bg-neutral-100;
 }
 
 @font-face {
-    font-family: Font;
-    src: url("../assets/fonts/commit.ttf");
-}
-
-body{
-    font-family: Font;
-}
-
-#drag-region {
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-app-region: drag;
-    cursor: grab;
-}
-
-::-webkit-scrollbar {
-    width: 0;
-    background: none;
-}
-
-button{
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
-
-.tabTrigger{
-    @apply text-xs font-light text-neutral-400 pl-2 pr-5 py-1 flex items-center justify-start space-x-1 squiricle
-}
-
-.tabTrigger[data-active]{
-    @apply text-neutral-900 dark:text-neutral-200 bg-white/80 dark:bg-neutral-800/80 font-medium
-}
-
-.ctxMenuRowItem{
-    @apply p-2 flex centered cursor-pointer rounded-md corner-superellipse/2
+  font-family: Font;
+  src: url("../assets/fonts/commit.ttf");
 }
 
 body {
+  font-family: Font;
+}
+
+#drag-region {
+  user-select: none;
   -webkit-user-select: none;
+  -webkit-app-region: drag;
+  cursor: grab;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  background: none;
+}
+
+button {
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.tabTrigger {
+  @apply text-xs font-light text-neutral-400 pl-2 pr-5 py-1 flex items-center justify-start space-x-1 squiricle } .tabTrigger[data-active]{ @apply text-neutral-900 dark:text-neutral-200 bg-white/80 dark:bg-neutral-800/80 font-medium } .ctxMenuRowItem{ @apply p-2 flex centered cursor-pointer rounded-md corner-superellipse/2 } body { -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
 }
 
-div{
-    outline: none;
+div {
+  outline: none;
 }
 
-.root{
-    isolation:isolate;
+.root {
+  isolation: isolate;
 }
 
-button{
-    appearance:none;
-    cursor: pointer;
+button {
+  appearance: none;
+  cursor: pointer;
 }

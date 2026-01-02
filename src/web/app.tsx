@@ -1,16 +1,16 @@
-import { enableReactTracking } from "@legendapp/state/config/enableReactTracking";
-import t, { persister, queryClient, trpcClient } from "@/shared/config";
-import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { enableReactTracking } from '@legendapp/state/config/enableReactTracking';
+import t, { persister, queryClient, trpcClient } from '@/shared/config';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import {
   RouterProvider,
   createHashHistory,
   createRouter,
-} from "@tanstack/react-router";
-import { StrictMode } from "react";
-import ReactDOM from "react-dom/client";
-import "./app.css";
-import ErrorComponent from "./components/error";
-import { routeTree } from "./routeTree.gen";
+} from '@tanstack/react-router';
+import { StrictMode } from 'react';
+import ReactDOM from 'react-dom/client';
+import './app.css';
+import ErrorComponent from './components/error';
+import { routeTree } from './routeTree.gen';
 
 enableReactTracking({
   auto: true,
@@ -18,18 +18,18 @@ enableReactTracking({
 
 const router = createRouter({
   routeTree,
-  notFoundMode: "fuzzy",
+  notFoundMode: 'fuzzy',
   history: createHashHistory(),
   defaultErrorComponent: (props) => <ErrorComponent {...props} />,
 });
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router;
   }
 }
 
-const rootElement = document.getElementById("root");
+const rootElement = document.getElementById('root');
 
 if (!rootElement?.innerHTML) {
   const root = ReactDOM.createRoot(rootElement!);

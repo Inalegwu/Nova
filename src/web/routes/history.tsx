@@ -1,8 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
-import * as Array from "effect/Array";
-import React, { Suspense } from "react";
+import { createFileRoute } from '@tanstack/react-router';
+import * as Array from 'effect/Array';
+import React, { Suspense } from 'react';
 
-export const Route = createFileRoute("/history")({
+export const Route = createFileRoute('/history')({
   component: Index,
 });
 

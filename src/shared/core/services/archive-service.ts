@@ -1,23 +1,23 @@
-import { Console, Context, Effect } from "effect";
-import type { UnknownException } from "effect/Cause";
-import path from "node:path";
-import { parserChannel } from "../../channels";
-import { Fs } from "../../fs";
-import { convertToImageUrl, parseFileNameFromPath } from "../../utils";
-import type { FSError } from "../utils/errors";
+import { Console, Context, Effect } from 'effect';
+import type { UnknownException } from 'effect/Cause';
+import path from 'node:path';
+import { parserChannel } from '../../channels';
+import { Fs } from '../../fs';
+import { convertToImageUrl, parseFileNameFromPath } from '../../utils';
+import type { FSError } from '../utils/errors';
 import {
   createRarExtractor,
   createZipExtractor,
   parseXML,
   saveIssue,
-} from "../utils/functions";
+} from '../utils/functions';
 
 export type IArchiveService = {
   rar: (filePath: string) => Effect.Effect<void, FSError | UnknownException>;
   zip: (filePath: string) => Effect.Effect<void, FSError | UnknownException>;
 };
 
-export class ArchiveService extends Context.Tag("@nova/Core/Services/Archive")<
+export class ArchiveService extends Context.Tag('@nova/Core/Services/Archive')<
   ArchiveService,
   IArchiveService
 >() {}
@@ -46,22 +46,22 @@ export const databaseArchiveService = {
     );
 
     yield* Fs.makeDirectory(savePath).pipe(
-      Effect.catchTag("FSError", Console.log),
+      Effect.catchTag('FSError', Console.log),
     );
 
     yield* Effect.forEach(files, (file) =>
       Fs.writeFile(
         path.join(savePath, file.name),
-        Buffer.from(file.data!).toString("base64"),
+        Buffer.from(file.data!).toString('base64'),
         {
-          encoding: "base64",
+          encoding: 'base64',
         },
-      ).pipe(Effect.catchTag("FSError", Console.log)),
+      ).pipe(Effect.catchTag('FSError', Console.log)),
     );
 
     yield* Effect.sync(() =>
       parserChannel.postMessage({
-        state: "SUCCESS",
+        state: 'SUCCESS',
         isCompleted: true,
         error: null,
         issue: issueTitle,
@@ -91,22 +91,22 @@ export const databaseArchiveService = {
     );
 
     yield* Fs.makeDirectory(savePath).pipe(
-      Effect.catchTag("FSError", (e) => Effect.log(e)),
+      Effect.catchTag('FSError', (e) => Effect.log(e)),
     );
 
     yield* Effect.forEach(files, (file, idx) =>
       Fs.writeFile(
         path.join(savePath, file.name),
-        Buffer.from(file.data!).toString("base64"),
+        Buffer.from(file.data!).toString('base64'),
         {
-          encoding: "base64",
+          encoding: 'base64',
         },
-      ).pipe(Effect.catchTag("FSError", Console.log)),
+      ).pipe(Effect.catchTag('FSError', Console.log)),
     );
 
     yield* Effect.sync(() =>
       parserChannel.postMessage({
-        state: "SUCCESS",
+        state: 'SUCCESS',
         isCompleted: true,
         error: null,
         issue: issueTitle,

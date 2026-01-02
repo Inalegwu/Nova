@@ -1,11 +1,11 @@
-import { publicProcedure, router } from "@/trpc";
-import { observable } from "@trpc/server/observable";
-import { deeplinkChannel, deletionChannel, parserChannel } from "../channels";
-import { comicVineClient } from "../core/services/metadata-service";
-import { parseFileNameFromPath } from "../utils";
-import issueRouter from "./issue";
-import libraryRouter from "./library";
-import { windowRouter } from "./window";
+import { publicProcedure, router } from '@/trpc';
+import { observable } from '@trpc/server/observable';
+import { deeplinkChannel, deletionChannel, parserChannel } from '../channels';
+import { comicVineClient } from '../core/services/metadata-service';
+import { parseFileNameFromPath } from '../utils';
+import issueRouter from './issue';
+import libraryRouter from './library';
+import { windowRouter } from './window';
 
 export const appRouter = router({
   window: windowRouter,
@@ -25,7 +25,7 @@ export const appRouter = router({
         });
 
         if (!exists) {
-          console.log("not previously saved");
+          console.log('not previously saved');
           return;
         }
 
@@ -34,10 +34,10 @@ export const appRouter = router({
         });
       };
 
-      deeplinkChannel.addEventListener("message", listener);
+      deeplinkChannel.addEventListener('message', listener);
 
       return () => {
-        deeplinkChannel.removeEventListener("message", listener);
+        deeplinkChannel.removeEventListener('message', listener);
       };
     }),
   ),
@@ -47,10 +47,10 @@ export const appRouter = router({
         emit.next(evt);
       };
 
-      parserChannel.addEventListener("message", listener);
+      parserChannel.addEventListener('message', listener);
 
       return () => {
-        parserChannel.removeEventListener("message", listener);
+        parserChannel.removeEventListener('message', listener);
       };
     }),
   ),
@@ -60,16 +60,16 @@ export const appRouter = router({
         emit.next(event);
       };
 
-      deletionChannel.addEventListener("message", listener);
+      deletionChannel.addEventListener('message', listener);
 
       return () => {
-        deletionChannel.removeEventListener("message", listener);
+        deletionChannel.removeEventListener('message', listener);
       };
     }),
   ),
   testMeta: publicProcedure.query(async () => {
     const result = await comicVineClient.character.retrieve(1443, {
-      priority: "user",
+      priority: 'user',
     });
 
     console.log(result);

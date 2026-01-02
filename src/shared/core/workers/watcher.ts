@@ -1,5 +1,4 @@
 import db from '@/shared/storage';
-import * as chokidar from 'chokidar';
 import { Duration, Effect, Match, Queue, Schedule, Stream } from 'effect';
 import { EventEmitter } from 'node:stream';
 import { parentPort } from 'node:worker_threads';
@@ -9,6 +8,7 @@ import { parseFileNameFromPath, transformMessage } from '../../utils';
 // @ts-ignore: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
 // import parseWorker from "../core/workers/parser?nodeWorker";
 import { FileSystem } from '@effect/platform';
+import { NodeContext } from "@effect/platform-node";
 
 EventEmitter.setMaxListeners(200);
 
@@ -24,24 +24,7 @@ const watchFS = Effect.fn(function* (directory: string | null) {
 
   if (!directory) return;
 
-  const watchStream = fs
-    .watch(directory, {
-      recursive: true,
-    })
-    .pipe(
-      Stream.map((event) => {
-        Match.value(event._tag).pipe(
-          Match.when('Create', () => {
-            console.log(event.path);
-          }),
-          Match.when('Remove', () => {}),
-          Match.orElse(() => {
-            console.log('This action has no bearing on the library');
-          }),
-        );
-      }),
-      Stream.runDrain,
-    );
+
 
   if (!directory) return;
 
@@ -73,27 +56,6 @@ const watchFS = Effect.fn(function* (directory: string | null) {
   yield* unparsedQueue.offerAll(unsavedIssues);
 
   yield* Effect.logInfo(`watching ${directory} for changes`);
-  const chokidar_watcher = yield* Effect.try(() =>
-    chokidar.watch(directory, {
-      ignoreInitial: true,
-    }),
-  );
-
-  yield* Effect.forever(
-    Effect.try(() =>
-      chokidar_watcher.on('add', (parsePath) =>
-        Queue.unsafeOffer(unparsedQueue, parsePath),
-      ),
-    ),
-  ).pipe(Effect.forkDaemon);
-
-  yield* Effect.forever(
-    Effect.try(() =>
-      chokidar_watcher.on('unlink', async (parsePath) =>
-        unparsedQueue.unsafeOffer(parsePath),
-      ),
-    ),
-  ).pipe(Effect.forkDaemon);
 
   while (!(yield* unparsedQueue.isEmpty)) {
     const unparsedPath = yield* Queue.take(unparsedQueue);
@@ -109,6 +71,26 @@ const watchFS = Effect.fn(function* (directory: string | null) {
     //     action: "LINK",
     //   } satisfies ParserSchema);
   }
+
+  yield* fs
+    .watch(directory, {
+      recursive: true,
+    })
+    .pipe(
+      Stream.map((event) => {
+        Match.value(event._tag).pipe(
+          Match.when('Create', () => {
+            console.log(event.path);
+          }),
+          Match.when('Remove', () => {}),
+          Match.orElse(() => {
+            console.log('This action has no bearing on the library');
+          }),
+        );
+      }),
+      Stream.runDrain,
+      Effect.forkDaemon
+    );
 });
 
 port.on('message', (message) =>
@@ -139,6 +121,8 @@ port.on('message', (message) =>
     Effect.annotateLogs({
       worker: 'watcher',
     }),
+    Effect.provide(NodeContext.layer),
+    // might have to switch out with NodeRuntime.runMain (we shall see)
     Effect.runPromise,
   ),
 );

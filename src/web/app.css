@@ -98,3 +98,7 @@ button {
   appearance: none;
   cursor: pointer;
 }
+
+a{
+    @apply dark:text-neutral-400
+}

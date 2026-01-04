@@ -73,6 +73,8 @@ export const databaseArchiveService = {
   zip: Effect.fnUntraced(function* (filePath: string) {
     const { files, meta } = yield* createZipExtractor(filePath);
 
+    yield* Effect.logInfo({ files, meta });
+
     const issueTitle = yield* Effect.sync(() =>
       parseFileNameFromPath(filePath),
     );

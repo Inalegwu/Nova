@@ -1,16 +1,16 @@
-import { parserChannel } from '../../channels';
-import { parseFileNameFromPath, transformMessage } from '../../utils';
+import { eq } from 'drizzle-orm';
 import { Effect, Match } from 'effect';
+import path from 'node:path';
 import { parentPort } from 'node:worker_threads';
+import { parserChannel } from '../../channels';
+import { issues } from '../../schema';
+import db from '../../storage';
+import { parseFileNameFromPath, transformMessage } from '../../utils';
+import { parserSchema } from '../../validations';
 import {
   ArchiveService,
   databaseArchiveService,
 } from '../services/archive-service';
-import { issues } from '../../schema';
-import { eq } from 'drizzle-orm';
-import path from 'node:path';
-import { parserSchema } from '../../validations';
-import db from '../../storage';
 
 const port = parentPort;
 
@@ -23,11 +23,13 @@ const handleMessage = Effect.fnUntraced(function* ({
 }: ParserSchema) {
   const archive = yield* ArchiveService;
 
-  const ext = parsePath.includes('cbr')
+  const ext = parsePath.includes('cbr') || parsePath.includes("rar")
     ? 'cbr'
-    : parsePath.includes('cbz')
+    : parsePath.includes('cbz')||parsePath.includes("zip")
       ? 'cbz'
       : 'none';
+
+  yield* Effect.log({ ext, parsePath });
 
   parserChannel.postMessage({
     isCompleted: false,

@@ -120,7 +120,7 @@ export const createRarExtractor = Effect.fn(function* (filePath: string) {
             data: file.extraction?.buffer,
             isFirst: file.fileHeader.name.includes('000')
               ? true
-              : file.fileHeader.name.includes('001'),
+              : file.fileHeader.name.includes('001')?true:file.fileHeader.name.includes("01"),
           }) satisfies Extractor,
       ),
     ),
@@ -150,7 +150,7 @@ export const createZipExtractor = (filePath: string) =>
               isDir: entry.isDirectory,
               isFirst: entry.name.includes('000')
                 ? true
-                : entry.name.includes('001'),
+                : entry.name.includes('001')?true:entry.name.includes("01"),
             }) satisfies Extractor,
         ),
     ),

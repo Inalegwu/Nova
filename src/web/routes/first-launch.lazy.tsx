@@ -12,7 +12,7 @@ export const Route = createLazyFileRoute('/first-launch')({
 
 const DRAG_BUFFER = 50;
 
-const welcomeMessages = [
+const welcomeMessages: Array<WelcomeMessage> = [
   {
     id: 0,
     title: 'Welcome To Nova',
@@ -28,6 +28,12 @@ const welcomeMessages = [
     title: 'Built for Speed',
     subtitle: 'Enjoy your comics now 🏃🏾‍♂️‍➡️',
   },
+  {
+    id: 3,
+    title: "Getting things setup",
+    subtitle: "Add your library to start reading immediately",
+    render: () => <div className='w-full h-screen'>initial setup view</div>
+  }
 ];
 
 // TODO: stepper setup screen
@@ -64,5 +70,11 @@ function Component() {
 
   useKeyPress(debounceKeyPress);
 
-  return <div className='font-medium text-lg'>first launch screen</div>;
+  return <div className='font-medium text-lg flex centered w-full h-full'>
+    {welcomeMessages.map(message => (
+      message.render ? <message.render /> : (<div>
+        {message.subtitle}
+      </div>)
+    ))}
+  </div>;
 }

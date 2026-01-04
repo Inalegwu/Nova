@@ -11,6 +11,7 @@ import type {
   workerResponseSchema,
 } from '@/shared/validations';
 import type * as Schema from 'effect/Schema';
+import React from 'react';
 import type z from 'zod';
 import type { collections, issues } from './schema';
 
@@ -75,6 +76,17 @@ declare global {
   export type ThemeSubscription = {
     theme: 'dark' | 'light';
   };
+
+  // allow for a simple message and sub-message
+  // view for some of the welcome pages but also
+  // allow for more complex views to be rendered
+  // within the welcome message
+  export type WelcomeMessage={
+    id: number;
+    title: string;
+    subtitle?: string;
+    render?:()=>React.ReactNode
+  }
 
   export type Task = Readonly<{
     path: string;

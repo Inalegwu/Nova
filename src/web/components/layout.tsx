@@ -15,6 +15,7 @@ import {
   FolderOpen,
   Heart,
   History,
+  Home,
   Library,
   MaximizeSquare3,
   MinusSquare,
@@ -145,11 +146,11 @@ export default function Layout({ children }: LayoutProps) {
   useEffect(() => {
     if (globalState$.isFullscreen.get()) globalState$.isFullscreen.set(false);
     // launchWatcher()
-    // if (globalState$.firstLaunch.get()) {
-    //   navigation.navigate({
-    //     to: "/first-launch",
-    //   });
-    // }
+    if (globalState$.firstLaunch.get()) {
+      navigation.navigate({
+        to: "/first-launch",
+      });
+    }
     if (globalState$.appId.get() === null) {
       globalState$.appId.set(v4());
     }
@@ -189,6 +190,12 @@ export default function Layout({ children }: LayoutProps) {
                 >
                   <SidebarMinimalistic size={13} weight='Linear' />
                 </Button>
+                <Link
+                  to="/"
+                  className='bg-white dark:bg-neutral-800 rounded-md p-1 text-black dark:text-neutral-300 disabled:text-neutral-400 disabled:bg-transparent'
+                >
+                  <Home size={13} weight='Linear' />
+                </Link>
                 <Button
                   disabled={!!isHome}
                   onClick={() => navigation.history.back()}
@@ -325,25 +332,27 @@ export default function Layout({ children }: LayoutProps) {
             borderRadius: globalState$.isFullscreen.get() ? '0' : '0.375rem',
           }}
         >
-          <motion.div
-            className='bg-neutral-100 p-2 flex flex-col items-center justify-start gap-3 dark:bg-neutral-950 rounded-lg squiricle'
-            initial={{ width: '0%', display: 'none', opacity: 0 }}
-            animate={{
-              opacity: sidebar ? 1 : 0,
-              width: sidebar ? '3%' : '0%',
-              display: sidebar ? 'flex' : 'none',
-            }}
-          >
-            <Link className='p-1 rounded-lg squiricle flex centered'>
-              <History weight='BoldDuotone' size={16} />
-            </Link>
-            <Link className='p-1 rounded-lg squiricle flex centered'>
-              <Heart weight='BoldDuotone' size={16} />
-            </Link>
-            <Link className='p-1 rounded-lg squiricle flex centered'>
-              <FolderOpen weight='BoldDuotone' size={16} />
-            </Link>
-          </motion.div>
+          <AnimatePresence presenceAffectsLayout mode='wait'>
+            <motion.div
+              className='bg-neutral-100 p-2 flex flex-col items-center justify-start gap-3 dark:bg-neutral-950 rounded-lg squiricle'
+              initial={{ width: '0%', display: 'none', opacity: 0 }}
+              animate={{
+                opacity: sidebar ? 1 : 0,
+                width: sidebar ? '3%' : '0%',
+                display: sidebar ? 'flex' : 'none',
+              }}
+            >
+              <Link className='p-1 rounded-lg squiricle flex centered'>
+                <History weight='BoldDuotone' size={16} />
+              </Link>
+              <Link className='p-1 rounded-lg squiricle flex centered'>
+                <Heart weight='BoldDuotone' size={16} />
+              </Link>
+              <Link className='p-1 rounded-lg squiricle flex centered'>
+                <FolderOpen weight='BoldDuotone' size={16} />
+              </Link>
+            </motion.div>
+          </AnimatePresence>
           <motion.div
             initial={{ width: '100%' }}
             animate={{ width: sidebar ? '97%' : '100%' }}

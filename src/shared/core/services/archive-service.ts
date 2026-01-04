@@ -17,6 +17,8 @@ export type IArchiveService = {
   zip: (filePath: string) => Effect.Effect<void, FSError | UnknownException>;
 };
 
+// TODO: implement fallbacks for when the database archive service fails
+// or isn't properly implemented (future stuff)
 export class ArchiveService extends Context.Tag('@nova/Core/Services/Archive')<
   ArchiveService,
   IArchiveService

@@ -17,7 +17,12 @@ import parseWorker from '../core/workers/parser?nodeWorker';
 const issueRouter = router({
   addIssue: publicProcedure.mutation(async () => {
     const { canceled, filePaths } = await dialog.showOpenDialog({
-      filters: [{ name: 'Comic Book Archive', extensions: ['cbz', 'cbr',"zip","rar"] }],
+      filters: [
+        {
+          name: 'Comic Book Archive',
+          extensions: ['cbz', 'cbr', 'zip', 'rar'],
+        },
+      ],
       properties: ['multiSelections'],
     });
 

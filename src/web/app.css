@@ -99,6 +99,6 @@ button {
   cursor: pointer;
 }
 
-a{
-    @apply dark:text-neutral-400
+a {
+  @apply dark:text-neutral-400;
 }

@@ -29,7 +29,6 @@
     "@effect/platform-node": "^0.100.0",
     "@electron/rebuild": "^3.7.2",
     "@heroicons/react": "^2.2.0",
-    "@legendapp/state": "^2.1.15",
     "@libsql/client": "^0.15.15",
     "@solar-icons/react": "^1.0.1",
     "@stitches/react": "^1.2.8",
@@ -70,7 +69,8 @@
     "vite-tsconfig-paths": "^5.1.4",
     "workerpool": "^10.0.1",
     "ws": "^8.18.3",
-    "zod": "^3.25.76"
+    "zod": "^3.25.76",
+    "zustand": "^5.0.9"
   },
   "devDependencies": {
     "@biomejs/biome": "1.7.3",

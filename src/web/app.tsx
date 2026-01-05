@@ -1,6 +1,6 @@
 import { enableReactTracking } from '@legendapp/state/config/enableReactTracking';
 import t, { queryClient, trpcClient } from '@/shared/config';
-import { QueryClientProvider } from "@tanstack/react-query"
+import { QueryClientProvider } from '@tanstack/react-query';
 import {
   RouterProvider,
   createHashHistory,
@@ -37,9 +37,7 @@ if (!rootElement?.innerHTML) {
   root.render(
     <StrictMode>
       <t.Provider client={trpcClient} queryClient={queryClient}>
-        <QueryClientProvider
-          client={queryClient}
-        >
+        <QueryClientProvider client={queryClient}>
           <RouterProvider defaultViewTransition router={router} />
         </QueryClientProvider>
       </t.Provider>

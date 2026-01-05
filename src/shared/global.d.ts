@@ -16,16 +16,28 @@ import type z from 'zod';
 import type { collections, issues } from './schema';
 
 declare global {
+  type Tabs = 'issues' | 'collections';
+  type Direction = 'horizontal' | 'vertical';
+
   export type GlobalState = {
     colorMode: 'dark' | 'light';
     firstLaunch: boolean;
     isFullscreen: boolean;
-    libraryView: 'issues' | 'collections';
     appId: string | null;
-    reader: {
-      direction: 'horizontal' | 'vertical';
-    };
-    lastOpenedTab: 'issues' | 'collections';
+    lastOpenedTab: Tabs;
+    toggleColorMode: () => void;
+    updateFirstLaunch: () => void;
+    toggleFullScreen: () => void;
+    setFullScreen: (value: boolean) => void;
+    setAppId: (id: string) => void;
+    clearAppId: () => void;
+    setLastOpenedTab: (tab: Tabs) => void;
+  };
+
+  export type ReaderState = {
+    direction: Direction;
+    toggleReaderDirection: () => void;
+    setReaderDirection: (direction: Direction) => void;
   };
 
   export type Issue = Omit<
@@ -81,12 +93,12 @@ declare global {
   // view for some of the welcome pages but also
   // allow for more complex views to be rendered
   // within the welcome message
-  export type WelcomeMessage={
+  export type WelcomeMessage = {
     id: number;
     title: string;
     subtitle?: string;
-    render?:()=>React.ReactNode
-  }
+    render?: () => React.ReactNode;
+  };
 
   export type Task = Readonly<{
     path: string;

@@ -8,7 +8,7 @@ import { parseFileNameFromPath, transformMessage } from '../../utils';
 // @ts-ignore: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
 // import parseWorker from "../core/workers/parser?nodeWorker";
 import { FileSystem } from '@effect/platform';
-import { NodeContext } from "@effect/platform-node";
+import { NodeContext } from '@effect/platform-node';
 
 EventEmitter.setMaxListeners(200);
 
@@ -23,8 +23,6 @@ const watchFS = Effect.fn(function* (directory: string | null) {
   const fs = yield* FileSystem.FileSystem;
 
   if (!directory) return;
-
-
 
   if (!directory) return;
 
@@ -89,7 +87,7 @@ const watchFS = Effect.fn(function* (directory: string | null) {
         );
       }),
       Stream.runDrain,
-      Effect.forkDaemon
+      Effect.forkDaemon,
     );
 });
 

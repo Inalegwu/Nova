@@ -1175,13 +1175,6 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@legendapp/state@^2.1.15":
-  version "2.1.15"
-  resolved "https://registry.yarnpkg.com/@legendapp/state/-/state-2.1.15.tgz#a9398b4fdd6d955a3f90a7dac6cb601545f27fe6"
-  integrity sha512-7/8Rgg7m38eznupr36QJeSkrtbhVxaRtQvRMjdBigSm+HW3ZIFgMtUX1DqZ2hJxbPqqAJamw5s+TLs8dRstUNw==
-  dependencies:
-    use-sync-external-store "^1.2.0"
-
 "@libsql/client@^0.15.15":
   version "0.15.15"
   resolved "https://registry.yarnpkg.com/@libsql/client/-/client-0.15.15.tgz#70196a0109f8cec41a32e42d9085386900e1943b"
@@ -5499,3 +5492,8 @@ zod@^3.24.2, zod@^3.25.76:
   version "3.25.76"
   resolved "https://registry.yarnpkg.com/zod/-/zod-3.25.76.tgz#26841c3f6fd22a6a2760e7ccb719179768471e34"
   integrity sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==
+
+zustand@^5.0.9:
+  version "5.0.9"
+  resolved "https://registry.yarnpkg.com/zustand/-/zustand-5.0.9.tgz#389dcd0309b9c545d7a461bd3c54955962847654"
+  integrity sha512-ALBtUj0AfjJt3uNRQoL1tL2tMvj6Gp/6e39dnfT6uzpelGru8v1tPOGBzayOWbPJvujM8JojDk3E1LxeFisBNg==

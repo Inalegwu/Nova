@@ -5,7 +5,6 @@ import { Button } from '@base-ui/react/button';
 import { Input } from '@base-ui/react/input';
 import { Popover } from '@base-ui/react/popover';
 import { Tabs } from '@base-ui/react/tabs';
-import { useObserveEffect } from '@legendapp/state/react';
 import {
   AddSquare,
   ArrowLeft,
@@ -29,7 +28,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { v4 } from 'uuid';
 import { useInterval, useWindow } from '../hooks';
-import { globalState$ } from '../state';
+import global from '@state';
 import ThemeButton from './theme-button';
 import { Link } from './ui/link';
 
@@ -55,7 +54,10 @@ export default function Layout({ children }: LayoutProps) {
   // const isNotHome = computed(() => routerState.location.pathname !== "/").get();
 
   const isHome = routerState.location.pathname === '/';
-  const isCollectionView = globalState$.lastOpenedTab.get() === 'collections';
+  const isCollectionView = global.app.use.lastOpenedTab() === 'collections';
+  const lastOpenedTab = global.app.use.lastOpenedTab();
+  const colorMode = global.app.use.colorMode();
+  const isFullScreen = global.app.use.isFullscreen();
 
   const [showTop, setShowTop] = useState(false);
   const [mouseOver, setMouseOver] = useState(false);
@@ -113,18 +115,17 @@ export default function Layout({ children }: LayoutProps) {
     onData: () => utils.library.invalidate(),
   });
 
-  useObserveEffect(() => {
-    if (globalState$.colorMode.get() === 'dark') {
+  useEffect(() => {
+    if (colorMode === 'dark') {
       document.body.setAttribute('data-theme', 'dark');
       // globalState$.colorMode.set("dark");
     } else {
       document.body.setAttribute('data-theme', 'light');
-      globalState$.colorMode.set('light');
     }
-  });
+  }, []);
 
   useWindow('mousemove', (e) => {
-    if (e.clientY < 20 && !globalState$.isFullscreen.get()) {
+    if (e.clientY < 20 && isFullScreen) {
       setShowTop(true);
     } else {
       setShowTop(false);
@@ -143,23 +144,10 @@ export default function Layout({ children }: LayoutProps) {
     }
   }, 5000);
 
-  useEffect(() => {
-    if (globalState$.isFullscreen.get()) globalState$.isFullscreen.set(false);
-    // launchWatcher()
-    if (globalState$.firstLaunch.get()) {
-      navigation.navigate({
-        to: "/first-launch",
-      });
-    }
-    if (globalState$.appId.get() === null) {
-      globalState$.appId.set(v4());
-    }
-  }, [launchWatcher]);
-
   return (
     <AnimatePresence>
       <Tabs.Root
-        defaultValue={globalState$.lastOpenedTab.get()}
+        defaultValue={lastOpenedTab}
         className=' bg-neutral-100 dark:bg-neutral-950 flex flex-col w-full h-screen p-2 space-y-2 root'
       >
         <motion.div
@@ -175,11 +163,7 @@ export default function Layout({ children }: LayoutProps) {
           <div className='flex items-center justify-start space-x-3'>
             <div className='flex items-center justify-start space-x-3'>
               <img
-                src={
-                  globalState$.colorMode.get() === 'dark'
-                    ? icon_dark
-                    : icon_light
-                }
+                src={colorMode === 'dark' ? icon_dark : icon_light}
                 alt='icon'
                 className='w-5 h-5'
               />
@@ -191,7 +175,7 @@ export default function Layout({ children }: LayoutProps) {
                   <SidebarMinimalistic size={13} weight='Linear' />
                 </Button>
                 <Link
-                  to="/"
+                  to='/'
                   className='bg-white dark:bg-neutral-800 rounded-md p-1 text-black dark:text-neutral-300 disabled:text-neutral-400 disabled:bg-transparent'
                 >
                   <Home size={13} weight='Linear' />
@@ -213,7 +197,7 @@ export default function Layout({ children }: LayoutProps) {
             </div>
             <Tabs.List className='flex items-center justify-start space-x-2'>
               <Tabs.Tab
-                onClick={() => globalState$.lastOpenedTab.set('issues')}
+                onClick={() => global.app.use.setLastOpenedTab()('issues')}
                 className='tabTrigger'
                 value='issues'
               >
@@ -221,7 +205,7 @@ export default function Layout({ children }: LayoutProps) {
                 <span>Issues</span>
               </Tabs.Tab>
               <Tabs.Tab
-                onClick={() => globalState$.lastOpenedTab.set('collections')}
+                onClick={() => global.app.use.setLastOpenedTab()('collections')}
                 className='tabTrigger'
                 value='collections'
               >
@@ -329,7 +313,7 @@ export default function Layout({ children }: LayoutProps) {
           }}
           animate={{
             height: showTop ? '97%' : '100%',
-            borderRadius: globalState$.isFullscreen.get() ? '0' : '0.375rem',
+            borderRadius: isFullScreen ? '0' : '0.375rem',
           }}
         >
           <AnimatePresence presenceAffectsLayout mode='wait'>

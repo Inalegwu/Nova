@@ -13,6 +13,7 @@ export default function CollectionBox(collection: CollectionProp) {
         nav.navigate({
           href: '/$collectionId',
           params: {
+            // @ts-ignore: this definitely exists
             collectionId: collection.id,
           },
         })

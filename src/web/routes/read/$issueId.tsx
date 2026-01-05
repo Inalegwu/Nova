@@ -16,7 +16,7 @@ import {
   RoundAltArrowRight,
   AltArrowLeft,
 } from '@solar-icons/react';
-import { globalState$ } from '@/web/state';
+import global from '@state';
 
 const DRAG_BUFFER = 50;
 
@@ -31,9 +31,9 @@ function RouteComponent() {
   const [isEnabled, setIsEnabled] = useState(false);
   const [expanded, setExpanded] = useState(true);
 
-  const readerDirection = globalState$.reader.direction.get();
-
-  console.log({ readerDirection });
+  const readerDirection = global.reader.use.direction();
+  const toggleReaderDirection = global.reader.use.toggleReaderDirection();
+  const setReaderDirection = global.reader.use.setReaderDirection();
 
   const { data, isLoading: fetchingPages } = t.issue.getPages.useQuery(
     {
@@ -134,7 +134,7 @@ function RouteComponent() {
           className='flex centered gap-1'
         >
           <Toolbar.Button
-            onClick={() => globalState$.reader.direction.set('vertical')}
+            onClick={() => setReaderDirection("vertical")}
             className='toolbarToggle'
             render={<Toggle pressed={readerDirection === 'vertical'} />}
             aria-label='reader-vertical'
@@ -145,7 +145,7 @@ function RouteComponent() {
             />
           </Toolbar.Button>
           <Toolbar.Button
-            onClick={() => globalState$.reader.direction.set('horizontal')}
+            onClick={() => setReaderDirection("horizontal")}
             className='toolbarToggle'
             render={<Toggle pressed={readerDirection === 'horizontal'} />}
             aria-label='reader-vertical'

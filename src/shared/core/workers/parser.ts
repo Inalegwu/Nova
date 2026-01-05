@@ -23,11 +23,12 @@ const handleMessage = Effect.fnUntraced(function* ({
 }: ParserSchema) {
   const archive = yield* ArchiveService;
 
-  const ext = parsePath.includes('cbr') || parsePath.includes("rar")
-    ? 'cbr'
-    : parsePath.includes('cbz')||parsePath.includes("zip")
-      ? 'cbz'
-      : 'none';
+  const ext =
+    parsePath.includes('cbr') || parsePath.includes('rar')
+      ? 'cbr'
+      : parsePath.includes('cbz') || parsePath.includes('zip')
+        ? 'cbz'
+        : 'none';
 
   yield* Effect.log({ ext, parsePath });
 

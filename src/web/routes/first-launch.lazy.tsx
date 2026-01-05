@@ -1,9 +1,8 @@
-import { useObservable } from '@legendapp/state/react';
 import { Link, createLazyFileRoute } from '@tanstack/react-router';
 import { AnimatePresence, motion, useMotionValue } from 'motion/react';
 import { memo, useEffect, useState } from 'react';
 import { useDebounce, useKeyPress, useTimeout } from '../hooks';
-import { globalState$ } from '../state';
+import global from '@state';
 import { SquareArrowRight } from '@solar-icons/react';
 
 export const Route = createLazyFileRoute('/first-launch')({
@@ -30,20 +29,20 @@ const welcomeMessages: Array<WelcomeMessage> = [
   },
   {
     id: 3,
-    title: "Getting things setup",
-    subtitle: "Add your library to start reading immediately",
-    render: () => <div className='w-full h-screen'>initial setup view</div>
-  }
+    title: 'Getting things setup',
+    subtitle: 'Add your library to start reading immediately',
+    render: () => <div className='w-full h-screen'>initial setup view</div>,
+  },
 ];
 
 // TODO: stepper setup screen
 function Component() {
   const dragX = useMotionValue(0);
   const [itemIndex, setItemIndex] = useState<number>(0);
-  const info = useObservable(true);
+  const [info, setInfo] = useState(true);
 
   useTimeout(() => {
-    info.set(false);
+    setInfo(false);
   }, 3_000);
 
   const onDragEnd = () => {
@@ -65,16 +64,20 @@ function Component() {
   }, 50);
 
   useEffect(() => {
-    globalState$.isFullscreen.set(true);
+    global.app.use.setFullScreen()(true);
   }, []);
 
   useKeyPress(debounceKeyPress);
 
-  return <div className='font-medium text-lg flex centered w-full h-full'>
-    {welcomeMessages.map(message => (
-      message.render ? <message.render /> : (<div>
-        {message.subtitle}
-      </div>)
-    ))}
-  </div>;
+  return (
+    <div className='font-medium text-lg flex centered w-full h-full'>
+      {welcomeMessages.map((message) =>
+        message.render ? (
+          <message.render key={message.id} />
+        ) : (
+          <div key={message.id}>{message.subtitle}</div>
+        ),
+      )}
+    </div>
+  );
 }

@@ -186,7 +186,7 @@ function RouteComponent() {
           <Hearts weight='Outline' size={16} />
         </Toolbar.Button>
       </Toolbar.Root>
-      <div className='absolute z-10 bottom-3 left-0 w-full p-2 items-center justify-center'>
+      <div className='absolute z-10 bottom-5 left-0 w-full p-2 items-center justify-center'>
         <div className='w-full bg-neutral-400/20 backdrop-blur-3xl squiricle'>
           <motion.div
             animate={{ width: `${width}%` }}

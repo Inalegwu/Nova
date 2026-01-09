@@ -84,7 +84,95 @@ function RouteComponent() {
   }
 
   return (
-    <CanvasRenderer className="w-full h-full" images={data?.pages.map((page) => page.data) || []} />
+    <div className="relative">
+      <CanvasRenderer index={itemIndex} setIndex={setItemIndex} className="w-full h-full" images={data?.pages.map((page) => page.data) || []} />
+      <Toolbar.Root
+        render={<motion.div animate={{ width: expanded ? '13.3%' : '2.3%' }} />}
+        className='flex centered overflow-hidden absolute z-10 top-2 right-2 gap-1 bg-neutral-100 dark:bg-neutral-950 rounded-md squiricle'
+      >
+        <motion.button
+          onClick={() => setExpanded((ex) => !ex)}
+          className='p-2 flex centered'
+        >
+          {expanded ? (
+            <AltArrowRight size={16} weight='Bold' />
+          ) : (
+            <AltArrowLeft size={16} weight='Bold' />
+          )}
+        </motion.button>
+        <ToggleGroup
+          render={
+            <motion.div
+              animate={{
+                transform: expanded ? 'translateX(0px)' : 'translateX(130px)',
+                display: expanded ? 'flex' : 'none',
+              }}
+            />
+          }
+          className='flex centered gap-1'
+        >
+          <Toolbar.Button
+            onClick={() => setReaderDirection("vertical")}
+            className='toolbarToggle'
+            render={<Toggle pressed={readerDirection === 'vertical'} />}
+            aria-label='reader-vertical'
+          >
+            <SliderVerticalMinimalistic
+              weight={readerDirection === 'vertical' ? 'Bold' : 'Outline'}
+              size={16}
+            />
+          </Toolbar.Button>
+          <Toolbar.Button
+            onClick={() => setReaderDirection("horizontal")}
+            className='toolbarToggle'
+            render={<Toggle pressed={readerDirection === 'horizontal'} />}
+            aria-label='reader-vertical'
+          >
+            <SliderMinimalisticHorizontal
+              weight={readerDirection === 'horizontal' ? 'Bold' : 'Outline'}
+              size={16}
+            />
+          </Toolbar.Button>
+        </ToggleGroup>
+        <Toolbar.Button
+          onClick={saveBookmark}
+          render={
+            <Toggle
+              render={
+                <motion.button
+                  animate={{ display: expanded ? 'flex' : 'none' }}
+                />
+              }
+            />
+          }
+          className='toolbarToggle'
+        >
+          <Bookmark weight='Outline' size={16} />
+        </Toolbar.Button>
+        <Toolbar.Button
+          render={
+            <Toggle
+              render={
+                <motion.button
+                  animate={{ display: expanded ? 'flex' : 'none' }}
+                />
+              }
+            />
+          }
+          className='toolbarToggle'
+        >
+          <Hearts weight='Outline' size={16} />
+        </Toolbar.Button>
+      </Toolbar.Root>
+      <div className='absolute z-10 -bottom-5 left-0 w-full p-2 items-center justify-center'>
+        <div className='w-full bg-neutral-400/20 backdrop-blur-3xl squiricle'>
+          <motion.div
+            animate={{ width: `${width}%` }}
+            className='squiricle bg-linear-to-r from-neutral-400/30 dark:from-neutral-100/20 to-transparent p-2'
+          />
+        </div>
+      </div>
+    </div>
   )
 
   // return (

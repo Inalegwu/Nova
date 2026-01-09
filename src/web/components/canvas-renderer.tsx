@@ -6,6 +6,8 @@ type Props = {
   width?: number;
   height?: number;
   className?: string;
+  index: number;
+  setIndex: React.Dispatch<React.SetStateAction<number>>
 }
 
 type Viewport = {
@@ -14,10 +16,10 @@ type Viewport = {
   offsetY: number;
 }
 
-const MIN_SCALE = 0.3;
-const MAX_SCALE = 5;
+const MIN_SCALE = 0.2;
+const MAX_SCALE = 1;
 
-export default function CanvasRenderer({ images, className }: Props) {
+export default function CanvasRenderer({ images, className, index }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<Viewport>({
@@ -34,11 +36,8 @@ export default function CanvasRenderer({ images, className }: Props) {
   const width = containerRef.current?.clientWidth || 500;
   const height = containerRef.current?.clientHeight || 700;
 
-  console.log({ width, height });
 
   const imageCacheRef = useRef<Map<number, HTMLImageElement>>(new Map());
-
-  const [index, setIndex] = useState(0);
 
   useEffect(() => {
     images.forEach((b64, i) => {
@@ -57,7 +56,7 @@ export default function CanvasRenderer({ images, className }: Props) {
 
   useEffect(() => {
     const image = imageCacheRef.current.get(index);
-    if (image) drawImage(image);
+    if (image) resetViewAndDraw(image);
   }, [index])
 
   const drawImage = () => {
@@ -166,10 +165,6 @@ export default function CanvasRenderer({ images, className }: Props) {
     if (img) resetViewAndDraw(img);
   };
 
-
-  const next = () => setIndex((idx) => (idx + 1) % images.length);
-  const prev = () => setIndex(idx => (idx - 1 + images.length) % images.length);
-
   return <div ref={containerRef} className={className}>
     <canvas onWheel={onWheel}
       onMouseDown={onMouseDown}
@@ -178,14 +173,5 @@ export default function CanvasRenderer({ images, className }: Props) {
       onMouseLeave={onMouseUp}
       onDoubleClick={onDoubleClick}
       style={{ cursor: "grab", touchAction: "none" }} ref={canvasRef} />
-    <div className="absolute z-10 bottom-2 p-3 w-full left-0 flex items-center justify-start gap-8">
-      <button onClick={prev}>
-        <ArrowLeft />
-      </button>
-      <button onClick={next}>
-        <ArrowRight />
-      </button>
-      <span>{index + 1}/{images.length}</span>
-    </div>
   </div>
 }

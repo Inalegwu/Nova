@@ -83,7 +83,7 @@ const createWindow = () => {
     });
   }
 
-  // mainWindow.webContents.openDevTools({ mode: 'bottom' });
+  mainWindow.webContents.openDevTools({ mode: 'bottom' });
 };
 
 app.whenReady().then(() => createWindow());

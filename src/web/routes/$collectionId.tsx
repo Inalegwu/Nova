@@ -2,9 +2,13 @@ import t from '@/shared/config';
 import { Checkbox } from '@base-ui/react/checkbox';
 import { Dialog } from '@base-ui/react/dialog';
 import { ScrollArea } from '@base-ui/react/scroll-area';
-import { AddSquare, CheckCircle, Hearts } from '@solar-icons/react';
+import { AddSquare, CheckCircle, Hearts, List, Widget } from '@solar-icons/react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useState } from 'react';
+import { Skeleton, Spinner } from '../components';
+import { motion } from "motion/react";
+import { ToggleGroup } from '@base-ui/react/toggle-group';
+import { Toggle } from '@base-ui/react/toggle';
 
 export const Route = createFileRoute('/$collectionId')({
   component: RouteComponent,
@@ -15,8 +19,9 @@ function RouteComponent() {
   const { collectionId } = Route.useParams();
 
   const [toAdd, setToAdd] = useState<Array<string>>([]);
+  const [listView, setListView] = useState<"list" | "grid">("list");
 
-  const { data } = t.library.getCollectionById.useQuery({ collectionId }, {});
+  const { data, isLoading: preparing } = t.library.getCollectionById.useQuery({ collectionId }, {});
 
   const { data: unmatched, isLoading: gettingUnmatched } =
     t.library.getLibrary.useQuery();
@@ -26,15 +31,40 @@ function RouteComponent() {
       onSuccess: () => utils.invalidate(),
     });
 
+  if (preparing) {
+    return (<div className="w-full h-full flex flex-col">
+      <div className="w-full h-3/6">
+        <Skeleton className='w-1.8/6 h-96 border border-solid border-neutral-200 dark:border-neutral-800 rounded-2xl squircle'
+        />
+      </div>
+    </div>)
+  }
+
   return (
     <div className='w-full h-full p-2 flex flex-col items-start justify-start space-y-2'>
       {/* TODO: fill in collection metadata from comic vine */}
       <div className='flex items-center justify-start gap-5 w-full'>
-        <img
-          src={data?.issues?.at(0)?.thumbnailUrl}
-          alt={`cover__${data?.collection?.id}`}
-          className='w-1.8/6 h-96 border border-solid border-neutral-200 dark:border-neutral-800 rounded-2xl squircle'
-        />
+        <div className="relative w-2/6 h-108 squiricle border border-solid overflow-hidden border-neutral-200 dark:border-neutral-800 rounded-2xl">
+          <div className="absolute w-full transition rounded-2xl squiricle h-full bg-black/30 flex flex-col items-start justify-end" >
+            <motion.div className="bg-neutral-200/20 flex items-center justify-center gap-4 w-full bottom-0 left-0 p-2" initial={{ translateY: "50px" }} animate={{ translateY: "0px" }} transition={{
+              bounceDamping: 1
+            }}>
+              <ToggleGroup className="flex gap-4">
+                <Toggle pressed={listView === "grid"} render={<button />}>
+                  <Widget size={17} />
+                </Toggle>
+                <Toggle pressed={listView === "list"} render={<button />}>
+                  <List size={17} />
+                </Toggle>
+              </ToggleGroup>
+            </motion.div>
+          </div>
+          <img
+            src={data?.issues?.at(0)?.thumbnailUrl}
+            alt={`cover__${data?.collection?.id}`}
+            className='w-full h-full border border-solid border-neutral-200 dark:border-neutral-800 rounded-2xl squircle'
+          />
+        </div>
         <div className='flex flex-col items-start justify-center gap-2 w-full h-full'>
           <p className='text-2xl font-bold'>
             {data?.collection?.collectionName}

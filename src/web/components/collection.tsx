@@ -38,7 +38,7 @@ export default function CollectionBox(collection: CollectionProp) {
           />
         ))}
       </div>
-      <div className='flex items-center justify-start'>
+      <div className='flex items-center justify-start mt-1'>
         <span className='text-[0.88rem] text-black dark:text-neutral-400 font-medium w-full'>
           {collection.collectionName}
         </span>

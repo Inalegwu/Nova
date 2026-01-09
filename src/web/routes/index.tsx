@@ -1,7 +1,7 @@
 import t from '@/shared/config';
 import { Tabs } from '@base-ui/react/tabs';
 import { createFileRoute } from '@tanstack/react-router';
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { CollectionBox, IssueBox } from '../components';
 import { useTimeout } from '../hooks';
@@ -35,6 +35,10 @@ function Component() {
 }
 
 function Issues({ issues }: { issues: Array<Partial<Issue>> }) {
+  const setLastOpenedTab = global.app.use.setLastOpenedTab();
+
+  useEffect(() => setLastOpenedTab("issues"), [])
+
   return (
     <div className='w-full h-full flex items-start justify-start flex-wrap space-x-4 overflow-y-scroll'>
       {issues.map((issue) => (
@@ -49,6 +53,12 @@ type CollectionProp = Partial<Collection> & {
 };
 
 function Collections({ collections }: { collections: Array<CollectionProp> }) {
+
+  const setLastOpenedTab = global.app.use.setLastOpenedTab();
+
+  useEffect(() => setLastOpenedTab("collections"), [])
+
+
   return (
     <div className='w-full h-full flex items-start justify-start flex-wrap space-x-4'>
       {collections.map((collection) => (

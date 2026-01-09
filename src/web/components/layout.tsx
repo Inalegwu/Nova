@@ -56,6 +56,7 @@ export default function Layout({ children }: LayoutProps) {
   const isHome = routerState.location.pathname === '/';
   const isCollectionView = global.app.use.lastOpenedTab() === 'collections';
   const lastOpenedTab = global.app.use.lastOpenedTab();
+  const setLastOpenedTab = global.app.use.setLastOpenedTab();
   const colorMode = global.app.use.colorMode();
   const isFullScreen = global.app.use.isFullscreen();
 
@@ -122,7 +123,7 @@ export default function Layout({ children }: LayoutProps) {
     } else {
       document.body.setAttribute('data-theme', 'light');
     }
-  }, []);
+  }, [colorMode]);
 
   useWindow('mousemove', (e) => {
     if (e.clientY < 20 && !isFullScreen) {
@@ -197,7 +198,6 @@ export default function Layout({ children }: LayoutProps) {
             </div>
             <Tabs.List className='flex items-center justify-start space-x-2'>
               <Tabs.Tab
-                onClick={() => global.app.use.setLastOpenedTab()('issues')}
                 className='tabTrigger'
                 value='issues'
               >
@@ -205,7 +205,6 @@ export default function Layout({ children }: LayoutProps) {
                 <span>Issues</span>
               </Tabs.Tab>
               <Tabs.Tab
-                onClick={() => global.app.use.setLastOpenedTab()('collections')}
                 className='tabTrigger'
                 value='collections'
               >

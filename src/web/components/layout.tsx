@@ -149,8 +149,9 @@ export default function Layout({ children }: LayoutProps) {
     <AnimatePresence>
       <Tabs.Root
         defaultValue={lastOpenedTab}
-        className=' bg-neutral-100 dark:bg-neutral-950 flex flex-col w-full h-screen p-2 space-y-2 root'
+        className=' bg-primary-50/40 dark:bg-neutral-950 flex flex-col w-full h-screen p-2 space-y-2 root'
       >
+        {/*titlebar*/}
         <motion.div
           className='w-full flex items-center justify-between'
           initial={{ height: '0%', display: 'none' }}
@@ -235,7 +236,7 @@ export default function Layout({ children }: LayoutProps) {
                         }}
                       />
                     }
-                    className='bg-white dark:bg-neutral-900 dark:text-neutral-400 squiricle pl-2 pr-5 py-1 text-xs'
+                    className='bg-white font-medium dark:bg-neutral-900 dark:text-neutral-400 squiricle pl-2 pr-5 py-1 text-xs'
                   >
                     Create Collection
                   </Popover.Trigger>
@@ -305,7 +306,7 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </motion.div>
         <motion.div
-          className='bg-white flex p-1 gap-2 dark:bg-neutral-900 overflow-y-scroll overflow-x-hidden dark:text-neutral-200 w-full corner-superellipse/1.3'
+          className='bg-white flex p-1 gap-2 overflow-hidden dark:bg-neutral-900 overflow-y-scroll overflow-x-hidden dark:text-neutral-200 w-full corner-superellipse/1.3'
           initial={{
             height: '100%',
             borderRadius: '0.375rem',

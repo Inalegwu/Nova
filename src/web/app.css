@@ -5,7 +5,7 @@
 
 @font-face {
   font-family: Font;
-  src: url("../assets/fonts/commit.ttf");
+  src: url("../assets/fonts/general.ttf");
 }
 
 .radix-themes {
@@ -19,19 +19,17 @@
 
 @theme {
   --font-sans: Font;
-  --primary-50: #ffffff;
-  --primary-150: #ffffff;
-  --primary-250: #ffffff;
-  --primary-350: #dcedff;
-  --primary-450: #b8c9ff;
-  --primary-550: #94a5df;
-  --primary-650: #7081bb;
-  --primary-750: #4c5d97;
-  --primary-850: #283973;
-  --primary-950: #04154f;
-  --primary-1050: #00002b;
-  --primary-1150: #000007;
-  --primary-1250: #000000;
+  --color-primary-50: #d9ffed;
+  --color-primary-100: #c7f5df;
+  --color-primary-200: #b1dec9;
+  --color-primary-300: #93c0ab;
+  --color-primary-400: #749f8b;
+  --color-primary-500: #56806d;
+  --color-primary-600: #3d6654;
+  --color-primary-700: #2f5846;
+  --color-primary-800: #1c4534;
+  --color-primary-900: #083323;
+  --color-primary-950: #012115;
 }
 
 @utility centered {
@@ -42,11 +40,6 @@
 }
 @utility toolbarToggle {
   @apply p-2 hover:bg-neutral-200/40 dark:hover:bg-neutral-200/5 squiricle dark:text-neutral-500 focus-visible:bg-none focus-visible:outline focus-visible:-outline-offset-1 focus-visible:outline-neutral-400 dark:focus-visible:outline-neutral-500 active:bg-neutral-100;
-}
-
-@font-face {
-  font-family: Font;
-  src: url("../assets/fonts/commit.ttf");
 }
 
 body {
@@ -69,11 +62,13 @@ button {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  @apply outline-none;
+  appearance: none;
+  cursor: pointer;
+  /*@apply outline-none;*/
 }
 
 .tabTrigger {
-  @apply text-xs font-light text-neutral-400 pl-2 pr-5 py-1 flex items-center justify-start space-x-1 squiricle;
+  @apply text-xs font-medium text-neutral-400 pl-2 pr-5 py-1 flex items-center justify-start space-x-1 squiricle;
 }
 .tabTrigger[data-active] {
   @apply text-neutral-900 dark:text-neutral-200 bg-white/80 dark:bg-neutral-800/80 font-medium;
@@ -93,11 +88,6 @@ div {
 
 .root {
   isolation: isolate;
-}
-
-button {
-  appearance: none;
-  cursor: pointer;
 }
 
 a {

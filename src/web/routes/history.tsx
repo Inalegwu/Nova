@@ -7,5 +7,7 @@ export const Route = createFileRoute('/history')({
 });
 
 function Index() {
-  return <div>under construction</div>;
+  return <div className="w-full h-full font-medium">
+    <h1 className="text-2xl font-bold">under construction</h1>
+  </div>;
 }

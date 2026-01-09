@@ -65,8 +65,8 @@ function RouteComponent() {
                               checked
                                 ? setToAdd((old) => [...old, issue.id])
                                 : setToAdd((old) => [
-                                    ...old.filter((v) => v !== issue.id),
-                                  ])
+                                  ...old.filter((v) => v !== issue.id),
+                                ])
                             }
                             className='flex size-5 items-center justify-center rounded-sm focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-blue-800 data-checked:bg-neutral-900 data-unchecked:border data-unchecked:border-neutral-200 data-unchecked:dark:border-neutral-800'
                           >
@@ -107,14 +107,14 @@ function RouteComponent() {
               <Link
                 to='/read/$issueId'
                 params={{ issueId: issue.id }}
-                className='flex items-center justify-start gap-2 hover:underline'
+                className='flex items-center justify-start gap-2 hover:underline transition font-medium'
               >
                 <p>{idx + 1}.</p> {'   '}
                 <p>{issue.issueTitle}</p>
               </Link>
               <div className='flex items-center justify-end gap-2'>
                 <button className='p-2 rounded-lg hover:bg-neutral-200/60 corner-superellipse/1.3'>
-                  <Hearts weight='Outline' size={17} />
+                  <Hearts weight='Linear' size={17} />
                 </button>
               </div>
             </div>

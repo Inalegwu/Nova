@@ -8,9 +8,28 @@ type Props = {
   className?: string;
 }
 
+type Viewport = {
+  scale: number;
+  offsetX: number;
+  offsetY: number;
+}
+
+const MIN_SCALE = 0.3;
+const MAX_SCALE = 5;
+
 export default function CanvasRenderer({ images, className }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<Viewport>({
+    scale: 1,
+    offsetX: 0,
+    offsetY: 0
+  });
+  const isPanningRef = useRef(false);
+  const lastPointRef = useRef<{
+    x: number;
+    y: number
+  } | null>(null)
 
   const width = containerRef.current?.clientWidth || 500;
   const height = containerRef.current?.clientHeight || 700;
@@ -31,11 +50,8 @@ export default function CanvasRenderer({ images, className }: Props) {
 
       image.onload = () => {
         imageCacheRef.current.set(i, image);
+        if (i === index) resetViewAndDraw(image)
       };
-
-      if (i === index) {
-        drawImage(image);
-      }
     })
   }, [images])
 
@@ -44,7 +60,7 @@ export default function CanvasRenderer({ images, className }: Props) {
     if (image) drawImage(image);
   }, [index])
 
-  const drawImage = (img: HTMLImageElement) => {
+  const drawImage = () => {
     const canvas = canvasRef.current;
 
     if (!canvas) return;
@@ -53,36 +69,115 @@ export default function CanvasRenderer({ images, className }: Props) {
 
     if (!ctx) return;
 
+    const img = imageCacheRef.current.get(index);
+
+    if (!img) return;
+
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high"
 
     const dpr = window.devicePixelRatio || 1;
 
-    const targetWidth = width;
-    const targetHeight = height;
-
-    canvas.width = targetWidth * dpr;
-    canvas.height = targetHeight * dpr;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, targetWidth, targetHeight);
+    ctx.clearRect(0, 0, width, height);
 
-    const scale = Math.min(targetWidth / img.width, targetHeight / img.height);
 
-    const drawWidth = img.width * scale;
-    const drawHeight = img.height * scale;
+    const { scale, offsetX, offsetY } = viewportRef.current;
 
-    const x = (targetWidth - drawWidth) / 2;
-    const y = (targetHeight - drawHeight) / 2;
-
-    ctx.drawImage(img, x, y, drawWidth, drawHeight)
+    ctx.save();
+    ctx.translate(offsetX, offsetY);
+    ctx.scale(scale, scale);
+    ctx.drawImage(img, 0, 0);
+    ctx.restore();
   };
+
+  const resetViewAndDraw = (img: HTMLImageElement) => {
+    const scale = Math.min(width / img.width, height / img.height);
+
+    viewportRef.current = {
+      scale,
+      offsetX: (width - img.width * scale) / 2,
+      offsetY: (height - img.height * scale) / 2,
+    };
+
+    drawImage();
+  };
+
+  const onWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+
+    const canvas = canvasRef.current!;
+    const rect = canvas.getBoundingClientRect();
+
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+
+    const { scale, offsetX, offsetY } = viewportRef.current;
+
+    const zoom = e.deltaY < 0 ? 1.1 : 0.9;
+    const nextScale = Math.min(
+      MAX_SCALE,
+      Math.max(MIN_SCALE, scale * zoom)
+    );
+
+    const wx = (mx - offsetX) / scale;
+    const wy = (my - offsetY) / scale;
+
+    viewportRef.current.scale = nextScale;
+    viewportRef.current.offsetX = mx - wx * nextScale;
+    viewportRef.current.offsetY = my - wy * nextScale;
+
+    drawImage();
+  }
+
+  const onMouseDown = (e: React.MouseEvent) => {
+    isPanningRef.current = true;
+    lastPointRef.current = { x: e.clientX, y: e.clientY };
+  };
+
+  const onMouseMove = (e: React.MouseEvent) => {
+    if (!isPanningRef.current || !lastPointRef.current) return;
+
+    const dx = e.clientX - lastPointRef.current.x;
+    const dy = e.clientY - lastPointRef.current.y;
+
+    viewportRef.current.offsetX += dx;
+    viewportRef.current.offsetY += dy;
+
+    lastPointRef.current = { x: e.clientX, y: e.clientY };
+
+    drawImage();
+  };
+
+  const onMouseUp = () => {
+    isPanningRef.current = false;
+    lastPointRef.current = null;
+  };
+
+  /* ---------------- reset ---------------- */
+
+  const onDoubleClick = () => {
+    const img = imageCacheRef.current.get(index);
+    if (img) resetViewAndDraw(img);
+  };
+
 
   const next = () => setIndex((idx) => (idx + 1) % images.length);
   const prev = () => setIndex(idx => (idx - 1 + images.length) % images.length);
 
   return <div ref={containerRef} className={className}>
-    <canvas ref={canvasRef} />
+    <canvas onWheel={onWheel}
+      onMouseDown={onMouseDown}
+      onMouseMove={onMouseMove}
+      onMouseUp={onMouseUp}
+      onMouseLeave={onMouseUp}
+      onDoubleClick={onDoubleClick}
+      style={{ cursor: "grab", touchAction: "none" }} ref={canvasRef} />
     <div className="absolute z-10 bottom-2 p-3 w-full left-0 flex items-center justify-start gap-8">
       <button onClick={prev}>
         <ArrowLeft />

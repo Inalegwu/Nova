@@ -1,4 +1,4 @@
-import t, { queryClient, trpcClient,persister } from '@/shared/config';
+import t, { queryClient, trpcClient, persister } from '@/shared/config';
 import { QueryClientProvider } from '@tanstack/react-query';
 import {
   RouterProvider,
@@ -33,7 +33,7 @@ if (!rootElement?.innerHTML) {
   root.render(
     <StrictMode>
       <t.Provider client={trpcClient} queryClient={queryClient}>
-        <PersistQueryClientProvider persistOptions={{persister}} client={queryClient}>
+        <PersistQueryClientProvider persistOptions={{ persister }} client={queryClient}>
           <RouterProvider defaultViewTransition router={router} />
         </PersistQueryClientProvider>
       </t.Provider>

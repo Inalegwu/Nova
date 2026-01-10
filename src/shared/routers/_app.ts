@@ -49,8 +49,9 @@ export const appRouter = router({
 
       parserChannel.addEventListener('message', listener);
 
-      return () => {
+      return async () => {
         parserChannel.removeEventListener('message', listener);
+        parserChannel.close();
       };
     }),
   ),
@@ -62,8 +63,9 @@ export const appRouter = router({
 
       deletionChannel.addEventListener('message', listener);
 
-      return () => {
+      return async() => {
         deletionChannel.removeEventListener('message', listener);
+        await deletionChannel.close();
       };
     }),
   ),

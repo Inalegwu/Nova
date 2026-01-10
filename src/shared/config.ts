@@ -22,7 +22,7 @@ export const queryClient = new QueryClient({
 
 export const persister = createAsyncStoragePersister({
   storage: window.localStorage,
-  throttleTime: 2_000,
+  throttleTime: 500,
   key: 'app_cache',
 });
 

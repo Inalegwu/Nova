@@ -13,7 +13,7 @@ export const Route = createRootRoute({
     >
       <Layout>
         <Outlet />
-        <Toaster />
+        <Toaster richColors position="bottom-center"/>
         {/* <TanStackRouterDevtools /> */}
       </Layout>
     </SolarProvider>

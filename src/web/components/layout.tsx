@@ -198,17 +198,11 @@ export default function Layout({ children }: LayoutProps) {
               </div>
             </div>
             <Tabs.List className='flex items-center justify-start space-x-2'>
-              <Tabs.Tab
-                className='tabTrigger'
-                value='issues'
-              >
+              <Tabs.Tab className='tabTrigger' value='issues'>
                 <Book size={13} />
                 <span>Issues</span>
               </Tabs.Tab>
-              <Tabs.Tab
-                className='tabTrigger'
-                value='collections'
-              >
+              <Tabs.Tab className='tabTrigger' value='collections'>
                 <Library size={13} />
                 <span>Collections</span>
               </Tabs.Tab>

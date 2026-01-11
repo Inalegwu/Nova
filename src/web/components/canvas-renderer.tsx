@@ -1,5 +1,4 @@
-import { ArrowLeft, ArrowRight } from "@solar-icons/react";
-import { useRef, useState, useEffect } from "react";
+import { useEffect, useRef } from 'react';
 
 type Props = {
   images: string[];
@@ -7,35 +6,39 @@ type Props = {
   height?: number;
   className?: string;
   index: number;
-  setIndex: React.Dispatch<React.SetStateAction<number>>
-}
+  setIndex: React.Dispatch<React.SetStateAction<number>>;
+};
 
 type Viewport = {
   scale: number;
   offsetX: number;
   offsetY: number;
-}
+};
 
 const MIN_SCALE = 0.2;
 const MAX_SCALE = 1;
 
-export default function CanvasRenderer({ images, className, index }: Props) {
+export default function CanvasRenderer({
+  images,
+  className,
+  index,
+  setIndex,
+}: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<Viewport>({
     scale: 1,
     offsetX: 0,
-    offsetY: 0
+    offsetY: 0,
   });
   const isPanningRef = useRef(false);
   const lastPointRef = useRef<{
     x: number;
-    y: number
-  } | null>(null)
+    y: number;
+  } | null>(null);
 
   const width = containerRef.current?.clientWidth || 500;
   const height = containerRef.current?.clientHeight || 700;
-
 
   const imageCacheRef = useRef<Map<number, HTMLImageElement>>(new Map());
 
@@ -49,22 +52,22 @@ export default function CanvasRenderer({ images, className, index }: Props) {
 
       image.onload = () => {
         imageCacheRef.current.set(i, image);
-        if (i === index) resetViewAndDraw(image)
+        if (i === index) resetViewAndDraw(image);
       };
-    })
-  }, [images])
+    });
+  }, [images]);
 
   useEffect(() => {
     const image = imageCacheRef.current.get(index);
     if (image) resetViewAndDraw(image);
-  }, [index])
+  }, [index]);
 
   const drawImage = () => {
     const canvas = canvasRef.current;
 
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d');
 
     if (!ctx) return;
 
@@ -73,7 +76,7 @@ export default function CanvasRenderer({ images, className, index }: Props) {
     if (!img) return;
 
     ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high"
+    ctx.imageSmoothingQuality = 'high';
 
     const dpr = window.devicePixelRatio || 1;
 
@@ -84,7 +87,8 @@ export default function CanvasRenderer({ images, className, index }: Props) {
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, width, height);
-
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
 
     const { scale, offsetX, offsetY } = viewportRef.current;
 
@@ -119,10 +123,7 @@ export default function CanvasRenderer({ images, className, index }: Props) {
     const { scale, offsetX, offsetY } = viewportRef.current;
 
     const zoom = e.deltaY < 0 ? 1.1 : 0.9;
-    const nextScale = Math.min(
-      MAX_SCALE,
-      Math.max(MIN_SCALE, scale * zoom)
-    );
+    const nextScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale * zoom));
 
     const wx = (mx - offsetX) / scale;
     const wy = (my - offsetY) / scale;
@@ -132,7 +133,7 @@ export default function CanvasRenderer({ images, className, index }: Props) {
     viewportRef.current.offsetY = my - wy * nextScale;
 
     drawImage();
-  }
+  };
 
   const onMouseDown = (e: React.MouseEvent) => {
     isPanningRef.current = true;
@@ -165,13 +166,18 @@ export default function CanvasRenderer({ images, className, index }: Props) {
     if (img) resetViewAndDraw(img);
   };
 
-  return <div ref={containerRef} className={className}>
-    <canvas onWheel={onWheel}
-      onMouseDown={onMouseDown}
-      onMouseMove={onMouseMove}
-      onMouseUp={onMouseUp}
-      onMouseLeave={onMouseUp}
-      onDoubleClick={onDoubleClick}
-      style={{ cursor: "grab", touchAction: "none" }} ref={canvasRef} />
-  </div>
+  return (
+    <div ref={containerRef} className={className}>
+      <canvas
+        onWheel={onWheel}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
+        onMouseLeave={onMouseUp}
+        onDoubleClick={onDoubleClick}
+        style={{ cursor: 'grab', touchAction: 'none' }}
+        ref={canvasRef}
+      />
+    </div>
+  );
 }

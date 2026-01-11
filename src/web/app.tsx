@@ -5,7 +5,7 @@ import {
   createHashHistory,
   createRouter,
 } from '@tanstack/react-router';
-import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import './app.css';
@@ -33,7 +33,10 @@ if (!rootElement?.innerHTML) {
   root.render(
     <StrictMode>
       <t.Provider client={trpcClient} queryClient={queryClient}>
-        <PersistQueryClientProvider persistOptions={{ persister }} client={queryClient}>
+        <PersistQueryClientProvider
+          persistOptions={{ persister }}
+          client={queryClient}
+        >
           <RouterProvider defaultViewTransition router={router} />
         </PersistQueryClientProvider>
       </t.Provider>

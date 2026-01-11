@@ -6,5 +6,12 @@ import Skeleton from './skeleton';
 import Spinner from './spinner';
 import Tag from './tag';
 
-export { CanvasRenderer, CollectionBox, IssueBox, Layout, Skeleton, Spinner, Tag };
-
+export {
+  CanvasRenderer,
+  CollectionBox,
+  IssueBox,
+  Layout,
+  Skeleton,
+  Spinner,
+  Tag,
+};

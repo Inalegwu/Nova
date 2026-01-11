@@ -1,6 +1,6 @@
 import { useRouter } from '@tanstack/react-router';
-import * as A from "effect/Array";
-import * as M from "effect/Match";
+import * as A from 'effect/Array';
+import * as M from 'effect/Match';
 
 type CollectionProp = Partial<Collection> & {
   issues: Array<Partial<Issue>>;
@@ -27,12 +27,15 @@ export default function CollectionBox(collection: CollectionProp) {
       <div className='w-full h-full relative rounded-md'>
         {images.map((issue, idx) => (
           <img
-            className={`w-full h-full absolute z-${idx * 10
-              } rounded-lg border border-solid border-zinc-200 dark:border-zinc-800`}
+            className={`w-full h-full absolute z-${
+              idx * 10
+            } rounded-lg border border-solid border-zinc-200 dark:border-zinc-800`}
             style={{
-              transform: `rotateZ(${idx === 0 ? -1.5 : idx % 2 === 0 ? -idx * 1 : idx * 1
-                }deg)`,
-            }} src={issue.thumbnailUrl}
+              transform: `rotateZ(${
+                idx === 0 ? -1.5 : idx % 2 === 0 ? -idx * 1 : idx * 1
+              }deg)`,
+            }}
+            src={issue.thumbnailUrl}
             key={issue.id}
             alt={`issue_th_${issue.id}__${issue.issueTitle}`}
           />

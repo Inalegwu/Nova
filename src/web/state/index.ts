@@ -19,5 +19,5 @@ const createSelectors = <S extends UseBoundStore<StoreApi<object>>>(
 
 export default {
   app: createSelectors(useGlobalState),
-  reader:createSelectors(useReaderState)
+  reader: createSelectors(useReaderState),
 };

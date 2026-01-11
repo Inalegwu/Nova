@@ -74,6 +74,7 @@ const issueRouter = router({
         columns: {
           id: true,
           path: true,
+          issueTitle: true,
         },
       });
 
@@ -100,6 +101,7 @@ const issueRouter = router({
       );
 
       return {
+        issue,
         pages,
       };
     }),

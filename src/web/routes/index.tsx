@@ -37,7 +37,7 @@ function Component() {
 function Issues({ issues }: { issues: Array<Partial<Issue>> }) {
   const setLastOpenedTab = global.app.use.setLastOpenedTab();
 
-  useEffect(() => setLastOpenedTab("issues"), [])
+  useEffect(() => setLastOpenedTab('issues'), []);
 
   return (
     <div className='w-full h-full flex items-start justify-start flex-wrap space-x-4 overflow-y-scroll'>
@@ -53,11 +53,9 @@ type CollectionProp = Partial<Collection> & {
 };
 
 function Collections({ collections }: { collections: Array<CollectionProp> }) {
-
   const setLastOpenedTab = global.app.use.setLastOpenedTab();
 
-  useEffect(() => setLastOpenedTab("collections"), [])
-
+  useEffect(() => setLastOpenedTab('collections'), []);
 
   return (
     <div className='w-full h-full flex items-start justify-start flex-wrap space-x-4'>

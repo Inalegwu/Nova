@@ -2,11 +2,17 @@ import t from '@/shared/config';
 import { Checkbox } from '@base-ui/react/checkbox';
 import { Dialog } from '@base-ui/react/dialog';
 import { ScrollArea } from '@base-ui/react/scroll-area';
-import { AddSquare, CheckCircle, Hearts, List, Widget } from '@solar-icons/react';
+import {
+  AddSquare,
+  CheckCircle,
+  Hearts,
+  List,
+  Widget,
+} from '@solar-icons/react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Skeleton, Spinner } from '../components';
-import { motion } from "motion/react";
+import { motion } from 'motion/react';
 import { ToggleGroup } from '@base-ui/react/toggle-group';
 import { Toggle } from '@base-ui/react/toggle';
 
@@ -19,9 +25,12 @@ function RouteComponent() {
   const { collectionId } = Route.useParams();
 
   const [toAdd, setToAdd] = useState<Array<string>>([]);
-  const [listView, setListView] = useState<"list" | "grid">("list");
+  const [listView, setListView] = useState<'list' | 'grid'>('list');
 
-  const { data, isLoading: preparing } = t.library.getCollectionById.useQuery({ collectionId }, {});
+  const { data, isLoading: preparing } = t.library.getCollectionById.useQuery(
+    { collectionId },
+    {},
+  );
 
   const { data: unmatched, isLoading: gettingUnmatched } =
     t.library.getLibrary.useQuery();
@@ -32,28 +41,34 @@ function RouteComponent() {
     });
 
   if (preparing) {
-    return (<div className="w-full h-full flex flex-col">
-      <div className="w-full h-3/6">
-        <Skeleton className='w-1.8/6 h-96 border border-solid border-neutral-200 dark:border-neutral-800 rounded-2xl squircle'
-        />
+    return (
+      <div className='w-full h-full flex flex-col'>
+        <div className='w-full h-3/6'>
+          <Skeleton className='w-1.8/6 h-96 border border-solid border-neutral-200 dark:border-neutral-800 rounded-2xl squircle' />
+        </div>
       </div>
-    </div>)
+    );
   }
 
   return (
     <div className='w-full h-full p-2 flex flex-col items-start justify-start space-y-2'>
       {/* TODO: fill in collection metadata from comic vine */}
       <div className='flex items-center justify-start gap-5 w-full'>
-        <div className="relative w-2/6 h-108 squiricle border border-solid overflow-hidden border-neutral-200 dark:border-neutral-800 rounded-2xl">
-          <div className="absolute w-full transition rounded-2xl squiricle h-full bg-black/30 flex flex-col items-start justify-end" >
-            <motion.div className="bg-neutral-200/20 flex items-center justify-center gap-4 w-full bottom-0 left-0 p-2" initial={{ translateY: "50px" }} animate={{ translateY: "0px" }} transition={{
-              bounceDamping: 1
-            }}>
-              <ToggleGroup className="flex gap-4">
-                <Toggle pressed={listView === "grid"} render={<button />}>
+        <div className='relative w-2/6 h-108 squiricle border border-solid overflow-hidden border-neutral-200 dark:border-neutral-800 rounded-2xl'>
+          <div className='absolute w-full transition rounded-2xl squiricle h-full bg-black/30 flex flex-col items-start justify-end'>
+            <motion.div
+              className='bg-neutral-200/20 flex items-center justify-center gap-4 w-full bottom-0 left-0 p-2'
+              initial={{ translateY: '50px' }}
+              animate={{ translateY: '0px' }}
+              transition={{
+                bounceDamping: 1,
+              }}
+            >
+              <ToggleGroup className='flex gap-4'>
+                <Toggle pressed={listView === 'grid'} render={<button />}>
                   <Widget size={17} />
                 </Toggle>
-                <Toggle pressed={listView === "list"} render={<button />}>
+                <Toggle pressed={listView === 'list'} render={<button />}>
                   <List size={17} />
                 </Toggle>
               </ToggleGroup>
@@ -95,8 +110,8 @@ function RouteComponent() {
                               checked
                                 ? setToAdd((old) => [...old, issue.id])
                                 : setToAdd((old) => [
-                                  ...old.filter((v) => v !== issue.id),
-                                ])
+                                    ...old.filter((v) => v !== issue.id),
+                                  ])
                             }
                             className='flex size-5 items-center justify-center rounded-sm focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-blue-800 data-checked:bg-neutral-900 data-unchecked:border data-unchecked:border-neutral-200 data-unchecked:dark:border-neutral-800'
                           >

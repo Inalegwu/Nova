@@ -1569,6 +1569,11 @@
   resolved "https://registry.yarnpkg.com/@standard-schema/spec/-/spec-1.0.0.tgz#f193b73dc316c4170f2e82a881da0f550d551b9c"
   integrity sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==
 
+"@standard-schema/spec@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@standard-schema/spec/-/spec-1.1.0.tgz#a79b55dbaf8604812f52d140b2c9ab41bc150bb8"
+  integrity sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==
+
 "@stitches/react@^1.2.8":
   version "1.2.8"
   resolved "https://registry.yarnpkg.com/@stitches/react/-/react-1.2.8.tgz#954f8008be8d9c65c4e58efa0937f32388ce3a38"
@@ -1688,10 +1693,32 @@
     "@tailwindcss/oxide" "4.1.18"
     tailwindcss "4.1.18"
 
+"@tanstack/db-ivm@0.1.14":
+  version "0.1.14"
+  resolved "https://registry.yarnpkg.com/@tanstack/db-ivm/-/db-ivm-0.1.14.tgz#5cdd0a1bccf11e64706357bb7c45e707b9f1d83e"
+  integrity sha512-GluhFsd/Z1E/MZTf60l9dZpKNpmdxtV4izPRnj1RK6TYrhC9LMndN+ywk1VDFBrjtBq/CTShz4CilECLwVlTGg==
+  dependencies:
+    fractional-indexing "^3.2.0"
+    sorted-btree "^1.8.1"
+
+"@tanstack/db@0.5.18":
+  version "0.5.18"
+  resolved "https://registry.yarnpkg.com/@tanstack/db/-/db-0.5.18.tgz#4908d3b46047a394d7ecee6d9b42327cbd66e8c1"
+  integrity sha512-lEXMfuKBMsCcN63Rmm/nJdk583uQcZ4rkDwzVz3Xe6yI/+MjnwRonlM9e236IPVf2iADxpGwUulEXOMJ8bpnPA==
+  dependencies:
+    "@standard-schema/spec" "^1.1.0"
+    "@tanstack/db-ivm" "0.1.14"
+    "@tanstack/pacer-lite" "^0.2.0"
+
 "@tanstack/history@1.139.0":
   version "1.139.0"
   resolved "https://registry.yarnpkg.com/@tanstack/history/-/history-1.139.0.tgz#dcd004fbd0ec7ec7bfa10cc573868949a0d018aa"
   integrity sha512-l6wcxwDBeh/7Dhles23U1O8lp9kNJmAb2yNjekR6olZwCRNAVA8TCXlVCrueELyFlYZqvQkh0ofxnzG62A1Kkg==
+
+"@tanstack/pacer-lite@^0.2.0":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@tanstack/pacer-lite/-/pacer-lite-0.2.1.tgz#7755ebb8a53b5c78f3c2b6bf663b2f786fca35e5"
+  integrity sha512-3PouiFjR4B6x1c969/Pl4ZIJleof1M0n6fNX8NRiC9Sqv1g06CVDlEaXUR4212ycGFyfq4q+t8Gi37Xy+z34iQ==
 
 "@tanstack/query-async-storage-persister@^5.90.12":
   version "5.90.12"
@@ -1711,12 +1738,28 @@
   resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.90.10.tgz#2704b038277fb41e631f356e7428951b5354ed13"
   integrity sha512-EhZVFu9rl7GfRNuJLJ3Y7wtbTnENsvzp+YpcAV7kCYiXni1v8qZh++lpw4ch4rrwC0u/EZRnBHIehzCGzwXDSQ==
 
+"@tanstack/query-db-collection@^1.0.14":
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-db-collection/-/query-db-collection-1.0.14.tgz#e1c64e2a32edff1e5464d9999f090e8501304af6"
+  integrity sha512-0wkxtYt+Xas07Ka0f4LVL3nJnibIciIVK64pAifvo+DWA+O2pBSNvFqZkaTC8cAJGvFjwjU3jvzFiTfUMompcw==
+  dependencies:
+    "@standard-schema/spec" "^1.1.0"
+    "@tanstack/db" "0.5.18"
+
 "@tanstack/query-persist-client-core@5.91.9":
   version "5.91.9"
   resolved "https://registry.yarnpkg.com/@tanstack/query-persist-client-core/-/query-persist-client-core-5.91.9.tgz#6754283f974296a2abf6dd660a937a835a48f174"
   integrity sha512-LliMZl/pkO/6vRf5//fO8nl4UCfM1LQsnT+N0aRYkK7bqoM3QdqHxD65EApmJRypKkqaWmiyulPG3Mi1NYuyIA==
   dependencies:
     "@tanstack/query-core" "5.90.10"
+
+"@tanstack/react-db@^0.1.62":
+  version "0.1.62"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-db/-/react-db-0.1.62.tgz#efb6bedd0bb2d075cc77a9804f11081b771831b2"
+  integrity sha512-9fCEIIum3glKoRRdClMXsLoc5JDzMQaRL9HwHod1k9dWD6NbhSjshNX0oT1cQ9hsJtDtbDPmWSF+/pteyNMLyA==
+  dependencies:
+    "@tanstack/db" "0.5.18"
+    use-sync-external-store "^1.6.0"
 
 "@tanstack/react-query-persist-client@^5.90.12":
   version "5.90.12"
@@ -3376,6 +3419,11 @@ formdata-polyfill@^4.0.10:
   dependencies:
     fetch-blob "^3.1.2"
 
+fractional-indexing@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/fractional-indexing/-/fractional-indexing-3.2.0.tgz#1193e63d54ff4e0cbe0c79a9ed6cfbab25d91628"
+  integrity sha512-PcOxmqwYCW7O2ovKRU8OoQQj2yqTfEB/yeTYk4gPid6dN5ODRfU1hXd9tTVZzax/0NkO7AxpHykvZnT1aYp/BQ==
+
 framer-motion@^12.23.24:
   version "12.23.24"
   resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-12.23.24.tgz#4895b67e880bd2b1089e61fbaa32ae802fc24b8c"
@@ -4954,6 +5002,11 @@ sort-by@^1.2.0:
   integrity sha512-aRyW65r3xMnf4nxJRluCg0H/woJpksU1dQxRtXYzau30sNBOmf5HACpDd9MZDhKh7ALQ5FgSOfMPwZEtUmMqcg==
   dependencies:
     object-path "0.6.0"
+
+sorted-btree@^1.8.1:
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/sorted-btree/-/sorted-btree-1.8.1.tgz#6e6275f7955e5892bb8737149cbe495be10f426f"
+  integrity sha512-395+XIP+wqNn3USkFSrNz7G3Ss/MXlZEqesxvzCRFwL14h6e8LukDHdLBePn5pwbm5OQ9vGu8mDyz2lLDIqamQ==
 
 source-map-js@^1.2.1:
   version "1.2.1"

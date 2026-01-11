@@ -1,7 +1,6 @@
 import { publicProcedure, router } from '@/trpc';
 import { observable } from '@trpc/server/observable';
 import { deeplinkChannel, deletionChannel, parserChannel } from '../channels';
-import { comicVineClient } from '../core/services/metadata-service';
 import { parseFileNameFromPath } from '../utils';
 import issueRouter from './issue';
 import libraryRouter from './library';
@@ -63,21 +62,12 @@ export const appRouter = router({
 
       deletionChannel.addEventListener('message', listener);
 
-      return async() => {
+      return async () => {
         deletionChannel.removeEventListener('message', listener);
         await deletionChannel.close();
       };
     }),
   ),
-  testMeta: publicProcedure.query(async () => {
-    const result = await comicVineClient.character.retrieve(1443, {
-      priority: 'user',
-    });
-
-    console.log(result);
-
-    return result;
-  }),
 });
 
 export type AppRouter = typeof appRouter;

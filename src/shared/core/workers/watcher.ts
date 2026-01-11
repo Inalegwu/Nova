@@ -94,26 +94,24 @@ const watchFS = Effect.fn(function* (directory: string | null) {
 port.on('message', (message) =>
   transformMessage(z.object({ activate: z.boolean() }), message).pipe(
     Effect.matchEffect({
-      onSuccess: ({ activate }) =>
-        (() => {
-          return watchFS(process.env.source_dir!).pipe(
-            Effect.schedule(Schedule.duration(Duration.seconds(10))),
-            Effect.catchTags({
-              FSError: (error) =>
-                Effect.logFatal({
-                  cause: error.cause,
-                  message: error.message,
-                  name: error.name,
-                }),
-              UnknownException: (exception) =>
-                Effect.logFatal({
-                  message: exception.message,
-                  cause: exception.cause,
-                }),
-            }),
-            Effect.forever,
-          );
-        })(),
+      onSuccess: () =>
+        watchFS(process.env.source_dir!).pipe(
+          Effect.schedule(Schedule.duration(Duration.seconds(10))),
+          Effect.catchTags({
+            FSError: (error) =>
+              Effect.logFatal({
+                cause: error.cause,
+                message: error.message,
+                name: error.name,
+              }),
+            UnknownException: (exception) =>
+              Effect.logFatal({
+                message: exception.message,
+                cause: exception.cause,
+              }),
+          }),
+          Effect.forever,
+        ),
       onFailure: Effect.logFatal,
     }),
     Effect.annotateLogs({

@@ -1,6 +1,6 @@
 import t from '@/shared/config';
 import { CanvasRenderer, Spinner } from '@/web/components';
-import { useKeyPress, useTimeout } from '@/web/hooks';
+import { useInterval, useKeyPress, useTimeout } from '@/web/hooks';
 import { createFileRoute, useRouter } from '@tanstack/react-router';
 import { useState, useMemo, useCallback } from 'react';
 import { useMotionValue, motion } from 'motion/react';
@@ -17,6 +17,7 @@ import {
   AltArrowLeft,
 } from '@solar-icons/react';
 import global from '@state';
+import { historyCollection } from '@/web/store/history';
 
 const DRAG_BUFFER = 50;
 
@@ -32,7 +33,6 @@ function RouteComponent() {
   const [expanded, setExpanded] = useState(true);
 
   const readerDirection = global.reader.use.direction();
-  const toggleReaderDirection = global.reader.use.toggleReaderDirection();
   const setReaderDirection = global.reader.use.setReaderDirection();
 
   const { data, isLoading: fetchingPages } = t.issue.getPages.useQuery(
@@ -63,6 +63,36 @@ function RouteComponent() {
     }
   };
 
+  useInterval(() => {
+    const exists = historyCollection.get(issueId);
+
+    if (exists) {
+      console.log('updating...');
+      historyCollection.update(issueId, (draft) => {
+        draft.currentPage === itemIndex;
+      });
+      return;
+    }
+
+    console.log('inserting into history');
+    historyCollection.insert({
+      id: issueId,
+      thumbnail: data?.pages[0].data || '',
+      title: data?.issue.issueTitle || '',
+      lastRead: new Date().toString(),
+      currentPage: itemIndex,
+      totalPages: contentLength,
+      status:
+        itemIndex === Math.floor(contentLength / 2)
+          ? ('half-way' as const)
+          : itemIndex === contentLength
+            ? ('done' as const)
+            : ('currently-reading' as const),
+    });
+
+    return;
+  }, 3000);
+
   useKeyPress((e) => {
     if (e.keyCode === 93 && itemIndex < contentLength) {
       setItemIndex((idx) => idx + 1);
@@ -84,8 +114,13 @@ function RouteComponent() {
   }
 
   return (
-    <div className="relative">
-      <CanvasRenderer index={itemIndex} setIndex={setItemIndex} className="w-full h-full" images={data?.pages.map((page) => page.data) || []} />
+    <div className='relative'>
+      <CanvasRenderer
+        index={itemIndex}
+        setIndex={setItemIndex}
+        className='w-full h-full'
+        images={data?.pages.map((page) => page.data) || []}
+      />
       <Toolbar.Root
         render={<motion.div animate={{ width: expanded ? '13.3%' : '2.3%' }} />}
         className='flex centered overflow-hidden absolute z-10 top-2 right-2 gap-1 bg-neutral-100 dark:bg-neutral-950 rounded-md squiricle'
@@ -112,7 +147,7 @@ function RouteComponent() {
           className='flex centered gap-1'
         >
           <Toolbar.Button
-            onClick={() => setReaderDirection("vertical")}
+            onClick={() => setReaderDirection('vertical')}
             className='toolbarToggle'
             render={<Toggle pressed={readerDirection === 'vertical'} />}
             aria-label='reader-vertical'
@@ -123,7 +158,7 @@ function RouteComponent() {
             />
           </Toolbar.Button>
           <Toolbar.Button
-            onClick={() => setReaderDirection("horizontal")}
+            onClick={() => setReaderDirection('horizontal')}
             className='toolbarToggle'
             render={<Toggle pressed={readerDirection === 'horizontal'} />}
             aria-label='reader-vertical'

@@ -1,5 +1,5 @@
 import Zip from 'adm-zip';
-import { Array, Effect, Option, Schema } from 'effect';
+import { Array, Effect, Match, Option, Schema } from 'effect';
 import { XMLParser } from 'fast-xml-parser';
 import { createExtractorFromData } from 'node-unrar-js';
 import { v4 } from 'uuid';
@@ -9,7 +9,21 @@ import { issues, metadata } from '../../schema';
 import db from '../../storage';
 import { extractMetaID, parseFileNameFromPath, sortPages } from '../../utils';
 import { MetadataSchema } from '../../validations';
+import { ComicVineService } from '../services/metadata-service';
 import { ArchiveError } from './errors';
+
+const fetchMetadata = (id: number, type: 'issue' | 'series') =>
+  Effect.gen(function* () {
+    const cv = yield* ComicVineService;
+
+    return Match.value(type).pipe(
+      Match.when('issue', () => {}),
+      Match.when('series', () => {}),
+      Match.orElse(() => {
+        throw new Error('Invalid type provided');
+      }),
+    );
+  }).pipe(Effect.provide(ComicVineService.Default));
 
 export const parseXML = Effect.fn(function* (
   file: Option.Option<Extractor>,

@@ -71,6 +71,7 @@
     "vite-tsconfig-paths": "^5.1.4",
     "workerpool": "^10.0.1",
     "ws": "^8.18.3",
+    "yauzl": "^3.2.0",
     "zod": "^3.25.76",
     "zustand": "^5.0.9"
   },

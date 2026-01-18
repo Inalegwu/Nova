@@ -9,14 +9,12 @@ export const Route = createFileRoute('/history')({
 });
 
 function Index() {
-  const { data: uncompleted } = useLiveQuery((q) =>
-    q
-      .from({ history: historyCollection })
-      .where(({ history }) => !eq(history.status, "done"))
-      .orderBy(({ history }) => history.lastRead, 'asc'),
-  );
-
-  console.log({ uncompleted });
+  // const { data: uncompleted } = useLiveQuery((q) =>
+  //   q
+  //     .from({ history: historyCollection })
+  //     .where(({ history }) => !eq(history.status, 'done'))
+  //     .orderBy(({ history }) => history.lastRead, 'asc'),
+  // );
 
   return (
     <div className='w-full h-full font-medium'>

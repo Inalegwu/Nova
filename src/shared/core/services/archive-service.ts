@@ -1,4 +1,4 @@
-import { Console, Context, Effect } from 'effect';
+import { Console, Context, Effect, Stream } from 'effect';
 import type { UnknownException } from 'effect/Cause';
 import path from 'node:path';
 import { parserChannel } from '../../channels';
@@ -10,6 +10,7 @@ import {
   createZipExtractor,
   parseXML,
   saveIssue,
+  unzipStream,
 } from '../utils/functions';
 
 export type IArchiveService = {
@@ -72,6 +73,8 @@ export const databaseArchiveService = {
   }),
   zip: Effect.fnUntraced(function* (filePath: string) {
     const { files, meta } = yield* createZipExtractor(filePath);
+
+    yield* unzipStream(filePath).pipe(Stream.runCollect);
 
     yield* Effect.logInfo({ files, meta });
 

@@ -1,8 +1,10 @@
+import { NodeStream } from '@effect/platform-node';
 import Zip from 'adm-zip';
-import { Array, Effect, Match, Option, Schema } from 'effect';
+import { Array, Cause, Effect, Match, Option, Schema, Stream } from 'effect';
 import { XMLParser } from 'fast-xml-parser';
 import { createExtractorFromData } from 'node-unrar-js';
 import { v4 } from 'uuid';
+import yauzl from 'yauzl';
 import { parserChannel } from '../../channels';
 import { Fs } from '../../fs';
 import { issues, metadata } from '../../schema';
@@ -12,12 +14,70 @@ import { MetadataSchema } from '../../validations';
 import { ComicVineService } from '../services/metadata-service';
 import { ArchiveError } from './errors';
 
+type F = {
+  path: string;
+  data: Stream.Stream<Uint8Array, Cause.UnknownException>;
+};
+
+export const unzipStream = (filePath: string) =>
+  Stream.unwrapScoped(
+    Effect.async<yauzl.ZipFile, Error>((resume) => {
+      yauzl.open(filePath, { lazyEntries: true }, (err, zip) => {
+        if (err || !zip) {
+          resume(Effect.fail(err ?? new Error('open failed')));
+        }
+        resume(Effect.succeed(zip));
+      });
+    }).pipe(
+      Effect.map((zip) =>
+        Stream.async<F, Error>((emit) => {
+          zip.on('entry', (entry: yauzl.Entry) => {
+            if (entry.fileName.endsWith('/')) {
+              zip.readEntry();
+              return;
+            }
+
+            zip.openReadStream(entry, (err, stream) => {
+              if (err || !stream) {
+                emit.fail(err ?? new Error('stream failed'));
+              }
+              console.log(entry);
+              emit.single({
+                path: entry.fileName,
+                data: NodeStream.fromReadable(
+                  () => stream,
+                  (e) => new Cause.UnknownException(e),
+                ),
+              });
+
+              stream.on('end', () => zip.readEntry());
+            });
+          });
+
+          zip.on('end', () => emit.end());
+
+          return Effect.sync(() => zip.close());
+        }),
+      ),
+    ),
+  );
+
 const fetchMetadata = (id: number, type: 'issue' | 'series') =>
   Effect.gen(function* () {
     const cv = yield* ComicVineService;
 
     return Match.value(type).pipe(
-      Match.when('issue', () => {}),
+      Match.when(
+        'issue',
+        async () =>
+          await cv
+            .use((client) => {
+              return client.issue.retrieve(1443, {
+                fieldList: ['id', 'image', 'volume'],
+              });
+            })
+            .pipe(Effect.runPromise),
+      ),
       Match.when('series', () => {}),
       Match.orElse(() => {
         throw new Error('Invalid type provided');

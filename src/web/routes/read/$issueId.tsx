@@ -80,7 +80,7 @@ function RouteComponent() {
       thumbnail: data?.pages[0].data || '',
       title: data?.issue.issueTitle || '',
       lastRead: new Date().toString(),
-      currentPage: itemIndex,
+      currentPage: itemIndex + 1,
       totalPages: contentLength,
       status:
         itemIndex === Math.floor(contentLength / 2)

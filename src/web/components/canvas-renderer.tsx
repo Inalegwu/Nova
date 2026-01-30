@@ -19,40 +19,6 @@ type Viewport = {
 const MIN_SCALE = 0.2;
 const MAX_SCALE = 1;
 
-// const useImageRenderer = () => {
-//   const imageRenderer = useRef(
-//     Effect.gen(function* () {
-//       const renderer = yield* ImageRender.ImageRenderer;
-//       return renderer;
-//     }).pipe(Effect.provide(ImageRender.ImageRendererLayer), Effect.runPromise),
-//   );
-
-//   const renderImage = (source: Types.ImageSource) =>
-//     imageRenderer.current?.renderImage(source).pipe(Effect.runPromise);
-
-//   const initialize = (canvasId: string) =>
-//     imageRenderer.current?.initialize(canvasId).pipe(Effect.runPromise);
-
-//   const animateTransition = (from: Types.ImageSource, to: Types.ImageSource) =>
-//     imageRenderer.current
-//       ?.animateTransition(
-//         from,
-//         to,
-//         new Types.AnimationConfig({
-//           type: 'slide',
-//           duration: 150,
-//           easing: 'easeInOutQuad',
-//           direction: 'both',
-//         }),
-//       )
-//       .pipe(Effect.runPromise);
-
-//   return {
-//     renderImage,
-//     initialize,
-//   };
-// };
-
 export default function CanvasRenderer({
   images,
   className,

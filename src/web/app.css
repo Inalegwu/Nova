@@ -5,7 +5,7 @@
 
 @font-face {
   font-family: Font;
-  src: url("../assets/fonts/general.ttf");
+  src: url("../assets/fonts/satoshi.ttf");
 }
 
 .radix-themes {
@@ -18,7 +18,7 @@
 }
 
 @theme {
-  --font-sans: Font;
+  --font-display: Font;
   --color-primary-50: #d9ffed;
   --color-primary-100: #c7f5df;
   --color-primary-200: #b1dec9;
@@ -71,7 +71,7 @@ button {
   @apply text-xs font-medium text-neutral-400 pl-2 pr-5 py-1 flex items-center justify-start space-x-1 squiricle;
 }
 .tabTrigger[data-active] {
-  @apply text-neutral-900 dark:text-neutral-200 bg-white/80 dark:bg-neutral-800/80 font-medium;
+  @apply text-neutral-900 dark:text-neutral-200 bg-white/80 dark:bg-neutral-800/80;
 }
 .ctxMenuRowItem {
   @apply p-2 flex centered cursor-pointer rounded-md corner-superellipse/2;

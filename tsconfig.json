@@ -11,7 +11,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@state": ["./src/web/state/index.ts"]
+      "@state": ["./src/web/state/index.ts"],
+      "@web/*":["./src/web/*"]
     },
     "plugins": [
       {

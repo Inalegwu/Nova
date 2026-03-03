@@ -29,16 +29,27 @@ const libraryRouter = router({
   getLibrary: publicProcedure.query(async ({ ctx }) => {
     const collections = await ctx.db.query.collections.findMany({
       with: {
-        issues: true,
+        issues: {
+          columns: {
+            thumbnailUrl: true,
+            id: true,
+            issueTitle:true
+          },
+        },
       },
     });
 
     const issues = await ctx.db.query.issues
       .findMany({
         orderBy: (fields, { asc }) => asc(fields.issueTitle),
+        columns: {
+          id: true,
+          issueTitle: true,
+          thumbnailUrl: true,
+        },
       })
       .then((result) =>
-        Array.differenceWith<typeof issueSchema.$inferSelect>(
+        Array.differenceWith<Partial<typeof issueSchema.$inferSelect>>(
           (issue, issueInCollection) =>
             issue.issueTitle === issueInCollection.issueTitle,
         )(
@@ -220,12 +231,12 @@ const libraryRouter = router({
           Effect.runPromise,
         ),
     ),
-  emptyCache: publicProcedure.mutation(async ({ ctx }) => {
+  emptyCache: publicProcedure.mutation(async () => {
     return {
       success: true,
     };
   }),
-  addSourceDirectory: publicProcedure.mutation(async ({ ctx }) => {
+  addSourceDirectory: publicProcedure.mutation(async () => {
     const { canceled, filePaths } = await dialog.showOpenDialog({
       buttonLabel: 'Select Folder',
       properties: ['openDirectory', 'dontAddToRecent'],

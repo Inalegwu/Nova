@@ -1,14 +1,7 @@
-import { ContextMenu } from '@base-ui/react/context-menu';
+import { ContextMenu } from '@base-ui/react';
 import { useRouter } from '@tanstack/react-router';
-import {
-  AddSquare,
-  Pen,
-  TrashBinMinimalistic,
-  InfoCircle,
-  AddCircle,
-} from '@solar-icons/react';
+import { InfoCircle, TrashBinMinimalistic } from '@solar-icons/react';
 import t from '@/shared/config';
-import { motion } from 'motion/react';
 
 export default function IssueBox(issue: Partial<Issue>) {
   const nav = useRouter();
@@ -37,7 +30,7 @@ export default function IssueBox(issue: Partial<Issue>) {
           className='w-full h-full bg-zinc-200/5 dark:opacity-[0.8] rounded-xl corner-superellipse/1.3 border border-solid border-neutral-200 dark:border-zinc-600'
           alt={`thumb_${issue.id}`}
         />
-        <span className='text-[0.88rem] text-black dark:text-neutral-400 font-medium w-full'>
+        <span className='text-xs font-medium text-black dark:text-neutral-400 w-full'>
           {issue.issueTitle?.slice(0, issue.issueTitle?.length / 2 + 3)}
         </span>
       </ContextMenu.Trigger>

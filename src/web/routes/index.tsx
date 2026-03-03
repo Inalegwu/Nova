@@ -3,16 +3,18 @@ import { Tabs } from '@base-ui/react/tabs';
 import { createFileRoute } from '@tanstack/react-router';
 import { memo, useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { CollectionBox, IssueBox } from '../components';
-import { useTimeout } from '../hooks';
-import global from '../state';
+import { useTimeout } from '@web/hooks';
+import global from '@state';
+import React from 'react';
+
+const IssueBox = React.lazy(() => import('../components/issue'));
+const CollectionBox = React.lazy(() => import('../components/collection'));
 
 export const Route = createFileRoute('/')({
   component: memo(Component),
 });
 
 function Component() {
-  const utils = t.useUtils();
   const [isEnabled, setIsEnabled] = useState(false);
 
   const { data } = t.library.getLibrary.useQuery(undefined, {
@@ -52,6 +54,7 @@ type CollectionProp = Partial<Collection> & {
   issues: Array<Partial<Issue>>;
 };
 
+// TODO: Move collection creation here
 function Collections({ collections }: { collections: Array<CollectionProp> }) {
   const setLastOpenedTab = global.app.use.setLastOpenedTab();
 

@@ -1,7 +1,7 @@
 import icon_dark from '@/assets/images/win_dark.png';
 import icon_light from '@/assets/images/win_light.png';
 import t from '@/shared/config';
-import {Tabs,Input,Popover,Button} from "@base-ui/react";
+import { Tabs, Input, Popover, Button } from '@base-ui/react';
 import {
   AddSquare,
   ArrowLeft,
@@ -23,7 +23,6 @@ import { AnimatePresence, motion } from 'motion/react';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { v4 } from 'uuid';
 import { useInterval, useWindow } from '../hooks';
 import global from '@state';
 import ThemeButton from './theme-button';
@@ -42,7 +41,7 @@ export default function Layout({ children }: LayoutProps) {
   const { mutate: maximize } = t.window.maximize.useMutation();
   const { mutate: close } = t.window.closeWindow.useMutation();
   const { mutate: addIssue } = t.issue.addIssue.useMutation();
-  const { mutate: launchWatcher } = t.library.launchWatcher.useMutation();
+  t.library.launchWatcher.useMutation();
   const { mutate: createCollection, isPending: isCreating } =
     t.library.createCollection.useMutation({
       onSuccess: (_) => utils.library.getLibrary.invalidate(),
@@ -53,7 +52,6 @@ export default function Layout({ children }: LayoutProps) {
   const isHome = routerState.location.pathname === '/';
   const isCollectionView = global.app.use.lastOpenedTab() === 'collections';
   const lastOpenedTab = global.app.use.lastOpenedTab();
-  const setLastOpenedTab = global.app.use.setLastOpenedTab();
   const colorMode = global.app.use.colorMode();
   const isFullScreen = global.app.use.isFullscreen();
 
@@ -122,6 +120,10 @@ export default function Layout({ children }: LayoutProps) {
     }
   }, [colorMode]);
 
+  useEffect(() => {
+    toast.dismiss();
+  }, []);
+
   useWindow('mousemove', (e) => {
     if (e.clientY < 20 && !isFullScreen) {
       setShowTop(true);
@@ -150,7 +152,7 @@ export default function Layout({ children }: LayoutProps) {
       >
         {/*titlebar*/}
         <motion.div
-          className='w-full flex items-center justify-between'
+          className='w-full flex items-center justify-between gap'
           initial={{ height: '0%', display: 'none' }}
           onMouseOver={() => setMouseOver(true)}
           onMouseLeave={() => setMouseOver(false)}
@@ -204,67 +206,6 @@ export default function Layout({ children }: LayoutProps) {
                 <span>Collections</span>
               </Tabs.Tab>
             </Tabs.List>
-            <AnimatePresence mode='sync'>
-              {isCollectionView && (
-                <Popover.Root>
-                  <Popover.Trigger
-                    render={
-                      <motion.button
-                        initial={{
-                          opacity: 0,
-                          display: 'none',
-                          translateY: '-50px',
-                        }}
-                        animate={{
-                          opacity: 1,
-                          display: 'flex',
-                          translateY: '0px',
-                        }}
-                        exit={{
-                          opacity: 0,
-                          display: 'none',
-                          translateY: '-50px',
-                        }}
-                      />
-                    }
-                    className='bg-white font-medium dark:bg-neutral-900 dark:text-neutral-400 squiricle pl-2 pr-5 py-1 text-xs'
-                  >
-                    Create Collection
-                  </Popover.Trigger>
-                  <Popover.Portal>
-                    <Popover.Positioner side='bottom' sideOffset={2}>
-                      <Popover.Popup
-                        onMouseOver={() => setMouseOver(true)}
-                        onMouseLeave={() => setMouseOver(false)}
-                        className='origin-(--transform-origin) space-y-1 rounded-lg bg-neutral-100 dark:bg-neutral-950 p-1 text-neutral-900 dark:text-neutral-300 shadow-lg shadow-gray-200 outline outline-gray-200 transition-[transform,scale,opacity] data-ending-style:scale-90 data-ending-style:opacity-0 data-starting-style:scale-90 data-starting-style:opacity-0 dark:shadow-none dark:-outline-offset-1 dark:outline-gray-300'
-                      >
-                        <Popover.Title className='text-xs font-bold'>
-                          Create Collection
-                        </Popover.Title>
-                        <Input
-                          disabled={isCreating}
-                          placeholder='Collection Name'
-                          onChange={(e) =>
-                            setCollectionName(e.currentTarget.value)
-                          }
-                          className='w-full h-7 text-xs px-3 py-1 rounded-md corner-superellipse/2 outline-none bg-white dark:bg-neutral-900 border border-solid border-neutral-200 dark:border-neutral-800'
-                        />
-                        <Button
-                          onClick={() =>
-                            createCollection({
-                              collectionName,
-                            })
-                          }
-                          className='text-xs text-black dark:text-neutral-300 w-full flex item-center justify-center p-1 rounded-md bg-white corner-superellipse/2 dark:bg-neutral-900'
-                        >
-                          Create
-                        </Button>
-                      </Popover.Popup>
-                    </Popover.Positioner>
-                  </Popover.Portal>
-                </Popover.Root>
-              )}
-            </AnimatePresence>
             <div className='flex items-center justify-start gap-2'>
               <Button
                 onClick={() => addIssue()}
@@ -280,6 +221,7 @@ export default function Layout({ children }: LayoutProps) {
               </Link>
             </div>
           </div>
+          <div className='p-2 w-3/6' id='drag-region' />
           <div className='flex items-center justify-end space-x-3 text-neutral-500'>
             <ThemeButton />
             <Link to='/settings'>

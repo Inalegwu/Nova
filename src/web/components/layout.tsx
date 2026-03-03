@@ -1,10 +1,7 @@
 import icon_dark from '@/assets/images/win_dark.png';
 import icon_light from '@/assets/images/win_light.png';
 import t from '@/shared/config';
-import { Button } from '@base-ui/react/button';
-import { Input } from '@base-ui/react/input';
-import { Popover } from '@base-ui/react/popover';
-import { Tabs } from '@base-ui/react/tabs';
+import {Tabs,Input,Popover,Button} from "@base-ui/react";
 import {
   AddSquare,
   ArrowLeft,

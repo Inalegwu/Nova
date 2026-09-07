@@ -1,30 +1,27 @@
-import icon_dark from '@/assets/images/win_dark.png';
-import icon_light from '@/assets/images/win_light.png';
-import t from '@/shared/config';
-import { Tabs, Input, Popover, Button } from '@base-ui/react';
+import { Button, Tabs } from '@base-ui/react';
 import {
   AddSquare,
   ArrowLeft,
   ArrowRight,
   Book,
   CloseCircle,
-  FolderOpen,
-  Heart,
   History,
   Home,
   Library,
   MaximizeSquare3,
   MinusSquare,
   Settings,
-  SidebarMinimalistic,
 } from '@solar-icons/react';
+import global from '@state';
 import { useRouter, useRouterState } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import icon_dark from '@/assets/images/win_dark.png';
+import icon_light from '@/assets/images/win_light.png';
+import t from '@/shared/config';
 import { useInterval, useWindow } from '../hooks';
-import global from '@state';
 import ThemeButton from './theme-button';
 import { Link } from './ui/link';
 
@@ -50,7 +47,6 @@ export default function Layout({ children }: LayoutProps) {
   // const isNotHome = computed(() => routerState.location.pathname !== "/").get();
 
   const isHome = routerState.location.pathname === '/';
-  const isCollectionView = global.app.use.lastOpenedTab() === 'collections';
   const lastOpenedTab = global.app.use.lastOpenedTab();
   const colorMode = global.app.use.colorMode();
   const isFullScreen = global.app.use.isFullscreen();
@@ -58,7 +54,6 @@ export default function Layout({ children }: LayoutProps) {
   const [showTop, setShowTop] = useState(false);
   const [mouseOver, setMouseOver] = useState(false);
   const [collectionName, setCollectionName] = useState('');
-  const [sidebar, setSidebar] = useState(false);
 
   // track the process of adding issues to the library
   // from background processes
@@ -169,12 +164,6 @@ export default function Layout({ children }: LayoutProps) {
                 className='w-5 h-5'
               />
               <div className='flex items-center justify-center space-x-2'>
-                <Button
-                  onClick={() => setSidebar((sidebar) => !sidebar)}
-                  className='bg-white dark:bg-neutral-800 rounded-md p-1 text-black dark:text-neutral-300 disabled:text-neutral-400 disabled:bg-transparent'
-                >
-                  <SidebarMinimalistic size={13} weight='Linear' />
-                </Button>
                 <Link
                   to='/'
                   className='bg-white dark:bg-neutral-800 rounded-md p-1 text-black dark:text-neutral-300 disabled:text-neutral-400 disabled:bg-transparent'
@@ -215,7 +204,7 @@ export default function Layout({ children }: LayoutProps) {
               </Button>
               <Link
                 href='/history'
-                className='bg-white text-black dark:bg-neutral-900 dark:text-neutral-300 rounded-md corner-superellipse/1.3 p-1'
+                className='bg-white dark:bg-neutral-900 dark:text-neutral-300 rounded-md corner-superellipse/1.3 p-1'
               >
                 <History weight='Bold' size={17} />
               </Link>
@@ -249,33 +238,7 @@ export default function Layout({ children }: LayoutProps) {
             borderRadius: isFullScreen ? '0' : '0.375rem',
           }}
         >
-          <AnimatePresence presenceAffectsLayout mode='wait'>
-            <motion.div
-              className='bg-neutral-100 p-2 flex flex-col items-center justify-start gap-3 dark:bg-neutral-950 rounded-lg squiricle'
-              initial={{ width: '0%', display: 'none', opacity: 0 }}
-              animate={{
-                opacity: sidebar ? 1 : 0,
-                width: sidebar ? '3%' : '0%',
-                display: sidebar ? 'flex' : 'none',
-              }}
-            >
-              <Link className='p-1 rounded-lg squiricle flex centered'>
-                <History weight='BoldDuotone' size={16} />
-              </Link>
-              <Link className='p-1 rounded-lg squiricle flex centered'>
-                <Heart weight='BoldDuotone' size={16} />
-              </Link>
-              <Link className='p-1 rounded-lg squiricle flex centered'>
-                <FolderOpen weight='BoldDuotone' size={16} />
-              </Link>
-            </motion.div>
-          </AnimatePresence>
-          <motion.div
-            initial={{ width: '100%' }}
-            animate={{ width: sidebar ? '97%' : '100%' }}
-          >
-            {children}
-          </motion.div>
+          {children}
         </motion.div>
       </Tabs.Root>
     </AnimatePresence>

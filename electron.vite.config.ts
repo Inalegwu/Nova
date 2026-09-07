@@ -1,36 +1,40 @@
+import path from 'node:path';
+import tailwindcss from '@tailwindcss/vite';
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
-import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
-import path from 'node:path';
-import tsconfigPaths from 'vite-tsconfig-paths';
-import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from 'electron-vite';
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin(), tsconfigPaths()],
+    resolve: {
+      tsconfigPaths: true,
+    },
     build: {
+      externalizeDeps: true,
       lib: {
         entry: 'src/main.ts',
-      },
-      rollupOptions: {
-        external: ['better-sqlite3'],
       },
     },
   },
   preload: {
-    plugins: [externalizeDepsPlugin(), tsconfigPaths()],
+    resolve: {
+      tsconfigPaths: true,
+    },
     build: {
+      externalizeDeps: true,
       lib: {
         entry: 'src/preload.ts',
       },
     },
   },
   renderer: {
+    resolve: {
+      tsconfigPaths: true,
+    },
     root: 'src/web/',
     plugins: [
       react(),
       tailwindcss(),
-      tsconfigPaths(),
       tanstackRouter({
         routesDirectory: path.join(__dirname, 'src/web/routes'),
         generatedRouteTree: path.join(__dirname, 'src/web/routeTree.gen.ts'),
@@ -39,7 +43,7 @@ export default defineConfig({
     build: {
       outDir: 'out/renderer',
       rollupOptions: {
-        input: './src/web/index.html',
+        input: path.join(__dirname, 'src/web/index.html'),
       },
     },
   },

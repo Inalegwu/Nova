@@ -41,6 +41,14 @@ function Issues({ issues }: { issues: Array<Partial<Issue>> }) {
 
   useEffect(() => setLastOpenedTab('issues'), []);
 
+  if(issues.length===0){
+    return (
+       <div className='w-full h-screen flex items-center justify-center flex-wrap space-x-4 overflow-y-scroll'>
+      <h1 className='text-3xl font-extrabold'>No Issues Saved</h1>
+    </div>
+    )
+  }
+
   return (
     <div className='w-full h-full flex items-start justify-start flex-wrap space-x-4 overflow-y-scroll'>
       {issues.map((issue) => (
@@ -59,6 +67,15 @@ function Collections({ collections }: { collections: Array<CollectionProp> }) {
   const setLastOpenedTab = global.app.use.setLastOpenedTab();
 
   useEffect(() => setLastOpenedTab('collections'), []);
+
+
+  if(collections.length===0){
+    return (
+       <div className='w-full h-screen flex items-center justify-center flex-wrap space-x-4 overflow-y-scroll'>
+      <h1 className='text-3xl font-extrabold'>No Collections Created</h1>
+    </div>
+    )
+  }
 
   return (
     <div className='w-full h-full flex items-start justify-start flex-wrap space-x-4'>

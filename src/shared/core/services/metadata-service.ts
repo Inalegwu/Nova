@@ -1,6 +1,6 @@
-import { Env } from '@/env';
-import ComicVine from '@comic-vine/client';
+import ComicVine from 'comic-vine-sdk';
 import { Data, Effect } from 'effect';
+import { Env } from '@/env';
 
 class ComicVineInitError extends Data.TaggedError('ComicVineInitError')<{
   error: unknown;

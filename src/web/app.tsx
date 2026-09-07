@@ -1,14 +1,13 @@
-import t, { queryClient, trpcClient, persister } from '@/shared/config';
-import { QueryClientProvider } from '@tanstack/react-query';
 import {
-  RouterProvider,
   createHashHistory,
   createRouter,
+  RouterProvider,
 } from '@tanstack/react-router';
-import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
+import t, { persister, queryClient, trpcClient } from '@/shared/config';
 import './app.css';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import ErrorComponent from './components/error';
 import { routeTree } from './routeTree.gen';
 

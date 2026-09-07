@@ -1,7 +1,7 @@
-import { Outlet, createRootRoute } from '@tanstack/react-router';
-import { Layout } from '../components';
 import { SolarProvider } from '@solar-icons/react';
+import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { Toaster } from 'sonner';
+import { Layout } from '../components';
 
 export const Route = createRootRoute({
   component: () => (

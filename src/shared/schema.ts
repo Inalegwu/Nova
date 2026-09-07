@@ -13,9 +13,7 @@ export const collections = sqliteTable(
       mode: 'timestamp',
     }).default(new Date()),
   },
-  (table) => ({
-    idIndex: index('collection_id_index').on(table.id),
-  }),
+  (table) => [index('collection_id_index').on(table.id)],
 );
 
 export const issues = sqliteTable(
@@ -34,9 +32,7 @@ export const issues = sqliteTable(
       mode: 'timestamp',
     }).default(new Date()),
   },
-  (table) => ({
-    idIndex: index('issue_id_index').on(table.id),
-  }),
+  (table) => [index('issue_id_index').on(table.id)],
 );
 
 export const metadata = sqliteTable('metadata', {

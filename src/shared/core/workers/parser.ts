@@ -1,7 +1,7 @@
-import { eq } from 'drizzle-orm';
-import { Effect, Match } from 'effect';
 import path from 'node:path';
 import { parentPort } from 'node:worker_threads';
+import { eq } from 'drizzle-orm';
+import { Effect, Match } from 'effect';
 import { parserChannel } from '../../channels';
 import { issues } from '../../schema';
 import db from '../../storage';
@@ -39,6 +39,8 @@ const handleMessage = Effect.fnUntraced(function* ({
     issue: parseFileNameFromPath(parsePath),
   });
 
+  yield* Effect.logInfo('checking exists');
+
   const exists = yield* Effect.tryPromise(
     async () =>
       await db.query.issues.findFirst({
@@ -64,12 +66,17 @@ const handleMessage = Effect.fnUntraced(function* ({
     issue: parseFileNameFromPath(parsePath),
   });
 
+  yield* Effect.logInfo('====BEGIN PARSING PROCESS====');
   Match.value({ action, ext }).pipe(
     Match.when({ action: 'LINK', ext: 'cbr' }, () =>
-      archive.rar(parsePath).pipe(Effect.runPromise),
+      archive
+        .rar(parsePath)
+        .pipe(Effect.runPromise),
     ),
     Match.when({ action: 'LINK', ext: 'cbz' }, () =>
-      archive.zip(parsePath).pipe(Effect.runPromise),
+      archive
+        .zip(parsePath)
+        .pipe(Effect.runPromise),
     ),
     Match.when({ action: 'LINK', ext: 'none' }, () => Effect.void),
     Match.when({ action: 'UNLINK' }, () =>

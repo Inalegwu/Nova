@@ -1,6 +1,6 @@
-import { Console, Context, Effect, Stream } from 'effect';
-import type { UnknownException } from 'effect/Cause';
 import path from 'node:path';
+import { Console, Context, Effect } from 'effect';
+import type { UnknownException } from 'effect/Cause';
 import { parserChannel } from '../../channels';
 import { Fs } from '../../fs';
 import { convertToImageUrl, parseFileNameFromPath } from '../../utils';
@@ -10,7 +10,6 @@ import {
   createZipExtractor,
   parseXML,
   saveIssue,
-  unzipStream,
 } from '../utils/functions';
 
 export type IArchiveService = {
@@ -74,7 +73,7 @@ export const databaseArchiveService = {
   zip: Effect.fnUntraced(function* (filePath: string) {
     const { files, meta } = yield* createZipExtractor(filePath);
 
-    yield* unzipStream(filePath).pipe(Stream.runCollect);
+    // yield* unzipStream(filePath).pipe(Stream.runCollect);
 
     yield* Effect.logInfo({ files, meta });
 
@@ -83,8 +82,6 @@ export const databaseArchiveService = {
     );
 
     const savePath = path.join(process.env.cache_dir!, issueTitle);
-
-    yield* Effect.log(files.find((file) => file.isFirst));
 
     const thumbnailUrl = yield* Effect.sync(() =>
       convertToImageUrl(files.find((file) => file.isFirst)?.data!),
@@ -101,7 +98,7 @@ export const databaseArchiveService = {
       Effect.catchTag('FSError', (e) => Effect.log(e)),
     );
 
-    yield* Effect.forEach(files, (file, idx) =>
+    yield* Effect.forEach(files, (file) =>
       Fs.writeFile(
         path.join(savePath, file.name),
         Buffer.from(file.data!).toString('base64'),

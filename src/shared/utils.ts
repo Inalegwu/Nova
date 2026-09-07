@@ -1,3 +1,4 @@
+import type { BroadcastChannel, EventContext } from 'broadcast-channel';
 import { Option } from 'effect';
 import * as Effect from 'effect/Effect';
 import type { z } from 'zod';
@@ -34,7 +35,7 @@ export const convertToImageUrl = (buffer: ArrayBufferLike) =>
 
 export const parseFileNameFromPath = (filePath: string) =>
   filePath
-    .replace(/^.*[\\\/]/, '')
+    .replace(/^.*[\\/]/, '')
     .replace(/\.[^/.]+$/, '')
     .replace(/(\d+)$/, '')
     .replace(/\s*\([^)]*\)/, '')
@@ -81,4 +82,63 @@ export function debounce<A = unknown[], R = void>(
   const tearDown = () => clearTimeout(t);
 
   return [debounceFn, tearDown];
+}
+
+/**
+ * Bridges an EventTarget-like channel (addEventListener/removeEventListener)
+ * into an AsyncIterable so it can be consumed with `for await`.
+ * Cleans up automatically when the client unsubscribes (signal aborts).
+ */
+export function channelToAsyncIterable<T>(
+  channel: BroadcastChannel<T>,
+  event: string,
+  signal?: AbortSignal,
+  onCleanup?: () => void | Promise<void>,
+): AsyncIterable<T> {
+  return {
+    [Symbol.asyncIterator]() {
+      const queue: T[] = [];
+      const pending: ((result: IteratorResult<T>) => void)[] = [];
+      let done = false;
+
+      const listener = (data: T) => {
+        if (pending.length > 0) {
+          pending.shift()!({ value: data, done: false });
+        } else {
+          queue.push(data);
+        }
+      };
+
+      const cleanup = () => {
+        if (done) return;
+        done = true;
+        channel.removeEventListener(event as EventContext, listener);
+        for (const resolve of pending.splice(0)) {
+          resolve({ value: undefined as never, done: true });
+        }
+        void onCleanup?.();
+      };
+
+      channel.addEventListener(event as EventContext, listener);
+      signal?.addEventListener('abort', cleanup, { once: true });
+
+      return {
+        next: () => {
+          if (queue.length > 0) {
+            return Promise.resolve({ value: queue.shift()!, done: false });
+          }
+          if (done) {
+            return Promise.resolve({ value: undefined as never, done: true });
+          }
+          return new Promise<IteratorResult<T>>((resolve) =>
+            pending.push(resolve),
+          );
+        },
+        return: () => {
+          cleanup();
+          return Promise.resolve({ value: undefined as never, done: true });
+        },
+      };
+    },
+  };
 }

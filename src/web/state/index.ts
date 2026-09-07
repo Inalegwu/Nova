@@ -1,4 +1,4 @@
-import { StoreApi, UseBoundStore } from 'zustand';
+import type { StoreApi, UseBoundStore } from 'zustand';
 import { useGlobalState, useReaderState } from './global';
 
 type WithSelectors<S> = S extends { getState: () => infer T }

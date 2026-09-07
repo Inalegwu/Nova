@@ -1,18 +1,18 @@
+import type * as Schema from 'effect/Schema';
+import type React from 'react';
+import type z from 'zod';
 import type {
   ComicCache,
-  MetadataSchema,
   cacheWorkerSchema,
   deletionWorkerSchema,
   dumpFileSchema,
   dumpSchema,
   fetchPagesResponseSchema,
   fetchPagesWorkerSchema,
+  MetadataSchema,
   parserSchema,
   workerResponseSchema,
 } from '@/shared/validations';
-import type * as Schema from 'effect/Schema';
-import React from 'react';
-import type z from 'zod';
 import type { collections, issues } from './schema';
 
 declare global {
@@ -40,21 +40,9 @@ declare global {
     setReaderDirection: (direction: Direction) => void;
   };
 
-  export type Issue = Omit<
-    typeof issues.$inferSelect,
-    'dateCreated' | 'dateUpdated'
-  > & {
-    dateCreated: string | null;
-    dateUpdated: string | null;
-  };
+  export type Issue = typeof issues.$inferSelect;
 
-  export type Collection = Omit<
-    typeof collections.$inferSelect,
-    'dateCreated' | 'dateUpdated'
-  > & {
-    dateCreated: string | null;
-    dateUpdated: string | null;
-  };
+  export type Collection = typeof collections.$inferSelect;
 
   export type ParserResponse = {
     completed: boolean;

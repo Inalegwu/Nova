@@ -1,18 +1,18 @@
-import { publicProcedure, router } from '@/trpc';
+import path from 'node:path';
 import { TRPCError } from '@trpc/server';
 import { eq } from 'drizzle-orm';
 import { Effect } from 'effect';
 import { dialog } from 'electron';
-import path from 'node:path';
 import { v4 } from 'uuid';
 import z from 'zod';
+import { publicProcedure, router } from '@/trpc';
+// @ts-expect-error: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
+import deletionWorker from '../core/workers/deletion?nodeWorker';
+// @ts-expect-error: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
+import parseWorker from '../core/workers/parser?nodeWorker';
 import { Fs } from '../fs';
 import { issues as issuesSchema } from '../schema';
 import { convertToImageUrl } from '../utils';
-// @ts-ignore: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
-import deletionWorker from '../core/workers/deletion?nodeWorker';
-// @ts-ignore: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
-import parseWorker from '../core/workers/parser?nodeWorker';
 
 const issueRouter = router({
   addIssue: publicProcedure.mutation(async () => {
@@ -55,7 +55,7 @@ const issueRouter = router({
         issueId: z.string(),
       }),
     )
-    .mutation(async ({ ctx, input }) =>
+    .mutation(async ({ input }) =>
       deletionWorker({
         name: 'deletion-worker',
       }).postMessage({

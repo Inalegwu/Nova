@@ -9,7 +9,8 @@
       },
       "a11y": {
         "useButtonType": "off",
-        "useKeyWithClickEvents": "off"
+        "useKeyWithClickEvents": "off",
+        "noStaticElementInteractions":"off"
       },
       "suspicious": {
         "noShadowRestrictedNames": "off"

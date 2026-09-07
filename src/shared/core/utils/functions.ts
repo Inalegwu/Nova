@@ -1,6 +1,6 @@
 import { NodeStream } from '@effect/platform-node';
 import Zip from 'adm-zip';
-import { Array, Cause, Effect, Match, Option, Schema, Stream } from 'effect';
+import { Array, Cause, Effect, Option, Schema, Stream } from 'effect';
 import { XMLParser } from 'fast-xml-parser';
 import { createExtractorFromData } from 'node-unrar-js';
 import { v4 } from 'uuid';
@@ -11,7 +11,6 @@ import { issues, metadata } from '../../schema';
 import db from '../../storage';
 import { extractMetaID, parseFileNameFromPath, sortPages } from '../../utils';
 import { MetadataSchema } from '../../validations';
-import { ComicVineService } from '../services/metadata-service';
 import { ArchiveError } from './errors';
 
 type F = {
@@ -61,29 +60,6 @@ export const unzipStream = (filePath: string) =>
       ),
     ),
   );
-
-const fetchMetadata = (id: number, type: 'issue' | 'series') =>
-  Effect.gen(function* () {
-    const cv = yield* ComicVineService;
-
-    return Match.value(type).pipe(
-      Match.when(
-        'issue',
-        async () =>
-          await cv
-            .use((client) => {
-              return client.issue.retrieve(1443, {
-                fieldList: ['id', 'image', 'volume'],
-              });
-            })
-            .pipe(Effect.runPromise),
-      ),
-      Match.when('series', () => {}),
-      Match.orElse(() => {
-        throw new Error('Invalid type provided');
-      }),
-    );
-  }).pipe(Effect.provide(ComicVineService.Default));
 
 export const parseXML = Effect.fn(function* (
   file: Option.Option<Extractor>,
@@ -219,16 +195,12 @@ export const createZipExtractor = (filePath: string) =>
         .getEntries()
         .sort((a, b) => sortPages(a.name, b.name))
         .map(
-          (entry) =>
+          (entry, idx) =>
             ({
               name: entry.name,
               data: entry.getData().buffer,
               isDir: entry.isDirectory,
-              isFirst: entry.name.includes('000')
-                ? true
-                : entry.name.includes('001')
-                  ? true
-                  : entry.name.includes('01'),
+              isFirst: idx === 0,
             }) satisfies Extractor,
         ),
     ),

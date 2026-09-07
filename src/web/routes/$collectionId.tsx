@@ -1,7 +1,8 @@
-import t from '@/shared/config';
 import { Checkbox } from '@base-ui/react/checkbox';
 import { Dialog } from '@base-ui/react/dialog';
 import { ScrollArea } from '@base-ui/react/scroll-area';
+import { Toggle } from '@base-ui/react/toggle';
+import { ToggleGroup } from '@base-ui/react/toggle-group';
 import {
   AddSquare,
   CheckCircle,
@@ -10,11 +11,10 @@ import {
   Widget,
 } from '@solar-icons/react';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useState } from 'react';
-import { Skeleton, Spinner } from '../components';
 import { motion } from 'motion/react';
-import { ToggleGroup } from '@base-ui/react/toggle-group';
-import { Toggle } from '@base-ui/react/toggle';
+import { useState } from 'react';
+import t from '@/shared/config';
+import { Skeleton } from '../components';
 
 export const Route = createFileRoute('/$collectionId')({
   component: RouteComponent,
@@ -25,15 +25,14 @@ function RouteComponent() {
   const { collectionId } = Route.useParams();
 
   const [toAdd, setToAdd] = useState<Array<string>>([]);
-  const [listView, setListView] = useState<'list' | 'grid'>('list');
+  const [listView] = useState<'list' | 'grid'>('list');
 
   const { data, isLoading: preparing } = t.library.getCollectionById.useQuery(
     { collectionId },
     {},
   );
 
-  const { data: unmatched, isLoading: gettingUnmatched } =
-    t.library.getLibrary.useQuery();
+  const { data: unmatched } = t.library.getLibrary.useQuery();
 
   const { mutate: addToCollection, isPending: adding } =
     t.library.addToCollection.useMutation({
@@ -54,8 +53,8 @@ function RouteComponent() {
     <div className='w-full h-full p-2 flex flex-col items-start justify-start space-y-2'>
       {/* TODO: fill in collection metadata from comic vine */}
       <div className='flex items-center justify-start gap-5 w-full'>
-        <div className='relative w-2/6 h-108 squiricle border border-solid overflow-hidden border-neutral-200 dark:border-neutral-800 rounded-2xl'>
-          <div className='absolute w-full transition rounded-2xl squiricle h-full bg-black/30 flex flex-col items-start justify-end'>
+        <div className='relative w-[26%] h-108 corner-squircle border border-solid overflow-hidden border-neutral-200 dark:border-neutral-800 rounded-3xl'>
+          <div className='absolute z-1 w-full transition h-full bg-black/40 flex flex-col items-start justify-end'>
             <motion.div
               className='bg-neutral-200/20 flex items-center justify-center gap-4 w-full bottom-0 left-0 p-2'
               initial={{ translateY: '50px' }}
@@ -77,7 +76,7 @@ function RouteComponent() {
           <img
             src={data?.issues?.at(0)?.thumbnailUrl}
             alt={`cover__${data?.collection?.id}`}
-            className='w-full h-full border border-solid border-neutral-200 dark:border-neutral-800 rounded-2xl squircle'
+            className='w-full h-full absolute z-0'
           />
         </div>
         <div className='flex flex-col items-start justify-center gap-2 w-full h-full'>
@@ -125,7 +124,7 @@ function RouteComponent() {
                   </ScrollArea.Root>
                   <button
                     disabled={adding}
-                    className='flex centered gap-2'
+                    className='flex centered gap-2 bg-neutral-200 text-neutral-800 px-5 py-1 rounded-xl corner-squircle dark:bg-black dark:text-white'
                     onClick={() =>
                       addToCollection({
                         // @ts-expect-error

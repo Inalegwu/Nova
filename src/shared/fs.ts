@@ -1,6 +1,6 @@
-import { Effect } from 'effect';
 import * as NodeFS from 'node:fs';
 import { join } from 'node:path';
+import { Effect } from 'effect';
 import { FSError } from './core/utils/errors';
 import { parseFileNameFromPath } from './utils';
 

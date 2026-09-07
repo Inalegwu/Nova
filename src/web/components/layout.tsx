@@ -39,26 +39,19 @@ export default function Layout({ children }: LayoutProps) {
   const { mutate: close } = t.window.closeWindow.useMutation();
   const { mutate: addIssue } = t.issue.addIssue.useMutation();
   t.library.launchWatcher.useMutation();
-  const { mutate: createCollection, isPending: isCreating } =
-    t.library.createCollection.useMutation({
-      onSuccess: (_) => utils.library.getLibrary.invalidate(),
-    });
-
-  // const isNotHome = computed(() => routerState.location.pathname !== "/").get();
 
   const isHome = routerState.location.pathname === '/';
   const lastOpenedTab = global.app.use.lastOpenedTab();
   const colorMode = global.app.use.colorMode();
   const isFullScreen = global.app.use.isFullscreen();
-
   const [showTop, setShowTop] = useState(false);
   const [mouseOver, setMouseOver] = useState(false);
-  const [collectionName, setCollectionName] = useState('');
 
   // track the process of adding issues to the library
   // from background processes
   t.additions.useSubscription(undefined, {
     onData: (data) => {
+      console.log({ data });
       if (!data.isCompleted && data.state === 'SUCCESS') {
         toast.success(`Adding ${data.issue || 'issue'} To Library`);
       }
@@ -102,9 +95,9 @@ export default function Layout({ children }: LayoutProps) {
   });
 
   // deeplinks
-  t.deeplink.useSubscription(undefined, {
-    onData: () => utils.library.invalidate(),
-  });
+  // t.deeplink.useSubscription(undefined, {
+  //   onData: () => utils.library.invalidate(),
+  // });
 
   useEffect(() => {
     if (colorMode === 'dark') {
@@ -139,11 +132,15 @@ export default function Layout({ children }: LayoutProps) {
     }
   }, 5000);
 
+  useInterval(() => {
+    utils.library.getLibrary.invalidate();
+  }, 10_000);
+
   return (
     <AnimatePresence>
       <Tabs.Root
         defaultValue={lastOpenedTab}
-        className=' bg-primary-50/40 dark:bg-neutral-950 flex flex-col w-full h-screen p-2 space-y-2 root'
+        className='bg-primary-50/40 dark:bg-neutral-950 flex flex-col w-full h-screen p-2 space-y-2 root'
       >
         {/*titlebar*/}
         <motion.div
@@ -228,7 +225,7 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </motion.div>
         <motion.div
-          className='bg-white flex p-1 gap-2 overflow-hidden dark:bg-neutral-900 overflow-y-scroll overflow-x-hidden dark:text-neutral-200 w-full corner-superellipse/1.3'
+          className='bg-white flex gap-2 overflow-hidden dark:bg-neutral-900 overflow-y-scroll overflow-x-hidden dark:text-neutral-200 w-full corner-superellipse/1.3'
           initial={{
             height: '100%',
             borderRadius: '0.375rem',

@@ -1,15 +1,15 @@
+import { eq } from 'drizzle-orm';
+import { Array, Effect } from 'effect';
+import { dialog } from 'electron';
+import { v4 } from 'uuid';
+import { z } from 'zod';
 import {
   collections as collectionsSchema,
   issues as issueSchema,
 } from '@/shared/schema';
 import { sortPages } from '@/shared/utils';
 import { publicProcedure, router } from '@/trpc';
-import { eq } from 'drizzle-orm';
-import { Array, Effect } from 'effect';
-import { dialog } from 'electron';
-import { v4 } from 'uuid';
-import { z } from 'zod';
-// @ts-ignore: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
+// @ts-expect-error: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
 import watcher from '../core/workers/watcher?nodeWorker';
 
 const libraryRouter = router({
@@ -33,7 +33,7 @@ const libraryRouter = router({
           columns: {
             thumbnailUrl: true,
             id: true,
-            issueTitle:true
+            issueTitle: true,
           },
         },
       },

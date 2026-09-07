@@ -1,6 +1,6 @@
 import { ContextMenu } from '@base-ui/react';
-import { useRouter } from '@tanstack/react-router';
 import { InfoCircle, TrashBinMinimalistic } from '@solar-icons/react';
+import { useRouter } from '@tanstack/react-router';
 import t from '@/shared/config';
 
 export default function IssueBox(issue: Partial<Issue>) {
@@ -18,7 +18,7 @@ export default function IssueBox(issue: Partial<Issue>) {
           nav.navigate({
             href: '/read/$issueId',
             params: {
-              // @ts-ignore
+              // @ts-expect-error
               issueId: issue.id,
             },
           })
@@ -27,11 +27,11 @@ export default function IssueBox(issue: Partial<Issue>) {
       >
         <img
           src={issue.thumbnailUrl}
-          className='w-full h-full bg-zinc-200/5 dark:opacity-[0.8] rounded-xl corner-superellipse/1.3 border border-solid border-neutral-200 dark:border-zinc-600'
+          className='w-full h-full bg-zinc-200/5 dark:opacity-[0.8] rounded-2xl corner-squircle border border-solid border-neutral-200 dark:border-zinc-600'
           alt={`thumb_${issue.id}`}
         />
-        <span className='text-xs font-medium text-black dark:text-neutral-400 w-full'>
-          {issue.issueTitle?.slice(0, issue.issueTitle?.length / 2 + 3)}
+        <span className='text-sm font-medium text-black dark:text-neutral-400 w-full'>
+          {issue.issueTitle?.slice(0, issue.issueTitle?.length / 2 + 5)}
         </span>
       </ContextMenu.Trigger>
       <ContextMenu.Portal className='outline-none'>

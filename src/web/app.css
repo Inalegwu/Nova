@@ -5,7 +5,7 @@
 
 @font-face {
   font-family: Font;
-  src: url("../assets/fonts/satoshi.ttf");
+  src: url("../assets/fonts/sn.ttf");
 }
 
 .radix-themes {
@@ -43,7 +43,7 @@
 }
 
 body {
-  font-family: Font;
+  @apply font-display
 }
 
 #drag-region {
@@ -59,12 +59,7 @@ body {
 }
 
 button {
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  appearance: none;
-  cursor: pointer;
-  /*@apply outline-none;*/
+  @apply items-center justify-center cursor-pointer appearance-none outline-none active:scale-[0.97];
 }
 
 .tabTrigger {
@@ -76,6 +71,11 @@ button {
 .ctxMenuRowItem {
   @apply p-2 flex centered cursor-pointer rounded-md corner-superellipse/2;
 }
+
+.input{
+  @apply bg-neutral-200 dark:bg-neutral-800 corner-squircle rounded-lg w-full outline-none px-2 py-1 placeholder:text-sm; 
+}
+
 body {
   -webkit-user-select: none;
   -ms-user-select: none;

@@ -1,5 +1,5 @@
-import global from '@state';
 import { Moon, Sun } from '@solar-icons/react';
+import global from '@state';
 import { useGlobalState } from '../state/global';
 
 export default function ThemeButton() {

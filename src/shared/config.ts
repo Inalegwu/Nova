@@ -1,7 +1,7 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import { QueryClient } from '@tanstack/react-query';
 import { createTRPCReact } from '@trpc/react-query';
-import { ipcLink } from 'electron-trpc/renderer';
+import { ipcLink } from 'trpc-electron/renderer';
 import type { AppRouter } from './routers/_app';
 
 const t = createTRPCReact<AppRouter>();
@@ -10,12 +10,15 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       networkMode: 'always',
-      cacheTime: Number.POSITIVE_INFINITY,
+      staleTime: Number.POSITIVE_INFINITY,
       refetchOnWindowFocus: false,
+      throwOnError: false,
     },
     mutations: {
       networkMode: 'always',
-      cacheTime: Number.POSITIVE_INFINITY,
+      onError: (error) => {
+        console.error(error);
+      },
     },
   },
 });

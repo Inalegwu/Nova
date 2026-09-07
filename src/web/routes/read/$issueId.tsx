@@ -1,25 +1,22 @@
-import t from '@/shared/config';
-import { CanvasRenderer, Spinner } from '@/web/components';
-import { useInterval, useKeyPress, useTimeout } from '@/web/hooks';
-import { createFileRoute, useRouter } from '@tanstack/react-router';
-import { useState, useMemo, useCallback } from 'react';
-import { useMotionValue, motion } from 'motion/react';
-import { Toolbar } from '@base-ui/react/toolbar';
 import { Toggle } from '@base-ui/react/toggle';
 import { ToggleGroup } from '@base-ui/react/toggle-group';
+import { Toolbar } from '@base-ui/react/toolbar';
 import {
+  AltArrowLeft,
+  AltArrowRight,
   Bookmark,
   Hearts,
   SliderMinimalisticHorizontal,
   SliderVerticalMinimalistic,
-  AltArrowRight,
-  RoundAltArrowRight,
-  AltArrowLeft,
 } from '@solar-icons/react';
 import global from '@state';
+import { createFileRoute } from '@tanstack/react-router';
+import { motion } from 'motion/react';
+import { useCallback, useMemo, useState } from 'react';
+import t from '@/shared/config';
+import { CanvasRenderer, Spinner } from '@/web/components';
+import { useInterval, useKeyPress, useTimeout } from '@/web/hooks';
 import { historyCollection } from '@/web/store/history';
-
-const DRAG_BUFFER = 50;
 
 export const Route = createFileRoute('/read/$issueId')({
   component: RouteComponent,
@@ -27,7 +24,6 @@ export const Route = createFileRoute('/read/$issueId')({
 
 function RouteComponent() {
   const { issueId } = Route.useParams();
-  const nav = useRouter();
 
   const [isEnabled, setIsEnabled] = useState(false);
   const [expanded, setExpanded] = useState(true);
@@ -48,20 +44,10 @@ function RouteComponent() {
 
   const contentLength = data?.pages.length || 0;
   const [itemIndex, setItemIndex] = useState(0);
-  const dragX = useMotionValue(0);
   const width = useMemo(
     () => Math.floor((itemIndex / contentLength) * 100),
     [itemIndex, contentLength],
   );
-
-  const onDragEnd = () => {
-    const x = dragX.get();
-    if (x <= DRAG_BUFFER && itemIndex < contentLength) {
-      setItemIndex((idx) => idx + 1);
-    } else {
-      setItemIndex((idx) => idx - 1);
-    }
-  };
 
   useInterval(() => {
     const exists = historyCollection.get(issueId);
@@ -108,13 +94,13 @@ function RouteComponent() {
   if (fetchingPages) {
     return (
       <div className='w-full h-full flex items-center justify-center'>
-        <Spinner className='border-4' size={50} />
+        <Spinner size={50} />
       </div>
     );
   }
 
   return (
-    <div className='relative'>
+    <div className='relative w-full h-screen'>
       <CanvasRenderer
         index={itemIndex}
         setIndex={setItemIndex}
@@ -122,7 +108,7 @@ function RouteComponent() {
         images={data?.pages.map((page) => page.data) || []}
       />
       <Toolbar.Root
-        render={<motion.div animate={{ width: expanded ? '13.3%' : '2.3%' }} />}
+        render={<motion.div animate={{ width: expanded ? '11%' : '2.2%' }} />}
         className='flex centered overflow-hidden absolute z-10 top-2 right-2 gap-1 bg-neutral-100 dark:bg-neutral-950 rounded-md squiricle'
       >
         <motion.button

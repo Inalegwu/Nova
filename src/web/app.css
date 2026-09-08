@@ -19,31 +19,15 @@
 
 @theme {
   --font-display: Font;
-  --color-primary-50: #d9ffed;
-  --color-primary-100: #c7f5df;
-  --color-primary-200: #b1dec9;
-  --color-primary-300: #93c0ab;
-  --color-primary-400: #749f8b;
-  --color-primary-500: #56806d;
-  --color-primary-600: #3d6654;
-  --color-primary-700: #2f5846;
-  --color-primary-800: #1c4534;
-  --color-primary-900: #083323;
-  --color-primary-950: #012115;
+  --color-accent:#ff4d1c;
 }
 
-@utility centered {
-  @apply items-center justify-center;
-}
-@utility squiricle {
-  @apply rounded-md corner-superellipse/.5;
-}
 @utility toolbarToggle {
   @apply p-2 hover:bg-neutral-200/40 dark:hover:bg-neutral-200/5 squiricle dark:text-neutral-500 focus-visible:bg-none focus-visible:outline focus-visible:-outline-offset-1 focus-visible:outline-neutral-400 dark:focus-visible:outline-neutral-500 active:bg-neutral-100;
 }
 
 body {
-  @apply font-display
+  @apply font-display bg-black text-neutral-200;
 }
 
 #drag-region {
@@ -63,17 +47,17 @@ button {
 }
 
 .tabTrigger {
-  @apply text-xs font-medium text-neutral-400 pl-2 pr-5 py-1 flex items-center justify-start space-x-1 squiricle;
+  @apply p-2.5 flex items-center justify-center gap-3 text-xs border border-solid border-neutral-900 border-t-transparent border-b-transparent;            
 }
 .tabTrigger[data-active] {
-  @apply text-neutral-900 dark:text-neutral-200 bg-white/80 dark:bg-neutral-800/80;
+  @apply text-white bg-accent;
 }
 .ctxMenuRowItem {
   @apply p-2 flex centered cursor-pointer rounded-md corner-superellipse/2;
 }
 
 .input{
-  @apply bg-neutral-200 dark:bg-neutral-800 corner-squircle rounded-lg w-full outline-none px-2 py-1 placeholder:text-sm; 
+  @apply bg-neutral-200 dark:bg-neutral-800 rounded-lg w-full outline-none px-2 py-1 placeholder:text-sm; 
 }
 
 body {

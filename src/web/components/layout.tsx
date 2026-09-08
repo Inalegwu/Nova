@@ -1,29 +1,14 @@
 import { Button, Tabs } from '@base-ui/react';
-import {
-  AddSquare,
-  ArrowLeft,
-  ArrowRight,
-  Book,
-  CloseCircle,
-  History,
-  Home,
-  Library,
-  MaximizeSquare3,
-  MinusSquare,
-  Settings,
-} from '@solar-icons/react';
+import { Home, Library } from '@solar-icons/react';
 import global from '@state';
-import { useRouter, useRouterState } from '@tanstack/react-router';
-import { AnimatePresence, motion } from 'motion/react';
+import { Link, useRouter, useRouterState } from '@tanstack/react-router';
+import { AnimatePresence } from 'motion/react';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import icon_dark from '@/assets/images/win_dark.png';
-import icon_light from '@/assets/images/win_light.png';
 import t from '@/shared/config';
 import { useInterval, useWindow } from '../hooks';
-import ThemeButton from './theme-button';
-import { Link } from './ui/link';
+import { Icon } from './atoms';
 
 type LayoutProps = {
   children?: React.ReactNode;
@@ -45,7 +30,7 @@ export default function Layout({ children }: LayoutProps) {
   const colorMode = global.app.use.colorMode();
   const isFullScreen = global.app.use.isFullscreen();
   const [showTop, setShowTop] = useState(false);
-  const [mouseOver, setMouseOver] = useState(false);
+  const [mouseOver] = useState(false);
 
   // track the process of adding issues to the library
   // from background processes
@@ -140,103 +125,86 @@ export default function Layout({ children }: LayoutProps) {
     <AnimatePresence>
       <Tabs.Root
         defaultValue={lastOpenedTab}
-        className='bg-primary-50/40 dark:bg-neutral-950 flex flex-col w-full h-screen p-2 space-y-2 root'
+        className='flex flex-col w-full h-screen root'
       >
         {/*titlebar*/}
-        <motion.div
-          className='w-full flex items-center justify-between gap'
-          initial={{ height: '0%', display: 'none' }}
-          onMouseOver={() => setMouseOver(true)}
-          onMouseLeave={() => setMouseOver(false)}
-          animate={{
-            height: showTop ? '3%' : '0%',
-            display: showTop ? 'flex' : 'none',
-          }}
-        >
-          <div className='flex items-center justify-start space-x-3'>
-            <div className='flex items-center justify-start space-x-3'>
-              <img
-                src={colorMode === 'dark' ? icon_dark : icon_light}
-                alt='icon'
-                className='w-5 h-5'
-              />
-              <div className='flex items-center justify-center space-x-2'>
-                <Link
-                  to='/'
-                  className='bg-white dark:bg-neutral-800 rounded-md p-1 text-black dark:text-neutral-300 disabled:text-neutral-400 disabled:bg-transparent'
-                >
-                  <Home size={13} weight='Linear' />
-                </Link>
-                <Button
-                  disabled={!!isHome}
-                  onClick={() => navigation.history.back()}
-                  className='bg-white dark:bg-neutral-800 rounded-md p-1 text-black dark:text-neutral-300 disabled:text-neutral-400 disabled:bg-transparent'
-                >
-                  <ArrowLeft size={13} weight='Linear' />
-                </Button>
-                <Button
-                  onClick={() => navigation.history.forward()}
-                  className='bg-white dark:bg-neutral-800 dark:text-neutral-300 rounded-md p-1'
-                >
-                  <ArrowRight size={13} weight='Linear' />
-                </Button>
-              </div>
+        <div className='w-full flex items-center justify-between gap border-b border-b-solid border-b-neutral-900'>
+          <div className='flex items-center justify-start'>
+            <div className='flex items-center justify-start'>
+              <Link
+                to='/'
+                className='p-2.5 border-r border-r-solid border-r-neutral-900'
+              >
+                <Home size={15} weight='Linear' />
+              </Link>
+              <button
+                disabled={!!isHome}
+                onClick={() => navigation.history.back()}
+                className='p-2.5 border-r border-r-solid border-r-neutral-900'
+              >
+                <Icon name='ArrowLeft' size={15} />
+              </button>
+              <button
+                onClick={() => navigation.history.forward()}
+                className='p-2.5 border-r border-r-solid border-r-neutral-900'
+              >
+                <Icon name='ArrowRight' size={15} />
+              </button>
             </div>
-            <Tabs.List className='flex items-center justify-start space-x-2'>
+            <Tabs.List className='flex items-center justify-start'>
               <Tabs.Tab className='tabTrigger' value='issues'>
-                <Book size={13} />
-                <span>Issues</span>
+                <Icon name='Book' size={15} />
               </Tabs.Tab>
               <Tabs.Tab className='tabTrigger' value='collections'>
-                <Library size={13} />
-                <span>Collections</span>
+                <Library weight='Linear' size={15} />
               </Tabs.Tab>
             </Tabs.List>
             <div className='flex items-center justify-start gap-2'>
               <Button
                 onClick={() => addIssue()}
-                className='bg-white dark:bg-neutral-900 dark:text-neutral-300 rounded-md corner-superellipse/1.3 p-1'
+                className='p-2.5 border-r border-r-solid border-r-neutral-900'
               >
-                <AddSquare weight='Bold' size={17} />
+                <Icon name='Plus' size={15} />
               </Button>
               <Link
-                href='/history'
-                className='bg-white dark:bg-neutral-900 dark:text-neutral-300 rounded-md corner-superellipse/1.3 p-1'
+                to='/history'
+                className='p-2.5 border-r border-r-solid border-r-neutral-900'
               >
-                <History weight='Bold' size={17} />
+                <Icon name='ClockCounterClockwise' size={15} />
               </Link>
             </div>
           </div>
           <div className='p-2 w-3/6' id='drag-region' />
-          <div className='flex items-center justify-end space-x-3 text-neutral-500'>
-            <ThemeButton />
-            <Link to='/settings'>
-              <Settings weight='Bold' size={15} />
+          <div className='flex items-center justify-end text-neutral-500'>
+            <Link
+              className='p-2.5 border-l border-l-solid border-l-neutral-900'
+              to='/settings'
+            >
+              <Icon name='Gear' size={15} />
             </Link>
-            <Button onClick={() => minimize()}>
-              <MinusSquare weight='Bold' size={15} />
-            </Button>
-            <Button onClick={() => maximize()}>
-              <MaximizeSquare3 weight='Bold' size={15} />
-            </Button>
-            <Button className='text-red-800' onClick={() => close()}>
-              <CloseCircle weight='Bold' size={15} />
-            </Button>
+            <button
+              className='p-2.5 border-l border-l-solid border-l-neutral-900'
+              onClick={() => minimize()}
+            >
+              <Icon name='Minus' size={15} />
+            </button>
+            <button
+              className='p-2.5 border-l border-l-solid border-l-neutral-900'
+              onClick={() => maximize()}
+            >
+              <Icon name='CornersOut' size={15} />
+            </button>
+            <button
+              className='text-red-800 p-2.5 border-l border-l-solid border-l-neutral-900'
+              onClick={() => close()}
+            >
+              <Icon name='X' size={15} />
+            </button>
           </div>
-        </motion.div>
-        <motion.div
-          className='bg-white flex gap-2 overflow-hidden dark:bg-neutral-900 overflow-y-scroll overflow-x-hidden dark:text-neutral-200 w-full corner-superellipse/1.3'
-          initial={{
-            height: '100%',
-            borderRadius: '0.375rem',
-          }}
-          animate={{
-            height: showTop ? '97%' : '100%',
-            borderRadius: isFullScreen ? '0' : '0.375rem',
-          }}
-        >
+        </div>
+        <div className='flex gap-2 overflow-hidden overflow-y-scroll overflow-x-hidden w-full corner-superellipse/1.3'>
           {children}
-        </motion.div>
+        </div>
       </Tabs.Root>
     </AnimatePresence>
   );

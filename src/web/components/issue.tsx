@@ -27,7 +27,7 @@ export default function IssueBox(issue: Partial<Issue>) {
       >
         <img
           src={issue.thumbnailUrl}
-          className='w-full h-full bg-zinc-200/5 dark:opacity-[0.8] rounded-2xl corner-squircle border border-solid border-neutral-200 dark:border-zinc-600'
+          className='w-full h-full bg-zinc-200/5 dark:opacity-[0.8] rounded-2xl border border-solid border-neutral-200 dark:border-zinc-600'
           alt={`thumb_${issue.id}`}
         />
         <span className='text-sm font-medium text-black dark:text-neutral-400 w-full'>
@@ -35,7 +35,7 @@ export default function IssueBox(issue: Partial<Issue>) {
         </span>
       </ContextMenu.Trigger>
       <ContextMenu.Portal className='outline-none'>
-        <ContextMenu.Positioner className='origin-(--transform-origin) rounded-md corner-superellipse/2 bg-neutral-100 dark:bg-neutral-900 text-neutral-950 dark:text-neutral-200 shadow-lg shadow-gray-200 outline outline-gray-200 transition-opacity data-ending-style:opacity-0 dark:shadow-none dark:-outline-offset-1 dark:outline-gray-300'>
+        <ContextMenu.Positioner className='origin-(--transform-origin) rounded-md bg-neutral-100 dark:bg-neutral-900 text-neutral-950 dark:text-neutral-200 shadow-lg shadow-gray-200 outline outline-gray-200 transition-opacity data-ending-style:opacity-0 dark:shadow-none dark:-outline-offset-1 dark:outline-gray-300'>
           <ContextMenu.Popup className='flex flex-col items-start justify-center space-y-1 p-1'>
             <div className='flex w-full items-center justify-start gap-1 flex-wrap'>
               <ContextMenu.Item

@@ -27,6 +27,7 @@
     "@effect/platform-node": "^0.108.1",
     "@heroicons/react": "^2.2.0",
     "@libsql/client": "^0.18.0",
+    "@phosphor-icons/react": "^2.1.10",
     "@solar-icons/react": "1.1.0",
     "@stitches/react": "^1.2.8",
     "@tailwindcss/vite": "^4.3.3",

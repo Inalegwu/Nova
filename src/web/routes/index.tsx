@@ -84,12 +84,12 @@ function Collections({ collections }: { collections: Array<CollectionProp> }) {
         <CollectionBox key={collection.id} {...collection} />
       ))}
       <Dialog.Root>
-        <Dialog.Trigger className='absolute font-bold z-1 bottom-2 right-1 bg-neutral-950 px-5 py-2 text-[13.5px] rounded-xl corner-squircle text-white'>
+        <Dialog.Trigger className='absolute font-bold z-1 bottom-2 right-1 bg-neutral-950 px-5 py-2 text-[13.5px] rounded-xl text-white'>
           Create Collection
         </Dialog.Trigger>
         <Dialog.Portal>
           <Dialog.Backdrop className='fixed inset-0 min-h-dvh bg-black opacity-20 transition-opacity duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 supports-[-webkit-touch-callout:none]:absolute' />
-          <Dialog.Popup className='fixed top-1/2 left-1/2 -mt-8 flex corner-squircle flex-col w-2/6 h-2/6 overflow-hidden md:lg:xl:max-w-[calc(100vw-3rem)] md:lg:xl:max-h-[calc(90vh-3rem)] -translate-x-1/2 rounded-3xl -translate-y-1/2 bg-neutral-50 dark:bg-neutral-950 text-neutral-950 dark:text-neutral-100 border border-neutral-100 dark:border-neutral-800 shadow shadow-black/20 transition-[scale,opacity] duration-100 ease-out data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0'>
+          <Dialog.Popup className='fixed top-1/2 left-1/2 -mt-8 flex flex-col w-2/6 h-2/6 overflow-hidden md:lg:xl:max-w-[calc(100vw-3rem)] md:lg:xl:max-h-[calc(90vh-3rem)] -translate-x-1/2 rounded-3xl -translate-y-1/2 bg-neutral-50 dark:bg-neutral-950 text-neutral-950 dark:text-neutral-100 border border-neutral-100 dark:border-neutral-800 shadow shadow-black/20 transition-[scale,opacity] duration-100 ease-out data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0'>
             <Dialog.Close className='absolute z-1 top-3 right-3'>
               <CloseCircle size={20} weight='Bold' />
             </Dialog.Close>
@@ -102,7 +102,7 @@ function Collections({ collections }: { collections: Array<CollectionProp> }) {
                   placeholder='name'
                 />
                 <button
-                  className='px-5 text-sm py-1 rounded-lg corner-squircle bg-black gap-2'
+                  className='px-5 text-sm py-1 rounded-lg bg-black gap-2'
                   onClick={() => mutate({ collectionName })}
                 >
                   <span>Create</span>

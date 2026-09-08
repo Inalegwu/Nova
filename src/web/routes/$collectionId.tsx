@@ -43,7 +43,7 @@ function RouteComponent() {
     return (
       <div className='w-full h-full flex flex-col'>
         <div className='w-full h-3/6'>
-          <Skeleton className='w-1.8/6 h-96 border border-solid border-neutral-200 dark:border-neutral-800 rounded-2xl squircle' />
+          <Skeleton className='w-1.8/6 h-96 border border-solid border-neutral-200 dark:border-neutral-800 rounded-2xl' />
         </div>
       </div>
     );
@@ -53,7 +53,7 @@ function RouteComponent() {
     <div className='w-full h-full p-2 flex flex-col items-start justify-start space-y-2'>
       {/* TODO: fill in collection metadata from comic vine */}
       <div className='flex items-center justify-start gap-5 w-full'>
-        <div className='relative w-[26%] h-108 corner-squircle border border-solid overflow-hidden border-neutral-200 dark:border-neutral-800 rounded-3xl'>
+        <div className='relative w-[26%] h-108 border border-solid overflow-hidden border-neutral-200 dark:border-neutral-800 rounded-3xl'>
           <div className='absolute z-1 w-full transition h-full bg-black/40 flex flex-col items-start justify-end'>
             <motion.div
               className='bg-neutral-200/20 flex items-center justify-center gap-4 w-full bottom-0 left-0 p-2'
@@ -124,7 +124,7 @@ function RouteComponent() {
                   </ScrollArea.Root>
                   <button
                     disabled={adding}
-                    className='flex centered gap-2 bg-neutral-200 text-neutral-800 px-5 py-1 rounded-xl corner-squircle dark:bg-black dark:text-white'
+                    className='flex centered gap-2 bg-neutral-200 text-neutral-800 px-5 py-1 rounded-xl dark:bg-black dark:text-white'
                     onClick={() =>
                       addToCollection({
                         // @ts-expect-error

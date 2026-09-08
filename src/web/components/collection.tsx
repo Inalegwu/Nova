@@ -21,15 +21,15 @@ export default function CollectionBox(collection: CollectionProp) {
           },
         })
       }
-      className='w-50 h-75 mb-16 cursor-pointer'
+      className='w-50 h-75 mb-16 mt-3 cursor-pointer'
     >
-      <div className='w-full h-full relative rounded-md'>
+      <div className='w-full h-full relative'>
         {images.length === 0 &&
           new Array(3).fill(0).map((_, idx) => (
             <div
               className={`w-full h-full absolute z-${
                 idx * 10
-              } rounded-lg border border-solid border-zinc-200 dark:border-zinc-800 bg-neutral-100/0.5 backdrop-blur-3xl`}
+              } border border-solid border-neutral-900 backdrop-blur-3xl`}
               style={{
                 transform: `rotateZ(${
                   idx === 0 ? -1.5 : idx % 2 === 0 ? -idx * 1 : idx * 1
@@ -41,7 +41,7 @@ export default function CollectionBox(collection: CollectionProp) {
           <img
             className={`w-full h-full absolute z-${
               idx * 10
-            } rounded-lg border border-solid border-zinc-200 dark:border-zinc-800`}
+            } border border-solid border-neutral-900`}
             style={{
               transform: `rotateZ(${
                 idx === 0 ? -1.5 : idx % 2 === 0 ? -idx * 1 : idx * 1

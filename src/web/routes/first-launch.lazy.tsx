@@ -1,9 +1,9 @@
-import { Link, createLazyFileRoute } from '@tanstack/react-router';
+import { SquareArrowRight } from '@solar-icons/react';
+import global from '@state';
+import { createLazyFileRoute, Link } from '@tanstack/react-router';
 import { AnimatePresence, motion, useMotionValue } from 'motion/react';
 import { memo, useEffect, useState } from 'react';
 import { useDebounce, useKeyPress, useTimeout } from '../hooks';
-import global from '@state';
-import { SquareArrowRight } from '@solar-icons/react';
 
 export const Route = createLazyFileRoute('/first-launch')({
   component: memo(Component),
@@ -70,7 +70,7 @@ function Component() {
   useKeyPress(debounceKeyPress);
 
   return (
-    <div className='font-medium text-lg flex centered w-full h-full'>
+    <div className='font-medium text-lg flex w-full h-full'>
       {welcomeMessages.map((message) =>
         message.render ? (
           <message.render key={message.id} />

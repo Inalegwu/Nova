@@ -109,11 +109,11 @@ function RouteComponent() {
       />
       <Toolbar.Root
         render={<motion.div animate={{ width: expanded ? '11%' : '2.2%' }} />}
-        className='flex centered overflow-hidden absolute z-10 top-2 right-2 gap-1 bg-neutral-100 dark:bg-neutral-950 rounded-md squiricle'
+        className='flex overflow-hidden absolute z-10 top-2 right-2 gap-1 bg-neutral-100 dark:bg-neutral-950 rounded-md'
       >
         <motion.button
           onClick={() => setExpanded((ex) => !ex)}
-          className='p-2 flex centered'
+          className='p-2 flex'
         >
           {expanded ? (
             <AltArrowRight size={16} weight='Bold' />
@@ -130,7 +130,7 @@ function RouteComponent() {
               }}
             />
           }
-          className='flex centered gap-1'
+          className='flex gap-1'
         >
           <Toolbar.Button
             onClick={() => setReaderDirection('vertical')}
@@ -186,10 +186,10 @@ function RouteComponent() {
         </Toolbar.Button>
       </Toolbar.Root>
       <div className='absolute z-10 -bottom-5 left-0 w-full p-2 items-center justify-center'>
-        <div className='w-full bg-neutral-400/20 backdrop-blur-3xl squiricle'>
+        <div className='w-full bg-neutral-400/20 backdrop-blur-3xl'>
           <motion.div
             animate={{ width: `${width}%` }}
-            className='squiricle bg-linear-to-r from-neutral-400/30 dark:from-neutral-100/20 to-transparent p-2'
+            className='bg-linear-to-r from-neutral-400/30 dark:from-neutral-100/20 to-transparent p-2'
           />
         </div>
       </div>

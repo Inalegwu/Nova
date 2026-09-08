@@ -5,25 +5,27 @@
 
 @font-face {
   font-family: Font;
-  src: url("../assets/fonts/sn.ttf");
+  src: url("../assets/fonts/plex.ttf");
 }
 
-.radix-themes {
-  --default-font-family: Font;
-  --heading-font-family: Font;
-  --code-font-family: Font;
-  --strong-font-family: Font;
-  --em-font-family: Font;
-  --quote-font-family: Font;
+@font-face {
+  font-family: Code;
+  src: url("../assets/fonts/plex-mono.ttf");
+}
+
+@font-face {
+  font-family: Code;
+  src: url("../assets/fonts/plex-mono-medium.ttf");
 }
 
 @theme {
   --font-display: Font;
+  --font-code:Code;
   --color-accent:#ff4d1c;
 }
 
 @utility toolbarToggle {
-  @apply p-2 hover:bg-neutral-200/40 dark:hover:bg-neutral-200/5 squiricle dark:text-neutral-500 focus-visible:bg-none focus-visible:outline focus-visible:-outline-offset-1 focus-visible:outline-neutral-400 dark:focus-visible:outline-neutral-500 active:bg-neutral-100;
+  @apply p-2 hover:bg-neutral-200/40 dark:hover:bg-neutral-200/5 dark:text-neutral-500 focus-visible:bg-none focus-visible:outline focus-visible:-outline-offset-1 focus-visible:outline-neutral-400 dark:focus-visible:outline-neutral-500 active:bg-neutral-100;
 }
 
 body {
@@ -47,13 +49,13 @@ button {
 }
 
 .tabTrigger {
-  @apply p-2.5 flex items-center justify-center gap-3 text-xs border border-solid border-neutral-900 border-t-transparent border-b-transparent;            
+  @apply p-2.5 flex items-center justify-center gap-3 text-xs border border-solid border-neutral-900 border-t-transparent border-l-transparent border-b-transparent;            
 }
 .tabTrigger[data-active] {
-  @apply text-white bg-accent;
+  @apply text-accent bg-accent/5 border border-solid border-accent/5 border-t-transparent border-l-transparent border-b-transparent;;
 }
 .ctxMenuRowItem {
-  @apply p-2 flex centered cursor-pointer rounded-md corner-superellipse/2;
+  @apply p-2 flex cursor-pointer rounded-md corner-superellipse/2;
 }
 
 .input{

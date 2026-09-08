@@ -159,7 +159,7 @@ export default function Layout({ children }: LayoutProps) {
                 <Library weight='Linear' size={15} />
               </Tabs.Tab>
             </Tabs.List>
-            <div className='flex items-center justify-start gap-2'>
+            <div className='flex items-center justify-start'>
               <Button
                 onClick={() => addIssue()}
                 className='p-2.5 border-r border-r-solid border-r-neutral-900'
@@ -174,7 +174,7 @@ export default function Layout({ children }: LayoutProps) {
               </Link>
             </div>
           </div>
-          <div className='p-2 w-3/6' id='drag-region' />
+          <div className='p-4.5 w-full' id='drag-region' />
           <div className='flex items-center justify-end text-neutral-500'>
             <Link
               className='p-2.5 border-l border-l-solid border-l-neutral-900'
@@ -195,14 +195,14 @@ export default function Layout({ children }: LayoutProps) {
               <Icon name='CornersOut' size={15} />
             </button>
             <button
-              className='text-red-800 p-2.5 border-l border-l-solid border-l-neutral-900'
+              className='text-red-800 bg-red-800/5 p-2.5 border-l border-l-solid border-l-neutral-900'
               onClick={() => close()}
             >
               <Icon name='X' size={15} />
             </button>
           </div>
         </div>
-        <div className='flex gap-2 overflow-hidden overflow-y-scroll overflow-x-hidden w-full corner-superellipse/1.3'>
+        <div className='flex overflow-hidden overflow-y-scroll overflow-x-hidden w-full'>
           {children}
         </div>
       </Tabs.Root>

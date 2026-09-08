@@ -4,6 +4,11 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 @font-face {
+  font-family: SN;
+  src: url("../assets/fonts/sn.ttf");
+}
+
+@font-face {
   font-family: Font;
   src: url("../assets/fonts/plex.ttf");
 }
@@ -21,11 +26,12 @@
 @theme {
   --font-display: Font;
   --font-code:Code;
+  --font-alternate:SN;
   --color-accent:#ff4d1c;
 }
 
 @utility toolbarToggle {
-  @apply p-2 hover:bg-neutral-200/40 dark:hover:bg-neutral-200/5 dark:text-neutral-500 focus-visible:bg-none focus-visible:outline focus-visible:-outline-offset-1 focus-visible:outline-neutral-400 dark:focus-visible:outline-neutral-500 active:bg-neutral-100;
+  @apply p-2.5 hover:bg-neutral-200/40 dark:hover:bg-neutral-200/5 dark:text-neutral-500 focus-visible:bg-none focus-visible:outline focus-visible:-outline-offset-1 focus-visible:outline-neutral-400 border border-solid border-neutral-900 border-l-transparent border-y-transparent dark:focus-visible:outline-neutral-500 active:bg-neutral-100;
 }
 
 body {
@@ -49,17 +55,17 @@ button {
 }
 
 .tabTrigger {
-  @apply p-2.5 flex items-center justify-center gap-3 text-xs border border-solid border-neutral-900 border-t-transparent border-l-transparent border-b-transparent;            
+  @apply p-2.5 flex items-center justify-center gap-3 text-xs border border-solid border-neutral-900 border-t-transparent border-l-transparent border-b-transparent hover:bg-neutral-900/15;            
 }
 .tabTrigger[data-active] {
-  @apply text-accent bg-accent/5 border border-solid border-accent/5 border-t-transparent border-l-transparent border-b-transparent;;
+  @apply text-accent bg-accent/5 border border-solid border-accent/5 border-t-transparent border-b-transparent;;
 }
 .ctxMenuRowItem {
-  @apply p-2 flex cursor-pointer rounded-md corner-superellipse/2;
+  @apply p-2.5 flex items-center justify-center border border-solid border-neutral-900 border-t-transparent border-l-transparent border-b-transparent hover:bg-neutral-900/30 cursor-pointer
 }
 
 .input{
-  @apply bg-neutral-200 dark:bg-neutral-800 rounded-lg w-full outline-none px-2 py-1 placeholder:text-sm; 
+  @apply bg-neutral-900 text-sm w-full outline-none px-2 py-1 placeholder:text-sm; 
 }
 
 body {

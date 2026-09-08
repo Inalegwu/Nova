@@ -2,19 +2,16 @@ import { Toggle } from '@base-ui/react/toggle';
 import { ToggleGroup } from '@base-ui/react/toggle-group';
 import { Toolbar } from '@base-ui/react/toolbar';
 import {
-  AltArrowLeft,
-  AltArrowRight,
-  Bookmark,
-  Hearts,
   SliderMinimalisticHorizontal,
   SliderVerticalMinimalistic,
 } from '@solar-icons/react';
 import global from '@state';
 import { createFileRoute } from '@tanstack/react-router';
 import { motion } from 'motion/react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import t from '@/shared/config';
-import { CanvasRenderer, Spinner } from '@/web/components';
+import { CanvasRenderer, Spinner, Ticker } from '@/web/components';
+import { Icon } from '@/web/components/atoms';
 import { useInterval, useKeyPress, useTimeout } from '@/web/hooks';
 import { historyCollection } from '@/web/store/history';
 
@@ -30,6 +27,8 @@ function RouteComponent() {
 
   const readerDirection = global.reader.use.direction();
   const setReaderDirection = global.reader.use.setReaderDirection();
+  const toggleFullscreen = global.app.use.setFullScreen();
+  const fullscreen = global.app.use.isFullscreen();
 
   const { data, isLoading: fetchingPages } = t.issue.getPages.useQuery(
     {
@@ -44,10 +43,6 @@ function RouteComponent() {
 
   const contentLength = data?.pages.length || 0;
   const [itemIndex, setItemIndex] = useState(0);
-  const width = useMemo(
-    () => Math.floor((itemIndex / contentLength) * 100),
-    [itemIndex, contentLength],
-  );
 
   useInterval(() => {
     const exists = historyCollection.get(issueId);
@@ -104,22 +99,18 @@ function RouteComponent() {
       <CanvasRenderer
         index={itemIndex}
         setIndex={setItemIndex}
-        className='w-full h-full'
+        className='w-full h-full absolute z-0'
         images={data?.pages.map((page) => page.data) || []}
       />
       <Toolbar.Root
-        render={<motion.div animate={{ width: expanded ? '11%' : '2.2%' }} />}
-        className='flex overflow-hidden absolute z-10 top-2 right-2 gap-1 bg-neutral-100 dark:bg-neutral-950 rounded-md'
+        render={<motion.div animate={{ width: expanded ? '15.6%' : '2.6%' }} />}
+        className='flex overflow-hidden absolute z-10 top-2 right-2 bg-neutral-950 border border-solid border-neutral-900'
       >
         <motion.button
           onClick={() => setExpanded((ex) => !ex)}
-          className='p-2 flex'
+          className='toolbarToggle'
         >
-          {expanded ? (
-            <AltArrowRight size={16} weight='Bold' />
-          ) : (
-            <AltArrowLeft size={16} weight='Bold' />
-          )}
+          <Icon name={expanded ? 'CaretRight' : 'CaretLeft'} size={13} />
         </motion.button>
         <ToggleGroup
           render={
@@ -130,7 +121,7 @@ function RouteComponent() {
               }}
             />
           }
-          className='flex gap-1'
+          className='flex'
         >
           <Toolbar.Button
             onClick={() => setReaderDirection('vertical')}
@@ -140,7 +131,7 @@ function RouteComponent() {
           >
             <SliderVerticalMinimalistic
               weight={readerDirection === 'vertical' ? 'Bold' : 'Outline'}
-              size={16}
+              size={13}
             />
           </Toolbar.Button>
           <Toolbar.Button
@@ -151,7 +142,7 @@ function RouteComponent() {
           >
             <SliderMinimalisticHorizontal
               weight={readerDirection === 'horizontal' ? 'Bold' : 'Outline'}
-              size={16}
+              size={13}
             />
           </Toolbar.Button>
         </ToggleGroup>
@@ -168,7 +159,7 @@ function RouteComponent() {
           }
           className='toolbarToggle'
         >
-          <Bookmark weight='Outline' size={16} />
+          <Icon name='Bookmark' size={13} />
         </Toolbar.Button>
         <Toolbar.Button
           render={
@@ -182,16 +173,31 @@ function RouteComponent() {
           }
           className='toolbarToggle'
         >
-          <Hearts weight='Outline' size={16} />
+          <Icon name='Heart' size={13} />
+        </Toolbar.Button>
+        <Toolbar.Button
+          render={
+            <Toggle
+              render={
+                <motion.button
+                  onClick={() => toggleFullscreen(!fullscreen)}
+                  animate={{ display: expanded ? 'flex' : 'none' }}
+                />
+              }
+            />
+          }
+          className='toolbarToggle'
+        >
+          <Icon name='CornersOut' size={13} />
         </Toolbar.Button>
       </Toolbar.Root>
-      <div className='absolute z-10 -bottom-5 left-0 w-full p-2 items-center justify-center'>
-        <div className='w-full bg-neutral-400/20 backdrop-blur-3xl'>
-          <motion.div
-            animate={{ width: `${width}%` }}
-            className='bg-linear-to-r from-neutral-400/30 dark:from-neutral-100/20 to-transparent p-2'
-          />
-        </div>
+      <div className='absolute z-30 bottom-9 left-0 w-full p-2 items-center justify-center'>
+        <Ticker
+          borderColor='#262626'
+          height={20}
+          tickCount={300}
+          progress={(itemIndex / contentLength) * 100}
+        />
       </div>
     </div>
   );

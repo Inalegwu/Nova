@@ -1,4 +1,4 @@
-import { Button, Tabs } from '@base-ui/react';
+import { Tabs } from '@base-ui/react';
 import { Home, Library } from '@solar-icons/react';
 import global from '@state';
 import { Link, useRouter, useRouterState } from '@tanstack/react-router';
@@ -6,9 +6,10 @@ import { AnimatePresence } from 'motion/react';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import logo from '@/assets/images/win_dark.png';
 import t from '@/shared/config';
 import { useInterval, useWindow } from '../hooks';
-import { Icon } from './atoms';
+import { Icon, Tooltip } from './atoms';
 
 type LayoutProps = {
   children?: React.ReactNode;
@@ -130,26 +131,33 @@ export default function Layout({ children }: LayoutProps) {
         {/*titlebar*/}
         <div className='w-full flex items-center justify-between gap border-b border-b-solid border-b-neutral-900'>
           <div className='flex items-center justify-start'>
-            <div className='flex items-center justify-start'>
-              <Link
-                to='/'
-                className='p-2.5 border-r border-r-solid border-r-neutral-900'
-              >
-                <Home size={15} weight='Linear' />
-              </Link>
-              <button
-                disabled={!!isHome}
-                onClick={() => navigation.history.back()}
-                className='p-2.5 border-r border-r-solid border-r-neutral-900'
-              >
-                <Icon name='ArrowLeft' size={15} />
-              </button>
-              <button
-                onClick={() => navigation.history.forward()}
-                className='p-2.5 border-r border-r-solid border-r-neutral-900'
-              >
-                <Icon name='ArrowRight' size={15} />
-              </button>
+            <img src={logo} alt='logo' className='size-5 ml-2' />
+            <div className='flex items-center justify-start ml-2'>
+              <Tooltip content='Home'>
+                <Link
+                  to='/'
+                  className='p-2.5 border-x border-x-solid border-x-neutral-900 hover:bg-neutral-900/15'
+                >
+                  <Home size={15} weight='Linear' />
+                </Link>
+              </Tooltip>
+              <Tooltip content='Back'>
+                <button
+                  disabled={!!isHome}
+                  onClick={() => navigation.history.back()}
+                  className='p-2.5 border-r border-r-solid border-r-neutral-900 hover:bg-neutral-900/15'
+                >
+                  <Icon name='ArrowLeft' size={15} />
+                </button>
+              </Tooltip>
+              <Tooltip content='Forward'>
+                <button
+                  onClick={() => navigation.history.forward()}
+                  className='p-2.5 border-r border-r-solid border-r-neutral-900 hover:bg-neutral-900/15'
+                >
+                  <Icon name='ArrowRight' size={15} />
+                </button>
+              </Tooltip>
             </div>
             <Tabs.List className='flex items-center justify-start'>
               <Tabs.Tab className='tabTrigger' value='issues'>
@@ -160,15 +168,17 @@ export default function Layout({ children }: LayoutProps) {
               </Tabs.Tab>
             </Tabs.List>
             <div className='flex items-center justify-start'>
-              <Button
-                onClick={() => addIssue()}
-                className='p-2.5 border-r border-r-solid border-r-neutral-900'
-              >
-                <Icon name='Plus' size={15} />
-              </Button>
+              <Tooltip content='Add Issue'>
+                <button
+                  onClick={() => addIssue()}
+                  className='p-2.5 border-r border-r-solid border-r-neutral-900 hover:bg-neutral-900/15'
+                >
+                  <Icon name='Plus' size={15} />
+                </button>
+              </Tooltip>
               <Link
                 to='/history'
-                className='p-2.5 border-r border-r-solid border-r-neutral-900'
+                className='p-2.5 border-r border-r-solid border-r-neutral-900 hover:bg-neutral-900/15'
               >
                 <Icon name='ClockCounterClockwise' size={15} />
               </Link>
@@ -177,32 +187,32 @@ export default function Layout({ children }: LayoutProps) {
           <div className='p-4.5 w-full' id='drag-region' />
           <div className='flex items-center justify-end text-neutral-500'>
             <Link
-              className='p-2.5 border-l border-l-solid border-l-neutral-900'
+              className='p-2.5 border-l border-l-solid border-l-neutral-900 hover:bg-neutral-900/15'
               to='/settings'
             >
               <Icon name='Gear' size={15} />
             </Link>
             <button
-              className='p-2.5 border-l border-l-solid border-l-neutral-900'
+              className='p-2.5 border-l border-l-solid border-l-neutral-900 hover:bg-neutral-900/15'
               onClick={() => minimize()}
             >
               <Icon name='Minus' size={15} />
             </button>
             <button
-              className='p-2.5 border-l border-l-solid border-l-neutral-900'
+              className='p-2.5 border-l border-l-solid border-l-neutral-900 hover:bg-neutral-900/15'
               onClick={() => maximize()}
             >
               <Icon name='CornersOut' size={15} />
             </button>
             <button
-              className='text-red-800 bg-red-800/5 p-2.5 border-l border-l-solid border-l-neutral-900'
+              className='text-red-800 hover:bg-red-800/5 p-2.5 border-l border-l-solid border-l-neutral-900'
               onClick={() => close()}
             >
               <Icon name='X' size={15} />
             </button>
           </div>
         </div>
-        <div className='flex overflow-hidden overflow-y-scroll overflow-x-hidden w-full'>
+        <div className='flex overflow-hidden overflow-y-scroll overflow-x-hidden w-full h-full'>
           {children}
         </div>
       </Tabs.Root>

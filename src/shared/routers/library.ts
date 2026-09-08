@@ -34,6 +34,7 @@ const libraryRouter = router({
             thumbnailUrl: true,
             id: true,
             issueTitle: true,
+            dateCreated: true,
           },
         },
       },

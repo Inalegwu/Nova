@@ -23,23 +23,26 @@ export default function IssueBox(issue: Partial<Issue>) {
             },
           })
         }
-        className='w-50 h-75 mb-16 cursor-pointer gap-5'
+        className='w-90 mb-16 flex cursor-pointer gap-5 border border-solid border-l-transparent border-t-transparent border-neutral-900 p-3'
       >
         <img
           src={issue.thumbnailUrl}
-          className='w-full h-full bg-zinc-200/5 dark:opacity-[0.8] border border-solid border-neutral-200 dark:border-neutral-900'
+          className='w-50 h-65 bg-zinc-200/5 dark:opacity-[0.8] border border-solid border-neutral-200 dark:border-neutral-900'
           alt={`thumb_${issue.id}`}
         />
-        <div className='w-full'>
-          <span className='text-xs font-code uppercase w-full font-medium text-neutral-400'>
+        <div className='flex flex-col items-start justify-start gap-2'>
+          <span className='text-xs uppercase w-full font-medium text-neutral-400'>
             {issue.issueTitle}
+          </span>
+          <span className='text-neutral-500'>
+            {issue.dateCreated?.toString()}
           </span>
         </div>
       </ContextMenu.Trigger>
       <ContextMenu.Portal className='outline-none'>
-        <ContextMenu.Positioner className='origin-(--transform-origin) bg-neutral-100 dark:bg-neutral-900 text-neutral-950 dark:text-neutral-200 shadow-lg shadow-gray-200 outline outline-gray-200 transition-opacity data-ending-style:opacity-0 dark:shadow-none dark:-outline-offset-1 dark:outline-gray-300'>
-          <ContextMenu.Popup className='flex flex-col items-start justify-center space-y-1 p-1'>
-            <div className='flex w-full items-center justify-start gap-1 flex-wrap'>
+        <ContextMenu.Positioner className='origin-(--transform-origin) transition-opacity data-ending-style:opacity-0'>
+          <ContextMenu.Popup className='flex flex-col bg-neutral-950 text-neutral-200 items-start justify-center border border-solid border-neutral-900'>
+            <div className='flex w-full items-center justify-start flex-wrap'>
               <ContextMenu.Item
                 onClick={() =>
                   nav.navigate({
@@ -49,7 +52,7 @@ export default function IssueBox(issue: Partial<Issue>) {
                     },
                   })
                 }
-                className='ctxMenuRowItem  hover:bg-neutral-500/10'
+                className='ctxMenuRowItem'
               >
                 <InfoCircle size={14} />
               </ContextMenu.Item>
@@ -59,7 +62,7 @@ export default function IssueBox(issue: Partial<Issue>) {
                     issueId: issue.id!,
                   })
                 }
-                className='ctxMenuRowItem text-red-500 hover:bg-red-500/10'
+                className='ctxMenuRowItem'
               >
                 <TrashBinMinimalistic size={14} />
               </ContextMenu.Item>

@@ -75,7 +75,7 @@ function RouteComponent() {
           />
         </div>
         <div className='flex flex-col items-start justify-start gap-2 w-full h-full'>
-          <div className='flex items-center justify-start gap-5'>
+          <div className='flex items-center justify-start gap-4'>
             <p className='text-lg font-bold'>
               {data?.collection?.collectionName}
             </p>

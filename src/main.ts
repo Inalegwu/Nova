@@ -5,6 +5,7 @@ import { createIPCHandler } from 'trpc-electron/main';
 import { deeplinkChannel } from '@/shared/channels';
 import { createContext } from '@/shared/context';
 import { appRouter } from '@/shared/routers/_app';
+import './workers/executor';
 
 app.setName('Nova');
 
@@ -82,7 +83,6 @@ const createWindow = () => {
       }
     });
   }
-
   // mainWindow.webContents.openDevTools({ mode: 'bottom' });
 };
 

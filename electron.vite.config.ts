@@ -12,7 +12,13 @@ export default defineConfig({
     build: {
       externalizeDeps: true,
       lib: {
-        entry: 'src/main.ts',
+        entry: {
+          main: 'src/main.ts',
+          'workers/watcher': 'src/workers/watcher.ts',
+          'workers/processing': 'src/workers/processing.ts',
+          'workers/executor': 'src/workers/executor.ts',
+          'workers/channel': 'src/workers/channel.ts',
+        },
       },
     },
   },

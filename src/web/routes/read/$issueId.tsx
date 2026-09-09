@@ -100,7 +100,7 @@ function RouteComponent() {
         index={itemIndex}
         setIndex={setItemIndex}
         className='w-full h-full absolute z-0'
-        images={data?.pages.map((page) => page.data) || []}
+        images={data?.pages?.map((page) => page.data) || []}
       />
       <Toolbar.Root
         render={<motion.div animate={{ width: expanded ? '15.6%' : '2.6%' }} />}

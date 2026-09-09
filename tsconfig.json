@@ -12,7 +12,8 @@
     "paths": {
       "@/*": ["./src/*"],
       "@state": ["./src/web/state/index.ts"],
-      "@web/*":["./src/web/*"]
+      "@web/*": ["./src/web/*"],
+      "@core/*": ["./src/shared/core/*"]
     },
     "plugins": [
       {

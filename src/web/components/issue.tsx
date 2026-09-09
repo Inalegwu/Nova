@@ -23,7 +23,7 @@ export default function IssueBox(issue: Partial<Issue>) {
             },
           })
         }
-        className='w-90 mb-16 flex cursor-pointer gap-5 border border-solid border-l-transparent border-t-transparent border-neutral-900 p-3'
+        className='w-120 mb-16 flex cursor-pointer gap-5 border border-solid border-l-transparent border-t-transparent border-neutral-900 p-3'
       >
         <img
           src={issue.thumbnailUrl}

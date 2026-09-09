@@ -1,5 +1,5 @@
 import { Duration, Effect } from 'effect';
-import { CliOptions, build as electronBuild } from 'electron-builder';
+import { type CliOptions, build as electronBuild } from 'electron-builder';
 import { BuildError } from './src/shared/core/utils/errors';
 
 const build = (opts?: CliOptions) =>
@@ -11,6 +11,7 @@ const build = (opts?: CliOptions) =>
         electronBuild({
           ...opts,
           config: {
+            asarUnpack: ['out/main/workers/**/*'],
             appId: 'com.nova.app',
             productName: 'Nova',
             artifactName: '${productName}-{version}-${platform}-${arch}.${ext}',
@@ -73,7 +74,7 @@ const build = (opts?: CliOptions) =>
 build().pipe(
   Effect.catchTag('BuildError', ({ error }) =>
     Effect.logFatal(
-      // @ts-ignore: it's correctly typed
+      // @ts-expect-error: it's correctly typed
       `Build failed with Exit Code ${error.exitCode} ERROR CODE ==> ${error.code}...\n${error}`,
     ),
   ),

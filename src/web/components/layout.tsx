@@ -24,7 +24,6 @@ export default function Layout({ children }: LayoutProps) {
   const { mutate: maximize } = t.window.maximize.useMutation();
   const { mutate: close } = t.window.closeWindow.useMutation();
   const { mutate: addIssue } = t.issue.addIssue.useMutation();
-  t.library.launchWatcher.useMutation();
 
   const isHome = routerState.location.pathname === '/';
   const lastOpenedTab = global.app.use.lastOpenedTab();

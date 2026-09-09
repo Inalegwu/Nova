@@ -22,7 +22,7 @@ export class ArchiveService extends Context.Tag('@nova/Core/Services/Archive')<
 
 export const databaseArchiveService = {
   rar: Effect.fnUntraced(function* (filePath: string) {
-    const { files, meta } = yield* createRarExtractor(filePath);
+    const { files } = yield* createRarExtractor(filePath);
 
     const issueTitle = yield* Effect.sync(() =>
       parseFileNameFromPath(filePath),
@@ -36,12 +36,12 @@ export const databaseArchiveService = {
       convertToImageUrl(files.find((file) => file.isFirst)?.data!),
     );
 
-    const newIssue = yield* saveIssue(issueTitle, thumbnailUrl, savePath);
+    yield* saveIssue(issueTitle, thumbnailUrl, savePath);
 
-    yield* parseXML(meta, newIssue.id).pipe(
-      Effect.fork,
-      Effect.catchAll(Effect.logFatal),
-    );
+    // yield* parseXML(meta, newIssue.id).pipe(
+    //   Effect.fork,
+    //   Effect.catchAll(Effect.logFatal),
+    // );
 
     yield* Fs.makeDirectory(savePath).pipe(
       Effect.catchTag('FSError', Console.log),
@@ -78,12 +78,9 @@ export const databaseArchiveService = {
       ),
     );
 
-    const newIssue = yield* saveIssue(issueTitle, thumbnailUrl, savePath);
+    yield* saveIssue(issueTitle, thumbnailUrl, savePath);
 
-    yield* parseXML(meta, newIssue.id).pipe(
-      Effect.fork,
-      Effect.catchAll(Effect.logFatal),
-    );
+    yield* Archive.cbz.extractZip(zipPath, savePath);
 
     yield* Effect.sync(() =>
       parserChannel.postMessage({

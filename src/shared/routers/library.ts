@@ -9,23 +9,8 @@ import {
 } from '@/shared/schema';
 import { sortPages } from '@/shared/utils';
 import { publicProcedure, router } from '@/trpc';
-// @ts-expect-error: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
-import watcher from '../core/workers/watcher?nodeWorker';
 
 const libraryRouter = router({
-  launchWatcher: publicProcedure.mutation(async () => {
-    watcher({
-      name: 'watcher-worker',
-    })
-      .on('message', console.log)
-      .postMessage({
-        activate: true,
-      });
-
-    return {
-      success: true,
-    };
-  }),
   getLibrary: publicProcedure.query(async ({ ctx }) => {
     const collections = await ctx.db.query.collections.findMany({
       with: {

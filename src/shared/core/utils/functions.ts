@@ -105,6 +105,7 @@ export const saveIssue = Effect.fn(function* (
           issueTitle,
           thumbnailUrl,
           path,
+          dateCreated: new Date(),
         })
         .returning(),
   ).pipe(Effect.map((result) => result.at(0)));

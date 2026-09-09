@@ -27,8 +27,8 @@ const workersDir = app.isPackaged
 const workerFile = (name: string) => path.join(workersDir, `${name}.js`);
 
 const WORKERS: ManagedWorker[] = [
-  { name: 'watcher', path: workerFile('watcher') },
-  { name: 'processor', path: workerFile('processing') },
+  { name: 'horus', path: workerFile('watcher') },
+  { name: 'anubis', path: workerFile('processing') },
 ];
 
 const runWorker = (worker: ManagedWorker) =>

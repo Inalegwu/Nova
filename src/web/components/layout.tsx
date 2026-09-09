@@ -1,5 +1,5 @@
 import { Tabs } from '@base-ui/react';
-import { Home, Library } from '@solar-icons/react';
+import { Home } from '@solar-icons/react';
 import global from '@state';
 import { Link, useRouter, useRouterState } from '@tanstack/react-router';
 import { AnimatePresence } from 'motion/react';
@@ -163,7 +163,7 @@ export default function Layout({ children }: LayoutProps) {
                 <Icon name='Book' size={15} />
               </Tabs.Tab>
               <Tabs.Tab className='tabTrigger' value='collections'>
-                <Library weight='Linear' size={15} />
+                <Icon name='Books' size={15} />
               </Tabs.Tab>
             </Tabs.List>
             <div className='flex items-center justify-start'>

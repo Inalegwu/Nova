@@ -48,7 +48,7 @@ function IssuesView({ issues }: { issues: Array<Partial<Issue>> }) {
   useEffect(() => setLastOpenedTab('issues'), []);
 
   return (
-    <div className='w-full h-full flex items-start justify-start flex-wrap overflow-y-scroll'>
+    <div className='w-full h-full flex items-start justify-start flex-wrap content-start overflow-y-scroll'>
       {issues.length === 0 && (
         <div className='w-full h-full items-center justify-center flex flex-col'>
           <h1 className='uppercase text-xl font-bold text-neutral-400'>

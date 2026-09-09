@@ -1,5 +1,8 @@
 import { NodeRuntime } from '@effect/platform-node';
-import { Console, Data, Effect, Layer, Queue, Stream } from 'effect';
+import { Console, Data, Effect, Layer, Match, Queue, Stream } from 'effect';
+import { ArchiveService } from '@/shared/core/services/archive-service';
+import db from '@/shared/storage';
+import { parseFileNameFromPath } from '@/shared/utils';
 import { type DiscoveredFile, DiscoveryChannel } from './channel';
 
 class FileProcessingError extends Data.TaggedError('FileProcessingError')<{
@@ -7,28 +10,49 @@ class FileProcessingError extends Data.TaggedError('FileProcessingError')<{
   readonly cause: unknown;
 }> {}
 
-const processFile = (
-  file: DiscoveredFile,
-): Effect.Effect<void, FileProcessingError> =>
-  Effect.tryPromise({
-    try: async () => {
-      console.log(`processing ${file.name} at ${file.path}`);
+const processFile = Effect.fn(function* (file: DiscoveredFile) {
+  const A = yield* ArchiveService;
+  const parsePath = file.path;
 
-      const parsePath = file.path;
+  yield* Effect.logInfo(`processing ${file.name}`);
 
-      const ext =
-        parsePath.includes('cbr') || parsePath.includes('rar')
-          ? 'cbr'
-          : parsePath.includes('cbz') || parsePath.includes('zip')
-            ? 'cbz'
-            : 'none';
+  const ext =
+    parsePath.includes('cbr') || parsePath.includes('rar')
+      ? 'cbr'
+      : parsePath.includes('cbz') || parsePath.includes('zip')
+        ? 'cbz'
+        : 'none';
 
-      console.log({ ext });
+  yield* Effect.logInfo('checking exists');
 
-      // real work goes here: parse, upload, move to a processed dir, etc.
-    },
-    catch: (cause) => new FileProcessingError({ path: file.path, cause }),
-  });
+  const exists = yield* Effect.tryPromise(
+    async () =>
+      await db.query.issues.findFirst({
+        where: (issue, { eq }) =>
+          eq(issue.issueTitle, parseFileNameFromPath(file.path)),
+      }),
+  ).pipe(
+    Effect.catchTag('UnknownException', (e) =>
+      Effect.fail(new FileProcessingError({ cause: e, path: file.path })),
+    ),
+  );
+
+  if (exists) {
+    yield* Effect.log(parseFileNameFromPath(file.path), 'already exists');
+    return;
+  }
+
+  yield* Effect.logInfo(`following .${ext} path`);
+
+  Match.value(ext).pipe(
+    Match.when('cbz', () => A.zip(file.path).pipe(Effect.runPromise)),
+    Match.when('cbr', () => A.rar(file.path).pipe(Effect.runPromise)),
+    Match.when('none', () => console.log('Invalid file extension')),
+    Match.orElse(() => {}),
+  );
+
+  yield* Effect.logInfo('Processing complete');
+});
 
 const QUEUE_CAPACITY = 256;
 const PROCESSING_CONCURRENCY = 4;
@@ -61,6 +85,9 @@ const program = Effect.gen(function* () {
   );
 });
 
-const MainLayer = Layer.mergeAll(DiscoveryChannel.Default);
+const MainLayer = Layer.mergeAll(
+  DiscoveryChannel.Default,
+  ArchiveService.Default,
+);
 
 program.pipe(Effect.provide(MainLayer), Effect.scoped, NodeRuntime.runMain);

@@ -1,7 +1,7 @@
-import { ContextMenu } from '@base-ui/react';
-import { InfoCircle, TrashBinMinimalistic } from '@solar-icons/react';
+import { Menu } from '@base-ui/react/menu';
 import { useRouter } from '@tanstack/react-router';
 import t from '@/shared/config';
+import { Icon } from './atoms';
 
 export default function IssueBox(issue: Partial<Issue>) {
   const nav = useRouter();
@@ -12,79 +12,61 @@ export default function IssueBox(issue: Partial<Issue>) {
   });
 
   return (
-    <ContextMenu.Root>
-      <ContextMenu.Trigger
-        onClick={() =>
-          nav.navigate({
-            href: '/read/$issueId',
-            params: {
-              // @ts-expect-error
-              issueId: issue.id,
-            },
-          })
-        }
-        className='w-120 mb-16 flex cursor-pointer gap-5 border border-solid border-l-transparent border-t-transparent border-neutral-900 p-3'
-      >
-        <img
-          src={issue.thumbnailUrl}
-          className='w-50 h-65 bg-zinc-200/5 dark:opacity-[0.8] border border-solid border-neutral-800'
-          alt={`thumb_${issue.id}`}
-        />
-        <div className='flex flex-col items-start justify-start gap-2'>
-          <span className='text-xs uppercase w-full font-medium text-neutral-300'>
-            {issue.issueTitle}
-          </span>
-          <span className='text-neutral-500'>
+    <div className='w-2/6 flex cursor-pointer gap-5 border border-solid border-l-transparent border-t-transparent border-neutral-900 p-3'>
+      <img
+        src={issue.thumbnailUrl}
+        className='w-40 h-50 border border-solid border-neutral-800'
+        alt={`thumb_${issue.id}`}
+      />
+      <div className='flex flex-col items-start justify-between gap-2'>
+        <span className='text-xs uppercase w-full font-medium text-neutral-300'>
+          {issue.issueTitle}
+        </span>
+        <div className='w-full flex items-center justify-between gap-2'>
+          <span className='text-neutral-500 text-xs uppercase'>
             {issue.dateCreated?.toString()}
           </span>
+          <Menu.Root>
+            <Menu.Trigger className='p-1.5 border border-solid border-neutral-900 bg-neutral-900/10'>
+              <Icon name='DotsThreeVertical' size={15} />
+            </Menu.Trigger>
+            <Menu.Portal>
+              {' '}
+              <Menu.Positioner
+                className='outline-hidden'
+                sideOffset={8}
+                align='start'
+              >
+                <Menu.Popup className='relative origin-(--transform-origin) border border-neutral-900 bg-neutral-950 py-1 text-neutral-3000 shadow-[0.25rem_0.25rem_0] shadow-black/12 outline-hidden transition-[scale,opacity] duration-100 ease-out data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0'>
+                  <Menu.Item className='menuItem'>Add To Collection</Menu.Item>
+                  <Menu.Item
+                    onClick={() =>
+                      nav.navigate({
+                        to: '/edit/$issue',
+                        params: {
+                          // @ts-expect-error
+                          issue: issue.id,
+                        },
+                      })
+                    }
+                    className='menuItem'
+                  >
+                    Edit Issue
+                  </Menu.Item>
+                  <Menu.Separator className='mx-1 my-1 h-px bg-neutral-900' />{' '}
+                  <Menu.Item
+                    // @ts-expect-error
+                    onClick={() => deleteIssue({ issueId: issue.id })}
+                    className='menuItem'
+                  >
+                    Delete Issue
+                  </Menu.Item>{' '}
+                </Menu.Popup>{' '}
+              </Menu.Positioner>{' '}
+            </Menu.Portal>
+          </Menu.Root>
         </div>
-      </ContextMenu.Trigger>
-      <ContextMenu.Portal className='outline-none'>
-        <ContextMenu.Positioner className='origin-(--transform-origin) transition-opacity data-ending-style:opacity-0'>
-          <ContextMenu.Popup className='flex flex-col bg-neutral-950 text-neutral-200 items-start justify-center border border-solid border-neutral-900'>
-            <div className='flex w-full items-center justify-start flex-wrap'>
-              <ContextMenu.Item
-                onClick={() =>
-                  nav.navigate({
-                    to: '/edit/$issue',
-                    params: {
-                      issue: issue.id || '',
-                    },
-                  })
-                }
-                className='ctxMenuRowItem'
-              >
-                <InfoCircle size={14} />
-              </ContextMenu.Item>
-              <ContextMenu.Item
-                onClick={() =>
-                  deleteIssue({
-                    issueId: issue.id!,
-                  })
-                }
-                className='ctxMenuRowItem'
-              >
-                <TrashBinMinimalistic size={14} />
-              </ContextMenu.Item>
-            </div>
-          </ContextMenu.Popup>
-        </ContextMenu.Positioner>
-      </ContextMenu.Portal>
-    </ContextMenu.Root>
+      </div>
+    </div>
   );
 }
-
-// function AddToCollection() {
-//   return (
-//     <Dialog.Root>
-//       <Dialog.Trigger>
-//         <AddCircle weight="Outline" size={14} />
-//       </Dialog.Trigger>
-//       <Dialog.Portal>
-//         <Dialog.Backdrop render={<motion.div initial={{ display: "none", opacity: 0 }} animate={{ display: "flex", opacity: 1 }} exit={{ display: "none", opacity: 0 }} />} className="w-full h-screen bg-black/30 flex-items-center justify-center">
-//           <Dialog.Popup>popup</Dialog.Popup>
-//         </Dialog.Backdrop>
-//       </Dialog.Portal>
-//     </Dialog.Root>
-//   );
-// }

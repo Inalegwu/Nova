@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { TRPCError } from '@trpc/server';
 import { eq } from 'drizzle-orm';
-import { Effect } from 'effect';
+import { Console, Effect } from 'effect';
 import { dialog } from 'electron';
 import { v4 } from 'uuid';
 import z from 'zod';
@@ -9,8 +9,6 @@ import { publicProcedure, router } from '@/trpc';
 import { DiscoveryChannel } from '@/workers/channel';
 // @ts-expect-error: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
 import deletionWorker from '../core/workers/deletion?nodeWorker';
-// @ts-expect-error: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
-import parseWorker from '../core/workers/parser?nodeWorker';
 import { Fs } from '../fs';
 import { issues as issuesSchema } from '../schema';
 import { convertToImageUrl, parseFileNameFromPath } from '../utils';
@@ -40,49 +38,22 @@ const issueRouter = router({
         });
       }
 
-      for (const path of filePaths) {
-        channel.publish({
-          discoveredAt: Date.now(),
-          name: parseFileNameFromPath(path),
-          path,
-        });
-      }
+      yield* Effect.log({ filePaths });
+      yield* Effect.forEach(filePaths, (path) =>
+        channel
+          .publish({
+            discoveredAt: Date.now(),
+            name: parseFileNameFromPath(path),
+            path,
+          })
+          .pipe(
+            Effect.catchAll((e) =>
+              Console.error(`failed to broadcast ${path}`, e.cause),
+            ),
+          ),
+      );
     }).pipe(Effect.provide(DiscoveryChannel.Default), Effect.runPromise),
   ),
-  _addIssue: publicProcedure.mutation(async () => {
-    const { canceled, filePaths } = await dialog.showOpenDialog({
-      filters: [
-        {
-          name: 'Comic Book Archive',
-          extensions: ['cbz', 'cbr', 'zip', 'rar'],
-        },
-      ],
-      properties: ['multiSelections'],
-    });
-
-    if (canceled) {
-      return {
-        cancelled: true,
-        completed: false,
-      };
-    }
-
-    for (const parsePath of filePaths) {
-      parseWorker({
-        name: `parse-worker-${parsePath}`,
-      })
-        .on('message', console.log)
-        .postMessage({
-          parsePath,
-          action: 'LINK',
-        } satisfies ParserSchema);
-    }
-
-    return {
-      completed: true,
-      cancelled: false,
-    };
-  }),
   deleteIssue: publicProcedure
     .input(
       z.object({

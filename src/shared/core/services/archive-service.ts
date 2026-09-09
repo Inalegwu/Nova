@@ -1,94 +1,89 @@
 import path from 'node:path';
-import { Console, Context, Effect } from 'effect';
-import type { UnknownException } from 'effect/Cause';
+import { Console, Effect } from 'effect';
 import { parserChannel } from '../../channels';
 import { Fs } from '../../fs';
 import { convertToImageUrl, parseFileNameFromPath } from '../../utils';
 import * as Archive from '../archive/index';
-import type { FSError } from '../utils/errors';
-import { createRarExtractor, parseXML, saveIssue } from '../utils/functions';
+import { createRarExtractor, saveIssue } from '../utils/functions';
 
-export type IArchiveService = {
-  rar: (filePath: string) => Effect.Effect<void, FSError | UnknownException>;
-  zip: (filePath: string) => Effect.Effect<void, FSError | UnknownException>;
-};
+export class ArchiveService extends Effect.Service<ArchiveService>()(
+  'ArchiveService',
+  {
+    effect: Effect.gen(function* () {
+      return {
+        rar: Effect.fnUntraced(function* (filePath: string) {
+          const { files } = yield* createRarExtractor(filePath);
 
-// TODO: implement fallbacks for when the database archive service fails
-// or isn't properly implemented (future stuff)
-export class ArchiveService extends Context.Tag('@nova/Core/Services/Archive')<
-  ArchiveService,
-  IArchiveService
->() {}
+          const issueTitle = yield* Effect.sync(() =>
+            parseFileNameFromPath(filePath),
+          );
 
-export const databaseArchiveService = {
-  rar: Effect.fnUntraced(function* (filePath: string) {
-    const { files } = yield* createRarExtractor(filePath);
+          const savePath = path.join(process.env.cache_dir!, issueTitle);
 
-    const issueTitle = yield* Effect.sync(() =>
-      parseFileNameFromPath(filePath),
-    );
+          yield* Effect.logInfo(issueTitle, savePath);
 
-    const savePath = path.join(process.env.cache_dir!, issueTitle);
+          const thumbnailUrl = yield* Effect.sync(() =>
+            convertToImageUrl(files.find((file) => file.isFirst)?.data!),
+          );
 
-    yield* Effect.logInfo(issueTitle, savePath);
+          yield* saveIssue(issueTitle, thumbnailUrl, savePath);
 
-    const thumbnailUrl = yield* Effect.sync(() =>
-      convertToImageUrl(files.find((file) => file.isFirst)?.data!),
-    );
+          // yield* parseXML(meta, newIssue.id).pipe(
+          //   Effect.fork,
+          //   Effect.catchAll(Effect.logFatal),
+          // );
 
-    yield* saveIssue(issueTitle, thumbnailUrl, savePath);
+          yield* Fs.makeDirectory(savePath).pipe(
+            Effect.catchTag('FSError', Console.log),
+          );
 
-    // yield* parseXML(meta, newIssue.id).pipe(
-    //   Effect.fork,
-    //   Effect.catchAll(Effect.logFatal),
-    // );
+          yield* Effect.forEach(files, (file) =>
+            Fs.writeFile(
+              path.join(savePath, file.name),
+              Buffer.from(file.data!).toString('base64'),
+              {
+                encoding: 'base64',
+              },
+            ).pipe(Effect.catchTag('FSError', Console.log)),
+          );
 
-    yield* Fs.makeDirectory(savePath).pipe(
-      Effect.catchTag('FSError', Console.log),
-    );
+          yield* Effect.sync(() =>
+            parserChannel.postMessage({
+              state: 'SUCCESS',
+              isCompleted: true,
+              error: null,
+              issue: issueTitle,
+            }),
+          );
+        }),
+        zip: Effect.fnUntraced(function* (zipPath: string) {
+          const { files } = yield* Archive.cbz.readCbzArchive(zipPath);
 
-    yield* Effect.forEach(files, (file) =>
-      Fs.writeFile(
-        path.join(savePath, file.name),
-        Buffer.from(file.data!).toString('base64'),
-        {
-          encoding: 'base64',
-        },
-      ).pipe(Effect.catchTag('FSError', Console.log)),
-    );
+          const issueTitle = yield* Effect.sync(() =>
+            parseFileNameFromPath(zipPath),
+          );
+          const savePath = path.join(process.env.cache_dir!, issueTitle);
 
-    yield* Effect.sync(() =>
-      parserChannel.postMessage({
-        state: 'SUCCESS',
-        isCompleted: true,
-        error: null,
-        issue: issueTitle,
-      }),
-    );
-  }),
-  zip: Effect.fnUntraced(function* (zipPath: string) {
-    const { files, meta } = yield* Archive.cbz.readCbzArchive(zipPath);
+          const thumbnailUrl = yield* Effect.sync(() =>
+            convertToImageUrl(
+              Buffer.from(files.find((f) => f.isFirst)?.data!).buffer,
+            ),
+          );
 
-    const issueTitle = yield* Effect.sync(() => parseFileNameFromPath(zipPath));
-    const savePath = path.join(process.env.cache_dir!, issueTitle);
+          yield* saveIssue(issueTitle, thumbnailUrl, savePath);
 
-    const thumbnailUrl = yield* Effect.sync(() =>
-      convertToImageUrl(
-        Buffer.from(files.find((f) => f.isFirst)?.data!).buffer,
-      ),
-    );
+          yield* Archive.cbz.extractZip(zipPath, savePath);
 
-    yield* saveIssue(issueTitle, thumbnailUrl, savePath);
-
-    yield* Archive.cbz.extractZip(zipPath, savePath);
-
-    yield* Effect.sync(() =>
-      parserChannel.postMessage({
-        state: 'SUCCESS',
-        isCompleted: true,
-        error: null,
-        issue: issueTitle,
-      }),
-    );
-  }),
-};
+          yield* Effect.sync(() =>
+            parserChannel.postMessage({
+              state: 'SUCCESS',
+              isCompleted: true,
+              error: null,
+              issue: issueTitle,
+            }),
+          );
+        }),
+      };
+    }),
+  },
+) {}

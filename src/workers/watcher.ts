@@ -3,14 +3,10 @@ import { NodeContext, NodeRuntime } from '@effect/platform-node';
 import { Console, Data, Effect, Layer, Stream } from 'effect';
 import { DiscoveryChannel } from './channel';
 
-// ---------- Errors ----------
-
 class WatchSetupError extends Data.TaggedError('WatchSetupError')<{
   readonly path: string;
   readonly cause: unknown;
 }> {}
-
-// ---------- Service ----------
 
 class FileWatcherService extends Effect.Service<FileWatcherService>()(
   'FileWatcherService',
@@ -30,9 +26,9 @@ class FileWatcherService extends Effect.Service<FileWatcherService>()(
             })
             .pipe(
               // THIS should only report creation or copy in's
-              Stream.filter(
-                (event) => event._tag === 'Create' || event._tag === 'Update',
-              ),
+              // Stream.filter(
+              //   (event) => event._tag === 'Create' || event._tag === 'Update',
+              // ),
               Stream.tap((e) => Effect.log({ tag: e._tag, path: e.path })),
               Stream.mapEffect((event) =>
                 Effect.sleep('150 millis').pipe(Effect.as(event)),

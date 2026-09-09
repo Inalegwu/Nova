@@ -27,11 +27,11 @@ export default function IssueBox(issue: Partial<Issue>) {
       >
         <img
           src={issue.thumbnailUrl}
-          className='w-50 h-65 bg-zinc-200/5 dark:opacity-[0.8] border border-solid border-neutral-200 dark:border-neutral-900'
+          className='w-50 h-65 bg-zinc-200/5 dark:opacity-[0.8] border border-solid border-neutral-800'
           alt={`thumb_${issue.id}`}
         />
         <div className='flex flex-col items-start justify-start gap-2'>
-          <span className='text-xs uppercase w-full font-medium text-neutral-400'>
+          <span className='text-xs uppercase w-full font-medium text-neutral-300'>
             {issue.issueTitle}
           </span>
           <span className='text-neutral-500'>

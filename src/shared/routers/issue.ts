@@ -6,16 +6,50 @@ import { dialog } from 'electron';
 import { v4 } from 'uuid';
 import z from 'zod';
 import { publicProcedure, router } from '@/trpc';
+import { DiscoveryChannel } from '@/workers/channel';
 // @ts-expect-error: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
 import deletionWorker from '../core/workers/deletion?nodeWorker';
 // @ts-expect-error: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
 import parseWorker from '../core/workers/parser?nodeWorker';
 import { Fs } from '../fs';
 import { issues as issuesSchema } from '../schema';
-import { convertToImageUrl } from '../utils';
+import { convertToImageUrl, parseFileNameFromPath } from '../utils';
 
 const issueRouter = router({
-  addIssue: publicProcedure.mutation(async () => {
+  addIssue: publicProcedure.mutation(async () =>
+    Effect.gen(function* () {
+      const channel = yield* DiscoveryChannel;
+
+      const { canceled, filePaths } = yield* Effect.tryPromise(
+        async () =>
+          await dialog.showOpenDialog({
+            filters: [
+              {
+                name: 'Comic Book Archive',
+                extensions: ['cbz', 'cbr', 'zip', 'rar'],
+              },
+            ],
+            properties: ['multiSelections'],
+          }),
+      );
+
+      if (canceled) {
+        return yield* Effect.succeed({
+          cancelled: true,
+          completed: false,
+        });
+      }
+
+      for (const path of filePaths) {
+        channel.publish({
+          discoveredAt: Date.now(),
+          name: parseFileNameFromPath(path),
+          path,
+        });
+      }
+    }).pipe(Effect.provide(DiscoveryChannel.Default), Effect.runPromise),
+  ),
+  _addIssue: publicProcedure.mutation(async () => {
     const { canceled, filePaths } = await dialog.showOpenDialog({
       filters: [
         {

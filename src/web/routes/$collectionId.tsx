@@ -48,7 +48,7 @@ function RouteComponent() {
     <div className='w-full h-full flex flex-col items-start justify-start'>
       {/* TODO: fill in collection metadata from comic vine */}
       <div className='flex items-center justify-start gap-5 w-full my-3 px-2'>
-        <div className='relative w-[26%] h-108 border border-solid overflow-hidden border-neutral-200 dark:border-neutral-800'>
+        <div className='relative w-[26%] h-108 border border-solid overflow-hidden border-neutral-900'>
           <div className='absolute z-1 w-full transition h-full bg-black/40 flex flex-col items-start justify-end'>
             <motion.div
               className='bg-neutral-200/20 flex items-center justify-center gap-4 w-full bottom-0 left-0 p-2'
@@ -143,7 +143,7 @@ function RouteComponent() {
         {data?.issues?.map((issue, idx) => (
           <div key={issue.id} className='w-full items-center justify-between'>
             <div
-              className={`flex px-3 items-center font-code uppercase text-sm border-b border-b-solid border-b-neutral-900 ${idx === 0 && 'border-t border-t-solid border-t-neutral-900'} hover:bg-neutral-100/40 dark:hover:bg-neutral-950/20 w-full justify-between gap-3 text-sm text-neutral-950 dark:text-neutral-200`}
+              className={`flex px-3 items-center font-code uppercase text-sm border-b border-b-solid border-b-neutral-900 ${idx === 0 && 'border-t border-t-solid border-t-neutral-900'} hover:bg-neutral-900/5 w-full justify-between gap-3 text-sm`}
             >
               <Link
                 to='/read/$issueId'
@@ -154,7 +154,7 @@ function RouteComponent() {
                 <p>{issue.issueTitle}</p>
               </Link>
               <div className='flex items-center justify-end gap-2'>
-                <button className='p-2.5 hover:bg-neutral-900/60 border-x border-x-solid border-x-neutral-900'>
+                <button className='p-2.5 hover:bg-neutral-900/30 border-x border-x-solid border-x-neutral-900'>
                   <Hearts weight='Linear' size={17} />
                 </button>
               </div>

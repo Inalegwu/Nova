@@ -61,18 +61,11 @@ export const unzipStream = (filePath: string) =>
     ),
   );
 
-export const parseXML = Effect.fn(function* (
-  file: Option.Option<Extractor>,
-  issueId: string,
-) {
+export const parseXML = Effect.fn(function* (file: string, issueId: string) {
   const xmlParser = new XMLParser();
 
-  const data = Option.getOrUndefined(file);
-
-  if (!data) return;
-
   const { metadata: meta, metaId } = yield* Effect.sync(() =>
-    xmlParser.parse(Buffer.from(data.data!).toString()),
+    xmlParser.parse(file),
   ).pipe(
     Effect.andThen((file) =>
       Schema.decodeUnknown(MetadataSchema)(file.ComicInfo || file.comicInfo, {

@@ -13,7 +13,8 @@
         "noStaticElementInteractions":"off"
       },
       "suspicious": {
-        "noShadowRestrictedNames": "off"
+        "noShadowRestrictedNames": "off",
+        "noNonNullAssertedOptionalChain":"off"
       },
       "complexity": {
         "noForEach": "off"

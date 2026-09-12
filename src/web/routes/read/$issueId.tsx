@@ -60,7 +60,7 @@ function RouteComponent() {
   }
 
   return (
-    <div className='relative w-full h-screen'>
+    <div className='relative w-full'>
       <canvas
         id='readerRenderer'
         style={{
@@ -161,7 +161,7 @@ function RouteComponent() {
           <Icon name='CornersOut' size={13} />
         </Toolbar.Button>
       </Toolbar.Root>
-      <div className='absolute z-30 bottom-9 left-0 w-full p-2 items-center justify-center'>
+      <div className='absolute z-30 bottom-0 left-0 w-full p-2 items-center justify-center'>
         <Ticker
           borderColor='#262626'
           height={20}

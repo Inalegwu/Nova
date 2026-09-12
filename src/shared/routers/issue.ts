@@ -1,17 +1,14 @@
-import path from 'node:path';
 import { TRPCError } from '@trpc/server';
 import { eq } from 'drizzle-orm';
 import { Console, Effect } from 'effect';
 import { dialog } from 'electron';
-import { v4 } from 'uuid';
 import z from 'zod';
 import { publicProcedure, router } from '@/trpc';
 import { DiscoveryChannel } from '@/workers/channel';
 // @ts-expect-error: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
 import deletionWorker from '../core/workers/deletion?nodeWorker';
-import { Fs } from '../fs';
 import { issues as issuesSchema } from '../schema';
-import { convertToImageUrl, parseFileNameFromPath } from '../utils';
+import { parseFileNameFromPath } from '../utils';
 
 const issueRouter = router({
   addIssue: publicProcedure.mutation(async () =>
@@ -67,50 +64,6 @@ const issueRouter = router({
         issueId: input.issueId,
       }),
     ),
-
-  getPages: publicProcedure
-    .input(
-      z.object({
-        issueId: z.string(),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      const issue = await ctx.db.query.issues.findFirst({
-        where: (issue, { eq }) => eq(issue.id, input.issueId),
-        columns: {
-          id: true,
-          path: true,
-          issueTitle: true,
-        },
-      });
-
-      if (!issue)
-        throw new TRPCError({
-          message: "Issue doesn't exist",
-          code: 'NOT_FOUND',
-        });
-
-      const pages = await Fs.readDirectory(issue.path).pipe(
-        Effect.map((files) => files.filter((file) => !file.isDirectory)),
-        Effect.andThen((files) =>
-          Effect.forEach(files, (file) =>
-            Fs.readFile(path.join(issue.path, file.file)),
-          ),
-        ),
-        Effect.map((files) =>
-          files.map((file) => ({
-            id: v4(),
-            data: convertToImageUrl(file.buffer),
-          })),
-        ),
-        Effect.runPromise,
-      );
-
-      return {
-        issue,
-        pages,
-      };
-    }),
   getIssue: publicProcedure
     .input(
       z.object({

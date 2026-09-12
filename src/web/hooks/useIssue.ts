@@ -2,8 +2,9 @@ import {
   type CanvasRenderError,
   type ImageDecodeError,
   ImageRenderer,
-} from '@core/renderer/image-renderer';
-import { type PageReadError, pageStream } from '@core/renderer/page-stream';
+  type PageReadError,
+  pageStream,
+} from '@renderer';
 import { Effect, Fiber, Layer, ManagedRuntime } from 'effect';
 import { useCallback, useEffect, useState } from 'react';
 import { trpcClient } from '@/shared/config';

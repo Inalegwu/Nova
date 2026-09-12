@@ -41,7 +41,7 @@ function RouteComponent() {
   useKeyPress((e) => {
     if (e.keyCode === 93 && pageIndex < pageCount) {
       setPageIndex((idx) => idx + 1);
-    } else if (e.keyCode === 91 && pageCount) {
+    } else if (e.keyCode === 91 && pageIndex !== 0) {
       setPageIndex((idx) => idx - 1);
     }
   });
@@ -70,7 +70,7 @@ function RouteComponent() {
           height: '100%',
         }}
         ref={canvasRef}
-        className='w-full h-full absolute z-0'
+        className='w-full h-full absolute z-0 object-contain'
       />
       <Toolbar.Root
         render={<motion.div animate={{ width: expanded ? '15.6%' : '2.6%' }} />}

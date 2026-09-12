@@ -27,7 +27,6 @@ export function useComicFolder(issueId: string) {
       .query({ issueId })
       .then((count) => {
         if (cancelled) return;
-        console.log(`Page count ${count}`);
         setPageCount(count);
         setStatus('loaded');
       })

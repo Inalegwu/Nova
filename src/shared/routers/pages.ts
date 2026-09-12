@@ -60,8 +60,6 @@ export const pages = router({
               return;
             }
 
-            console.log(fileName);
-
             fileStream = createReadStream(path.join(extractedPath, fileName));
 
             fileStream.on('data', (chunk: Buffer) =>

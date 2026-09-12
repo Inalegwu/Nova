@@ -10,7 +10,6 @@ export const pageStream = (
   pageIndex: number,
 ): Stream.Stream<Uint8Array, PageReadError> =>
   Stream.async<Uint8Array, PageReadError>((emit) => {
-    console.log('==ATTEMPTING TO LAUNCH SUBSCRIPTION===');
     const subscription = trpcClient.pages.readPage.subscribe(
       { issueId, pageIndex },
       {

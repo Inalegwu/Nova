@@ -26,45 +26,63 @@ export default function IssueBox(issue: Partial<Issue>) {
           <span className='text-neutral-500 text-xs uppercase'>
             {issue.dateCreated?.toString()}
           </span>
-          <Menu.Root>
-            <Menu.Trigger className='p-1.5 border border-solid border-neutral-900 bg-neutral-900/10'>
-              <Icon name='DotsThreeVertical' size={15} />
-            </Menu.Trigger>
-            <Menu.Portal>
-              {' '}
-              <Menu.Positioner
-                className='outline-hidden'
-                sideOffset={8}
-                align='start'
-              >
-                <Menu.Popup className='relative origin-(--transform-origin) border border-neutral-900 bg-neutral-950 py-1 text-neutral-3000 shadow-[0.25rem_0.25rem_0] shadow-black/12 outline-hidden transition-[scale,opacity] duration-100 ease-out data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0'>
-                  <Menu.Item className='menuItem'>Add To Collection</Menu.Item>
-                  <Menu.Item
-                    onClick={() =>
-                      nav.navigate({
-                        to: '/edit/$issue',
-                        params: {
-                          // @ts-expect-error
-                          issue: issue.id,
-                        },
-                      })
-                    }
-                    className='menuItem'
-                  >
-                    Edit Issue
-                  </Menu.Item>
-                  <Menu.Separator className='mx-1 my-1 h-px bg-neutral-900' />{' '}
-                  <Menu.Item
+          <div className='flex items-center justify-end gap-2'>
+            <button
+              onClick={() =>
+                nav.navigate({
+                  to: '/read/$issueId',
+                  params: {
                     // @ts-expect-error
-                    onClick={() => deleteIssue({ issueId: issue.id })}
-                    className='menuItem'
-                  >
-                    Delete Issue
-                  </Menu.Item>{' '}
-                </Menu.Popup>{' '}
-              </Menu.Positioner>{' '}
-            </Menu.Portal>
-          </Menu.Root>
+                    issueId: issue.id,
+                  },
+                })
+              }
+              className='p-1.5 border border-solid border-neutral-900 bg-neutral-900/10'
+            >
+              <Icon name='Eyeglasses' size={15} />
+            </button>
+            <Menu.Root>
+              <Menu.Trigger className='p-1.5 border border-solid border-neutral-900 bg-neutral-900/10'>
+                <Icon name='DotsThreeVertical' size={15} />
+              </Menu.Trigger>
+              <Menu.Portal>
+                {' '}
+                <Menu.Positioner
+                  className='outline-hidden'
+                  sideOffset={8}
+                  align='start'
+                >
+                  <Menu.Popup className='relative origin-(--transform-origin) border border-neutral-900 bg-neutral-950 py-1 text-neutral-3000 shadow-[0.25rem_0.25rem_0] shadow-black/12 outline-hidden transition-[scale,opacity] duration-100 ease-out data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0'>
+                    <Menu.Item className='menuItem'>
+                      Add To Collection
+                    </Menu.Item>
+                    <Menu.Item
+                      onClick={() =>
+                        nav.navigate({
+                          to: '/edit/$issue',
+                          params: {
+                            // @ts-expect-error
+                            issue: issue.id,
+                          },
+                        })
+                      }
+                      className='menuItem'
+                    >
+                      Edit Issue
+                    </Menu.Item>
+                    <Menu.Separator className='mx-1 my-1 h-px bg-neutral-900' />{' '}
+                    <Menu.Item
+                      // @ts-expect-error
+                      onClick={() => deleteIssue({ issueId: issue.id })}
+                      className='menuItem'
+                    >
+                      Delete Issue
+                    </Menu.Item>{' '}
+                  </Menu.Popup>{' '}
+                </Menu.Positioner>{' '}
+              </Menu.Portal>
+            </Menu.Root>
+          </div>
         </div>
       </div>
     </div>

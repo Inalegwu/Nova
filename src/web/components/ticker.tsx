@@ -17,7 +17,7 @@ export default function Ticker({
   tickCount = 40,
   majorEvery = 5,
   height = 16,
-  accentColor = 'var(--color-accent)',
+  accentColor = '#ff4d1c',
   borderColor = 'var(--color-border)',
 }: TickerProps) {
   const clamped = Math.min(100, Math.max(0, progress));

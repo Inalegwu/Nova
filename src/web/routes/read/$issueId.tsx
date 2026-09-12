@@ -8,12 +8,10 @@ import {
 import global from '@state';
 import { createFileRoute } from '@tanstack/react-router';
 import { motion } from 'motion/react';
-import { useCallback, useState } from 'react';
-import t from '@/shared/config';
-import { CanvasRenderer, Spinner, Ticker } from '@/web/components';
+import { useState } from 'react';
+import { Spinner, Ticker } from '@/web/components';
 import { Icon } from '@/web/components/atoms';
-import { useInterval, useKeyPress, useTimeout } from '@/web/hooks';
-import { historyCollection } from '@/web/store/history';
+import { useComicFolder, useComicPage, usePreloadPages } from '@/web/hooks';
 
 export const Route = createFileRoute('/read/$issueId')({
   component: RouteComponent,
@@ -22,7 +20,6 @@ export const Route = createFileRoute('/read/$issueId')({
 function RouteComponent() {
   const { issueId } = Route.useParams();
 
-  const [isEnabled, setIsEnabled] = useState(false);
   const [expanded, setExpanded] = useState(true);
 
   const readerDirection = global.reader.use.direction();
@@ -30,63 +27,23 @@ function RouteComponent() {
   const toggleFullscreen = global.app.use.setFullScreen();
   const fullscreen = global.app.use.isFullscreen();
 
-  const { data, isLoading: fetchingPages } = t.issue.getPages.useQuery(
-    {
-      issueId,
-    },
-    {
-      enabled: isEnabled,
-    },
-  );
+  const { pageCount, status: folderStatus } = useComicFolder(issueId);
+  const [pageIndex] = useState(0);
 
-  useTimeout(() => setIsEnabled(true), 500);
+  const { canvasRef, error, status } = useComicPage(pageIndex, issueId);
+  usePreloadPages(pageIndex, [1, 2, -1], issueId, pageCount);
 
-  const contentLength = data?.pages.length || 0;
-  const [itemIndex, setItemIndex] = useState(0);
+  // useKeyPress((e) => {
+  //   if (e.keyCode === 93 && pageIndex < pageCount) {
+  //     setPageIndex((idx) => idx + 1);
+  //   } else if (e.keyCode === 91 && pageCount) {
+  //     setPageIndex((idx) => idx - 1);
+  //   }
+  // });
 
-  useInterval(() => {
-    const exists = historyCollection.get(issueId);
+  if (status === 'error') return <div>{String(error)}</div>;
 
-    if (exists) {
-      console.log('updating...');
-      historyCollection.update(issueId, (draft) => {
-        draft.currentPage === itemIndex;
-      });
-      return;
-    }
-
-    console.log('inserting into history');
-    historyCollection.insert({
-      id: issueId,
-      thumbnail: data?.pages[0].data || '',
-      title: data?.issue.issueTitle || '',
-      lastRead: new Date().toString(),
-      currentPage: itemIndex + 1,
-      totalPages: contentLength,
-      status:
-        itemIndex === Math.floor(contentLength / 2)
-          ? ('half-way' as const)
-          : itemIndex === contentLength
-            ? ('done' as const)
-            : ('currently-reading' as const),
-    });
-
-    return;
-  }, 3000);
-
-  useKeyPress((e) => {
-    if (e.keyCode === 93 && itemIndex < contentLength) {
-      setItemIndex((idx) => idx + 1);
-    } else if (e.keyCode === 91 && itemIndex > 0) {
-      setItemIndex((idx) => idx - 1);
-    }
-  });
-
-  const saveBookmark = useCallback(() => {
-    console.log('saving bookmark');
-  }, []);
-
-  if (fetchingPages) {
+  if (folderStatus !== 'loaded') {
     return (
       <div className='w-full h-full flex items-center justify-center'>
         <Spinner size={50} />
@@ -96,11 +53,20 @@ function RouteComponent() {
 
   return (
     <div className='relative w-full h-screen'>
-      <CanvasRenderer
-        index={itemIndex}
-        setIndex={setItemIndex}
+      <canvas
+        id='readerRenderer'
+        style={{
+          cursor: 'grab',
+          touchAction: 'none',
+          width: '100%',
+          height: '100%',
+        }}
+        ref={(_) => {
+          console.log(_);
+          canvasRef.current = _;
+          console.log('canvasRef.current AFTER ASSIGN:', canvasRef.current);
+        }}
         className='w-full h-full absolute z-0'
-        images={data?.pages?.map((page) => page.data) || []}
       />
       <Toolbar.Root
         render={<motion.div animate={{ width: expanded ? '15.6%' : '2.6%' }} />}
@@ -147,7 +113,7 @@ function RouteComponent() {
           </Toolbar.Button>
         </ToggleGroup>
         <Toolbar.Button
-          onClick={saveBookmark}
+          onClick={() => console.log('saving...')}
           render={
             <Toggle
               render={
@@ -196,7 +162,7 @@ function RouteComponent() {
           borderColor='#262626'
           height={20}
           tickCount={300}
-          progress={(itemIndex / contentLength) * 100}
+          progress={(pageIndex / pageCount) * 100}
         />
       </div>
     </div>

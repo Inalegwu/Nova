@@ -68,7 +68,7 @@ export default function CollectionBox(collection: CollectionProp) {
             width: CARD_WIDTH,
             height: CARD_HEIGHT,
             zIndex: count,
-            backgroundImage: `url(${front.thumbnailUrl})`,
+            backgroundImage: `url(${front?.thumbnailUrl})`,
           }}
         >
           <div className='flex h-full bg-black/80 flex-col justify-between p-5'>
@@ -80,7 +80,7 @@ export default function CollectionBox(collection: CollectionProp) {
                 {collection.collectionName}
               </h2>
               <p className='text-xs text-accent/80'>
-                {moment(front.dateCreated).fromNow()}
+                {moment(front?.dateCreated).fromNow()}
               </p>
               <div className='h-px mt-4 w-full bg-[#2a2a2a]' />
             </div>

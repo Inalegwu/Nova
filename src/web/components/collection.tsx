@@ -29,7 +29,7 @@ export default function CollectionBox(collection: CollectionProp) {
           },
         })
       }
-      className='cursor-pointer flex items-center justify-center font-code mx-2 p-2'
+      className='cursor-pointer flex items-center justify-center mx-2 p-2'
     >
       <div
         className='relative'
@@ -68,21 +68,21 @@ export default function CollectionBox(collection: CollectionProp) {
             width: CARD_WIDTH,
             height: CARD_HEIGHT,
             zIndex: count,
-            backgroundImage: `url(${front.thumbnailUrl})`,
+            backgroundImage: `url(${front?.thumbnailUrl})`,
           }}
         >
           <div className='flex h-full bg-black/80 flex-col justify-between p-5'>
-            <span className='text-[10px] uppercase tracking-wide text-neutral-400'>
+            <span className='text-[10px] font-code font-medium uppercase tracking-wide text-neutral-400'>
               {collection.id} / {String(count).padStart(2, '0')}
             </span>
             <div>
-              <h2 className='text-sm uppercase text-neutral-200 mb-1'>
+              <h2 className='text-xs uppercase font-extrabold text-neutral-200 mb-1'>
                 {collection.collectionName}
               </h2>
-              <p className='text-xs text-accent/80'>
-                {moment(front.dateCreated).fromNow()}
+              <p className='text-xs uppercase font-bold text-accent/60'>
+                {moment(front?.dateCreated).fromNow()}
               </p>
-              <div className='h-px mt-4 w-full bg-[#2a2a2a]' />
+              <div className='h-px mt-4 w-full bg-neutral-700' />
             </div>
           </div>
         </div>

@@ -4,10 +4,10 @@ import { CloseCircle } from '@solar-icons/react';
 import global from '@state';
 import { createFileRoute } from '@tanstack/react-router';
 import { useTimeout } from '@web/hooks';
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, Suspense, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import t from '@/shared/config';
-import { Spinner } from '../components';
+import { Skeleton, Spinner } from '../components';
 import { Icon } from '../components/atoms';
 
 const Issue = React.lazy(() => import('../components/issue'));
@@ -63,9 +63,19 @@ function IssuesView({ issues }: { issues: Array<Partial<Issue>> }) {
           </button>
         </div>
       )}
-      {issues.map((issue) => (
-        <Issue key={issue.id} {...issue} />
-      ))}
+      <Suspense
+        fallback={
+          <div className='w-full h-full flex items-start justify-start content-start'>
+            {new Array(10).fill(0).map((_) => (
+              <Skeleton className='w-2/6 flex cursor-pointer gap-5 border border-solid border-l-transparent border-t-transparent border-neutral-900 p-3' />
+            ))}
+          </div>
+        }
+      >
+        {issues.map((issue) => (
+          <Issue key={issue.id} {...issue} />
+        ))}
+      </Suspense>
     </div>
   );
 }
@@ -94,9 +104,19 @@ function CollectionsView({
 
   return (
     <div className='w-full h-full flex items-start justify-start flex-wrap relative'>
-      {collections.map((collection) => (
-        <Collection key={collection.id} {...collection} />
-      ))}
+      <Suspense
+        fallback={
+          <div className='w-full h-full flex items-start justify-start content-start'>
+            {new Array(10).fill(0).map((_) => (
+              <Skeleton className='w-2/6 flex cursor-pointer gap-5 border border-solid border-l-transparent border-t-transparent border-neutral-900 p-3' />
+            ))}
+          </div>
+        }
+      >
+        {collections.map((collection) => (
+          <Collection key={collection.id} {...collection} />
+        ))}
+      </Suspense>
       <Dialog.Root>
         <Dialog.Trigger className='fixed font-bold z-1 bottom-2 right-3 border border-solid uppercase border-neutral-900 bg-neutral-950 px-5 py-2 text-xs text-neutral-400'>
           Create Collection

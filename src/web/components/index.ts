@@ -1,4 +1,3 @@
-import CanvasRenderer from './canvas-renderer';
 import CollectionBox from './collection';
 import IssueBox from './issue';
 import Layout from './layout';
@@ -7,13 +6,4 @@ import Spinner from './spinner';
 import Tag from './tag';
 import Ticker from './ticker';
 
-export {
-  CanvasRenderer,
-  CollectionBox,
-  IssueBox,
-  Layout,
-  Skeleton,
-  Spinner,
-  Tag,
-  Ticker,
-};
+export { CollectionBox, IssueBox, Layout, Skeleton, Spinner, Tag, Ticker };

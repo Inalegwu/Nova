@@ -1,21 +1,23 @@
-import EventEmitter from 'node:events';
 import { publicProcedure, router } from '@/trpc';
 import { deeplinkChannel, deletionChannel, parserChannel } from '../channels';
 import { channelToAsyncIterable, parseFileNameFromPath } from '../utils';
 import issueRouter from './issue';
 import libraryRouter from './library';
+import { pages } from './pages';
 import { windowRouter } from './window';
 
 export const appRouter = router({
   window: windowRouter,
   issue: issueRouter,
   library: libraryRouter,
+  pages,
   deeplink: publicProcedure.subscription(async function* (opts) {
     for await (const evt of channelToAsyncIterable<DeeplinkChannel>(
       deeplinkChannel,
       'message',
       opts.signal,
     )) {
+      console.log(evt);
       const exists = await opts.ctx.db.query.issues.findFirst({
         where: (fields, { eq }) =>
           eq(fields.issueTitle, parseFileNameFromPath(evt.path)),
@@ -37,6 +39,7 @@ export const appRouter = router({
       opts.signal,
       () => parserChannel.close(),
     )) {
+      console.log(evt);
       yield evt;
     }
   }),
@@ -47,6 +50,7 @@ export const appRouter = router({
       opts.signal,
       () => deletionChannel.close(),
     )) {
+      console.log(evt);
       yield evt;
     }
   }),

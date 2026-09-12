@@ -135,7 +135,7 @@ export default function Layout({ children }: LayoutProps) {
               <Tooltip content='Home'>
                 <Link
                   to='/'
-                  className='p-2.5 border-x border-x-solid border-x-neutral-900 hover:bg-neutral-900/15'
+                  className='p-2.5 outline-none border-x border-x-solid border-x-neutral-900 hover:bg-neutral-900/15'
                 >
                   <Home size={15} weight='Linear' />
                 </Link>
@@ -177,7 +177,7 @@ export default function Layout({ children }: LayoutProps) {
               </Tooltip>
               <Link
                 to='/history'
-                className='p-2.5 border-r border-r-solid border-r-neutral-900 hover:bg-neutral-900/15'
+                className='p-2.5 outline-none border-r border-r-solid border-r-neutral-900 hover:bg-neutral-900/15'
               >
                 <Icon name='ClockCounterClockwise' size={15} />
               </Link>

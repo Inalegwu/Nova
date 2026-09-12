@@ -8,12 +8,14 @@
     "lib": ["DOM", "ESNext"],
     "jsx": "react-jsx",
     "strict": true,
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "@state": ["./src/web/state/index.ts"],
       "@web/*": ["./src/web/*"],
-      "@core/*": ["./src/shared/core/*"]
+      "@core/*": ["./src/shared/core/*"],
+      "@renderer": ["./src/shared/core/renderer/index.ts"]
     },
     "plugins": [
       {

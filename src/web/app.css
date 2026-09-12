@@ -10,7 +10,7 @@
 
 @font-face {
   font-family: Font;
-  src: url("../assets/fonts/plex.ttf");
+  src: url("../assets/fonts/supreme.ttf");
 }
 
 @font-face {
@@ -31,7 +31,7 @@
 }
 
 @utility toolbarToggle {
-  @apply p-2.5 hover:bg-neutral-200/40 dark:hover:bg-neutral-200/5 dark:text-neutral-500 focus-visible:bg-none focus-visible:outline focus-visible:-outline-offset-1 focus-visible:outline-neutral-400 border border-solid border-neutral-900 border-l-transparent border-y-transparent dark:focus-visible:outline-neutral-500 active:bg-neutral-100;
+  @apply p-2.5 hover:bg-neutral-900/40 text-neutral-300 focus-visible:bg-none focus-visible:outline focus-visible:-outline-offset-1 focus-visible:outline-neutral-400 border border-solid border-neutral-900 border-l-transparent border-y-transparent active:bg-neutral-900;
 }
 
 body {

@@ -2,6 +2,7 @@ import { createReadStream } from 'node:fs';
 import { readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { TRPCError } from '@trpc/server';
+import { observable } from '@trpc/server/observable';
 import { eq } from 'drizzle-orm';
 import z from 'zod';
 import { publicProcedure, router } from '@/trpc';
@@ -43,28 +44,36 @@ export const pages = router({
         pageIndex: z.number().int().nonnegative(),
       }),
     )
-    .subscription(async function* ({ input, signal }) {
-      const { extractedPath, fileNames } = await resolveIssuePages(
-        input.issueId,
-      );
-      const fileName = fileNames[input.pageIndex];
+    .subscription(({ input }) =>
+      observable<Uint8Array<ArrayBuffer>>((emit) => {
+        let fileStream: ReturnType<typeof createReadStream> | undefined;
+        resolveIssuePages(input.issueId).then(
+          ({ extractedPath, fileNames }) => {
+            const fileName = fileNames[input.pageIndex];
+            if (!fileName) {
+              emit.error(
+                new TRPCError({
+                  code: 'NOT_FOUND',
+                  message: `No page ${input.pageIndex} for issue ${input.issueId}`,
+                }),
+              );
+              return;
+            }
 
-      if (!fileName) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: `No page ${input.pageIndex} for issue ${input.issueId}`,
-        });
-      }
+            console.log(fileName);
 
-      const fileStream = createReadStream(path.join(extractedPath, fileName));
-      signal?.addEventListener('abort', () => fileStream.destroy());
+            fileStream = createReadStream(path.join(extractedPath, fileName));
 
-      try {
-        for await (const chunk of fileStream) {
-          yield new Uint8Array(chunk);
-        }
-      } finally {
-        fileStream.destroy();
-      }
-    }),
+            fileStream.on('data', (chunk: Buffer) =>
+              emit.next(new Uint8Array(chunk)),
+            );
+            fileStream.on('error', (err) => emit.error(err));
+            fileStream.on('end', () => emit.complete());
+          },
+        );
+        return () => {
+          fileStream?.destroy();
+        };
+      }),
+    ),
 });

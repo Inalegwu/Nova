@@ -3,10 +3,10 @@ import type { ErrorComponentProps } from '@tanstack/react-router';
 import { useEffect } from 'react';
 
 export default function ErrorComponent(props: ErrorComponentProps) {
-  const appId = global.app.use.appId();
+  const _appId = global.app.use.appId();
 
   useEffect(() => {
-    console.error({ error: props.error, instanceId: appId });
+    // console.error({ error: props.error, instanceId: appId });
   }, [props]);
 
   return (

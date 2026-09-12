@@ -1,25 +1,25 @@
 import { Chunk, Data, Duration, Effect, Ref, Schedule, Stream } from 'effect';
 
 export class ImageDecodeError extends Data.TaggedError('ImageDecodeError')<{
-  readonly pageIndex: number;
+  readonly pageKey: string;
   readonly cause: unknown;
 }> {}
 
 export class CanvasRenderError extends Data.TaggedError('CanvasRenderError')<{
-  readonly pageIndex: number;
+  readonly pageKey: string;
   readonly cause: unknown;
 }> {}
 
 type DecodedPage = {
-  readonly pageIndex: number;
+  readonly pageKey: string;
   readonly bitmap: ImageBitmap;
   readonly width: number;
   readonly height: number;
 };
 
 type CacheState = {
-  readonly entries: Map<number, DecodedPage>;
-  readonly order: number[]; // LRU order, most recent last
+  readonly entries: Map<string, DecodedPage>;
+  readonly order: string[]; // LRU order, most recent last
 };
 
 const MAX_RESIDENT_PAGES = 12;
@@ -41,10 +41,10 @@ const insertWithEviction = (
   maxSize: number,
 ): CacheState => {
   const entries = new Map(state.entries);
-  entries.set(page.pageIndex, page);
+  entries.set(page.pageKey, page);
   const order = [
-    ...state.order.filter((i) => i !== page.pageIndex),
-    page.pageIndex,
+    ...state.order.filter((i) => i !== page.pageKey),
+    page.pageKey,
   ];
 
   while (order.length > maxSize) {
@@ -67,15 +67,15 @@ export class ImageRenderer extends Effect.Service<ImageRenderer>()(
         order: [],
       });
 
-      const decode = (pageIndex: number, buffer: Uint8Array) =>
+      const decode = (pageKey: string, buffer: Uint8Array) =>
         Effect.gen(function* () {
           const cache = yield* Ref.get(cacheState);
-          const cached = cache.entries.get(pageIndex);
+          const cached = cache.entries.get(pageKey);
           if (cached) return cached;
 
           const bitmap = yield* Effect.tryPromise({
             try: () => createImageBitmap(new Blob([new Uint8Array(buffer)])),
-            catch: (cause) => new ImageDecodeError({ pageIndex, cause }),
+            catch: (cause) => new ImageDecodeError({ pageKey, cause }),
           }).pipe(
             Effect.retry(
               Schedule.exponential(Duration.millis(50)).pipe(
@@ -85,7 +85,7 @@ export class ImageRenderer extends Effect.Service<ImageRenderer>()(
           );
 
           const page: DecodedPage = {
-            pageIndex,
+            pageKey,
             bitmap,
             width: bitmap.width,
             height: bitmap.height,
@@ -103,18 +103,18 @@ export class ImageRenderer extends Effect.Service<ImageRenderer>()(
       // needs the whole blob, so this buys cancellability on the read, not
       // progressive rendering.
       const decodeFromStream = <E>(
-        pageIndex: number,
+        pageKey: string,
         stream: Stream.Stream<Uint8Array, E>,
       ): Effect.Effect<DecodedPage, ImageDecodeError | E> =>
         Effect.gen(function* () {
           const cache = yield* Ref.get(cacheState);
-          const cached = cache.entries.get(pageIndex);
+          const cached = cache.entries.get(pageKey);
           if (cached) return cached;
 
           const chunks = yield* Stream.runCollect(stream);
           const buffer = concatChunks(Chunk.toReadonlyArray(chunks));
 
-          return yield* decode(pageIndex, buffer);
+          return yield* decode(pageKey, buffer);
         });
 
       const drawToCanvas = (
@@ -122,13 +122,12 @@ export class ImageRenderer extends Effect.Service<ImageRenderer>()(
         canvas: OffscreenCanvas | HTMLCanvasElement,
       ) =>
         Effect.gen(function* () {
-          yield* Effect.log('Drawing...');
           const ctx = canvas.getContext('2d');
 
           if (!ctx) {
             return yield* Effect.fail(
               new CanvasRenderError({
-                pageIndex: page.pageIndex,
+                pageKey: page.pageKey,
                 cause: 'no 2d context',
               }),
             );
@@ -140,46 +139,46 @@ export class ImageRenderer extends Effect.Service<ImageRenderer>()(
           yield* Effect.try({
             try: () => ctx.drawImage(page.bitmap, 0, 0),
             catch: (cause) =>
-              new CanvasRenderError({ pageIndex: page.pageIndex, cause }),
+              new CanvasRenderError({ pageKey: page.pageKey, cause }),
           });
 
           return page;
         });
 
       const render = (
-        pageIndex: number,
+        pageKey: string,
         buffer: Uint8Array,
         canvas: OffscreenCanvas | HTMLCanvasElement,
       ) =>
-        decode(pageIndex, buffer).pipe(
+        decode(pageKey, buffer).pipe(
           Effect.flatMap((page) => drawToCanvas(page, canvas)),
         );
 
       const renderFromStream = <E>(
-        pageIndex: number,
+        pageKey: string,
         stream: Stream.Stream<Uint8Array, E>,
         canvas: OffscreenCanvas | HTMLCanvasElement,
       ): Effect.Effect<DecodedPage, ImageDecodeError | CanvasRenderError | E> =>
-        decodeFromStream(pageIndex, stream).pipe(
+        decodeFromStream(pageKey, stream).pipe(
           Effect.flatMap((page) => drawToCanvas(page, canvas)),
         );
 
       // Fire-and-forget decode for pages the reader hasn't reached yet.
       const preload = <E>(
-        pageIndex: number,
+        pageKey: string,
         stream: Stream.Stream<Uint8Array, E>,
       ) =>
-        decodeFromStream(pageIndex, stream).pipe(
+        decodeFromStream(pageKey, stream).pipe(
           Effect.asVoid,
           Effect.forkDaemon,
         );
 
-      const evict = (pageIndex: number) =>
+      const evict = (pageKey: string) =>
         Ref.update(cacheState, (state) => {
-          state.entries.get(pageIndex)?.bitmap.close();
+          state.entries.get(pageKey)?.bitmap.close();
           const entries = new Map(state.entries);
-          entries.delete(pageIndex);
-          return { entries, order: state.order.filter((i) => i !== pageIndex) };
+          entries.delete(pageKey);
+          return { entries, order: state.order.filter((i) => i !== pageKey) };
         });
 
       const clear = Ref.updateAndGet(cacheState, (state) => {

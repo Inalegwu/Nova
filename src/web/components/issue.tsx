@@ -19,7 +19,7 @@ export default function IssueBox(issue: Partial<Issue>) {
         alt={`thumb_${issue.id}`}
       />
       <div className='flex flex-col items-start justify-between gap-2'>
-        <span className='text-xs uppercase w-full font-medium text-neutral-300'>
+        <span className='text-xs uppercase w-full font-bold text-neutral-300'>
           {issue.issueTitle}
         </span>
         <div className='w-full flex items-center justify-between gap-2'>

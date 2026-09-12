@@ -5,16 +5,13 @@ import {
 } from '@core/renderer/image-renderer';
 import { type PageReadError, pageStream } from '@core/renderer/page-stream';
 import { Effect, Fiber, Layer, ManagedRuntime } from 'effect';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { trpcClient } from '@/shared/config';
-
-// ---------- Runtime singleton ----------
 
 const runtime = ManagedRuntime.make(Layer.mergeAll(ImageRenderer.Default));
 
-// ---------- useComicFolder ----------
-// Resolves a folder into its sorted page list once. pageIndex everywhere
-// else in this file refers to an index into this array.
+const pageKey = (issueId: string, pageIndex: number) =>
+  `${issueId}:${pageIndex}`;
 
 export function useComicFolder(issueId: string) {
   const [pageCount, setPageCount] = useState(0);
@@ -54,28 +51,30 @@ export function useComicFolder(issueId: string) {
 type PageStatus = 'idle' | 'loading' | 'loaded' | 'error';
 
 export function useComicPage(pageIndex: number, issueId: string) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [canvasNode, setCanvasNode] = useState<HTMLCanvasElement | null>(null);
+  const canvasRef = useCallback((node: HTMLCanvasElement | null) => {
+    setCanvasNode(node);
+  }, []);
+
   const [status, setStatus] = useState<PageStatus>('idle');
   const [error, setError] = useState<
     ImageDecodeError | CanvasRenderError | PageReadError | null
   >(null);
 
-  console.log({ status, error });
-
   useEffect(() => {
-    console.log("fuck yeah I'm mounted up");
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvasNode) return;
 
-    console.log('canvas', canvas);
-
+    setStatus('loading');
     setError(null);
 
     const program = Effect.gen(function* () {
-      yield* Effect.logInfo('[RENDERER] Starting');
       const renderer = yield* ImageRenderer;
       const stream = pageStream(issueId, pageIndex);
-      yield* renderer.renderFromStream(pageIndex, stream, canvas);
+      yield* renderer.renderFromStream(
+        pageKey(issueId, pageIndex),
+        stream,
+        canvasNode,
+      );
     });
 
     const fiber = runtime.runFork(
@@ -83,7 +82,6 @@ export function useComicPage(pageIndex: number, issueId: string) {
         Effect.tap(() => Effect.sync(() => setStatus('loaded'))),
         Effect.catchAll((cause) =>
           Effect.sync(() => {
-            console.error(cause);
             setStatus('error');
             setError(cause);
           }),
@@ -94,7 +92,7 @@ export function useComicPage(pageIndex: number, issueId: string) {
     return () => {
       runtime.runFork(Fiber.interrupt(fiber));
     };
-  }, [issueId, pageIndex]);
+  }, [pageIndex, issueId, canvasNode]);
 
   return { canvasRef, status, error };
 }
@@ -102,7 +100,6 @@ export function useComicPage(pageIndex: number, issueId: string) {
 // ---------- usePreloadPages ----------
 // Warms the decode cache for upcoming/adjacent pages without blocking the
 // page currently being rendered.
-
 export function usePreloadPages(
   currentIndex: number,
   offsets: ReadonlyArray<number>,

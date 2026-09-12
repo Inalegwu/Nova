@@ -11,7 +11,12 @@ import { motion } from 'motion/react';
 import { useState } from 'react';
 import { Spinner, Ticker } from '@/web/components';
 import { Icon } from '@/web/components/atoms';
-import { useComicFolder, useComicPage, usePreloadPages } from '@/web/hooks';
+import {
+  useComicFolder,
+  useComicPage,
+  useKeyPress,
+  usePreloadPages,
+} from '@/web/hooks';
 
 export const Route = createFileRoute('/read/$issueId')({
   component: RouteComponent,
@@ -28,20 +33,23 @@ function RouteComponent() {
   const fullscreen = global.app.use.isFullscreen();
 
   const { pageCount, status: folderStatus } = useComicFolder(issueId);
-  const [pageIndex] = useState(0);
+  const [pageIndex, setPageIndex] = useState(0);
 
   const { canvasRef, error, status } = useComicPage(pageIndex, issueId);
   usePreloadPages(pageIndex, [1, 2, -1], issueId, pageCount);
 
-  // useKeyPress((e) => {
-  //   if (e.keyCode === 93 && pageIndex < pageCount) {
-  //     setPageIndex((idx) => idx + 1);
-  //   } else if (e.keyCode === 91 && pageCount) {
-  //     setPageIndex((idx) => idx - 1);
-  //   }
-  // });
+  useKeyPress((e) => {
+    if (e.keyCode === 93 && pageIndex < pageCount) {
+      setPageIndex((idx) => idx + 1);
+    } else if (e.keyCode === 91 && pageCount) {
+      setPageIndex((idx) => idx - 1);
+    }
+  });
 
-  if (status === 'error') return <div>{String(error)}</div>;
+  if (status === 'error')
+    throw new Error(error?._tag, {
+      cause: error?.cause,
+    });
 
   if (folderStatus !== 'loaded') {
     return (
@@ -61,11 +69,7 @@ function RouteComponent() {
           width: '100%',
           height: '100%',
         }}
-        ref={(_) => {
-          console.log(_);
-          canvasRef.current = _;
-          console.log('canvasRef.current AFTER ASSIGN:', canvasRef.current);
-        }}
+        ref={canvasRef}
         className='w-full h-full absolute z-0'
       />
       <Toolbar.Root

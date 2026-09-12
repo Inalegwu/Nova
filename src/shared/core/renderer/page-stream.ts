@@ -10,14 +10,15 @@ export const pageStream = (
   pageIndex: number,
 ): Stream.Stream<Uint8Array, PageReadError> =>
   Stream.async<Uint8Array, PageReadError>((emit) => {
+    console.log('==ATTEMPTING TO LAUNCH SUBSCRIPTION===');
     const subscription = trpcClient.pages.readPage.subscribe(
       { issueId, pageIndex },
       {
         onData: (chunk) => {
-          console.log({ chunk });
           emit.single(new Uint8Array(chunk));
         },
         onError: (err) => {
+          console.log(err);
           emit.fail(new PageReadError({ cause: err }));
         },
         onComplete: () => {

@@ -72,7 +72,7 @@ export default function CollectionBox(collection: CollectionProp) {
           }}
         >
           <div className='flex h-full bg-black/80 flex-col justify-between p-5'>
-            <span className='text-[10px] font-code font-medium uppercase tracking-wide text-neutral-400'>
+            <span className='text-[10px] font-bold uppercase tracking-wide text-neutral-400'>
               {collection.id} / {String(count).padStart(2, '0')}
             </span>
             <div>

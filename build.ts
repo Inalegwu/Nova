@@ -14,7 +14,8 @@ const build = (opts?: CliOptions) =>
             asarUnpack: ['out/main/workers/**/*'],
             appId: 'com.nova.app',
             productName: 'Nova',
-            artifactName: '${productName}-{version}-${platform}-${arch}.${ext}',
+            artifactName:
+              '${productName}-${version}-${platform}-${arch}.${ext}',
             buildDependenciesFromSource: true,
             extraFiles: {
               from: 'drizzle/',

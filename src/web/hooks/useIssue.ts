@@ -115,7 +115,7 @@ export function usePreloadPages(
           Effect.gen(function* () {
             const renderer = yield* ImageRenderer;
             const stream = pageStream(issueId, pageIndex);
-            yield* renderer.preload(pageIndex, stream);
+            yield* renderer.preload(pageKey(issueId, pageIndex), stream);
           }),
         ),
       );
@@ -125,25 +125,3 @@ export function usePreloadPages(
     };
   }, [currentIndex, issueId]);
 }
-
-// ---------- Example: putting it together ----------
-//
-// function ComicReader({ folderPath }: { folderPath: string }) {
-//   const { fileNames, status: folderStatus } = useComicFolder(folderPath)
-//   const [pageIndex, setPageIndex] = useState(0)
-//
-//   const { canvasRef, status, error } = useComicPage(pageIndex, folderPath, fileNames)
-//   usePreloadPages(pageIndex, [1, 2, -1], folderPath, fileNames)
-//
-//   if (folderStatus !== "loaded") return <FolderLoading />
-//   if (status === "error") return <PageError error={error} />
-//
-//   return (
-//     <div className="comic-page">
-//       {status === "loading" && <PageSkeleton />}
-//       <canvas ref={canvasRef} />
-//       <button onClick={() => setPageIndex((i) => i - 1)}>Prev</button>
-//       <button onClick={() => setPageIndex((i) => i + 1)}>Next</button>
-//     </div>
-//   )
-// }

@@ -35,8 +35,8 @@ export class ComicVineService extends Effect.Service<ComicVineService>()(
 
       const searchVolumesByName = (name: string) =>
         Effect.tryPromise({
-          try: () =>
-            client.volume.list({
+          try: async () =>
+            await client.volume.list({
               limit: 20,
               filter: { name },
             }),
@@ -51,8 +51,8 @@ export class ComicVineService extends Effect.Service<ComicVineService>()(
 
       const searchIssuesByName = (name: string) =>
         Effect.tryPromise({
-          try: () =>
-            client.issue.list({
+          try: async () =>
+            await client.issue.list({
               limit: 20,
               filter: { name },
               fieldList: [

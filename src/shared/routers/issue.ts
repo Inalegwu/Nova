@@ -129,8 +129,10 @@ const issueRouter = router({
         await Effect.gen(function* () {
           const vine = yield* ComicVineService;
 
-          yield* Effect.logInfo({ input });
-          const data = yield* vine.findBestMatch(input.issueName);
+          const cleaned = input.issueName.replace(/\s*\(.*?\)/g, '').trim();
+
+          yield* Effect.logInfo({ input, cleaned });
+          const data = yield* vine.findBestMatch(cleaned);
 
           yield* Effect.log({ data });
         }).pipe(Effect.provide(ComicVineService.Default), Effect.runPromise),

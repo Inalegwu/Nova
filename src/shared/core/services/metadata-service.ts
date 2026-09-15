@@ -2,50 +2,99 @@ import ComicVine from 'comic-vine-sdk';
 import { Data, Effect } from 'effect';
 import { Env } from '@/env';
 
-class ComicVineInitError extends Data.TaggedError('ComicVineInitError')<{
-  error: unknown;
+class ComicVineApiError extends Data.TaggedError('ComicVineApiError')<{
+  readonly cause: unknown;
+  readonly query: string;
 }> {}
 
-class ComicVineUseError extends Data.TaggedError('ComicVineUseError')<{
-  error: unknown;
+class ComicVineNoResultsError extends Data.TaggedError(
+  'ComicVineNoResultsError',
+)<{
+  readonly query: string;
 }> {}
 
-export const comicVineClient = new ComicVine({
-  apiKey: Env.COMIC_VINE_API_KEY,
-  client: {
-    defaultCacheTTL: Number.POSITIVE_INFINITY,
-    throwOnRateLimit: false,
-  },
-});
-
-type UseFn<A> = (client: ComicVine) => Promise<A>;
+type ComicMetadata = {
+  id: number;
+  name: string;
+  volumeName: string | null;
+  issueNumber: string | null;
+  description: string | null;
+  coverImageUrl: string | null;
+  publisher: string | null;
+  dateAdded: string | null;
+};
 
 export class ComicVineService extends Effect.Service<ComicVineService>()(
-  '@nova/core/ComicVine',
+  'ComicVineService',
   {
     effect: Effect.gen(function* () {
-      const client = yield* Effect.try({
-        try: () =>
-          new ComicVine({
-            apiKey: Env.COMIC_VINE_API_KEY,
-            client: {
-              defaultCacheTTL: Number.POSITIVE_INFINITY,
-              throwOnRateLimit: false,
-            },
-          }),
-        catch: (error) => new ComicVineInitError({ error }),
+      const apiKey = Env.COMIC_VINE_API_KEY;
+      const client = new ComicVine({
+        apiKey,
       });
 
-      const use = <A>(fn: UseFn<A>) =>
+      const searchVolumesByName = (name: string) =>
         Effect.tryPromise({
-          try: async () => await fn(client),
-          catch: (error) => new ComicVineUseError({ error }),
-        });
+          try: () =>
+            client.volume.list({
+              limit: 20,
+              filter: { name },
+            }),
+          catch: (cause) => new ComicVineApiError({ cause, query: name }),
+        }).pipe(
+          Effect.flatMap((result) =>
+            result.data.length === 0
+              ? Effect.fail(new ComicVineNoResultsError({ query: name }))
+              : Effect.succeed(result.data),
+          ),
+        );
+
+      const searchIssuesByName = (name: string) =>
+        Effect.tryPromise({
+          try: () =>
+            client.issue.list({
+              limit: 20,
+              filter: { name },
+              fieldList: [
+                'id',
+                'name',
+                'issueNumber',
+                'description',
+                'image',
+                'volume',
+                'dateAdded',
+              ],
+            }),
+          catch: (cause) => new ComicVineApiError({ cause, query: name }),
+        }).pipe(
+          Effect.flatMap((result) =>
+            result.data.length === 0
+              ? Effect.fail(new ComicVineNoResultsError({ query: name }))
+              : Effect.succeed(result.data),
+          ),
+        );
+
+      const toMetadata = (issue: any): ComicMetadata => ({
+        id: issue.id,
+        name: issue.name ?? null,
+        volumeName: issue.volume?.name ?? null,
+        issueNumber: issue.issueNumber ?? null,
+        description: issue.description ?? null,
+        coverImageUrl: issue.image?.originalUrl ?? null,
+        publisher: issue.volume?.publisher?.name ?? null,
+        dateAdded: issue.dateAdded ?? null,
+      });
+
+      const findBestMatch = (query: string) =>
+        searchIssuesByName(query).pipe(
+          Effect.map((issues) => issues.map(toMetadata)),
+        );
 
       return {
-        client,
-        use,
-      };
+        searchVolumesByName,
+        searchIssuesByName,
+        findBestMatch,
+      } as const;
     }),
   },
 ) {}

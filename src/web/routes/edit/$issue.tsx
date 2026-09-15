@@ -1,6 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useRouter } from '@tanstack/react-router';
+import { toast } from 'sonner';
 import t from '@/shared/config';
-import { Tag } from '@/web/components';
+import { Spinner, Tag } from '@/web/components';
 import { Icon, Tooltip } from '@/web/components/atoms';
 
 export const Route = createFileRoute('/edit/$issue')({
@@ -8,11 +9,27 @@ export const Route = createFileRoute('/edit/$issue')({
 });
 
 function RouteComponent() {
+  const utils = t.useUtils();
+  const router = useRouter();
   const { issue: issueId } = Route.useParams();
 
   const { data: issue } = t.issue.getIssue.useQuery({
     issueId,
   });
+
+  const { mutate: fetchInformation, isPending } =
+    t.issue.fetchMetadata.useMutation({
+      onSuccess: () => {
+        utils.invalidate();
+        toast.success('Updated Information Successfully');
+      },
+    });
+
+  if (!issueId) {
+    return router.navigate({
+      to: '/',
+    });
+  }
 
   return (
     <div className='flex w-full h-full'>
@@ -23,8 +40,17 @@ function RouteComponent() {
           </span>
           <div className='w-3/6 flex items-center justify-end'>
             <Tooltip content='Refresh Information'>
-              <button className='p-2 border border-solid border-neutral-900 hover:bg-neutral-900/20'>
-                <Icon name='ArrowCounterClockwise' size={14} />
+              <button
+                onClick={() =>
+                  fetchInformation({ issueName: issue?.issue.issueTitle })
+                }
+                className='p-2 border border-solid border-neutral-900 hover:bg-neutral-900/20'
+              >
+                {isPending ? (
+                  <Spinner size={14} color='#FFFFFF' />
+                ) : (
+                  <Icon name='ArrowCounterClockwise' size={14} />
+                )}
               </button>
             </Tooltip>
           </div>

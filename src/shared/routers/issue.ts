@@ -5,6 +5,7 @@ import { dialog } from 'electron';
 import z from 'zod';
 import { publicProcedure, router } from '@/trpc';
 import { DiscoveryChannel } from '@/workers/discovery-channel';
+import { ComicVineService } from '../core/services/metadata-service';
 // @ts-expect-error: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
 import deletionWorker from '../core/workers/deletion?nodeWorker';
 import { issues as issuesSchema } from '../schema';
@@ -120,6 +121,19 @@ const issueRouter = router({
           ),
           Effect.runPromise,
         ),
+    ),
+  fetchMetadata: publicProcedure
+    .input(z.object({ issueName: z.string() }))
+    .mutation(
+      async ({ input }) =>
+        await Effect.gen(function* () {
+          const vine = yield* ComicVineService;
+
+          yield* Effect.logInfo({ input });
+          const data = yield* vine.findBestMatch(input.issueName);
+
+          yield* Effect.log({ data });
+        }).pipe(Effect.provide(ComicVineService.Default), Effect.runPromise),
     ),
 });
 

@@ -7,11 +7,7 @@ import type {
   deletionWorkerSchema,
   dumpFileSchema,
   dumpSchema,
-  fetchPagesResponseSchema,
-  fetchPagesWorkerSchema,
   MetadataSchema,
-  parserSchema,
-  workerResponseSchema,
 } from '@/shared/validations';
 import type { collections, issues } from './schema';
 
@@ -109,14 +105,8 @@ declare global {
     isFirst: boolean;
   };
 
-  export type ParserSchema = z.infer<typeof parserSchema>;
-  export type WorkerResponse = z.infer<typeof workerResponseSchema>;
   export type DeletionSchema = z.infer<typeof deletionWorkerSchema>;
   export type CacheWorkerSchema = z.infer<typeof cacheWorkerSchema>;
-  export type FetchPagesWorkerSchema = z.infer<typeof fetchPagesWorkerSchema>;
-  export type FetchPagesResponseSchema = z.infer<
-    typeof fetchPagesResponseSchema
-  >;
   export type Metadata = Schema.Schema.Type<typeof MetadataSchema>;
   export type DumpFileSchema = Schema.Schema.Type<typeof dumpFileSchema>;
   export type DumpSchema = Schema.Schema.Type<typeof dumpSchema>;

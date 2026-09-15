@@ -47,10 +47,7 @@ function RouteComponent() {
           <h1 className='uppercase text-xl font-bold text-neutral-400'>
             No Issues in your library
           </h1>
-          <button className='my-5 flex items-center justify-center gap-2 px-5 py-2 border border-neutral-800 bg-neutral-900 text-xs font-code uppercase'>
-            <span>Add Issue</span>
-            <Icon name='Plus' size={12} />
-          </button>
+          <AddIssueToCollection collectionId={collectionId} />
         </div>
       )}
       {data?.issues?.map((issue) => (

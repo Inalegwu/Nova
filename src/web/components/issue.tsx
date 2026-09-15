@@ -18,7 +18,7 @@ export default function IssueBox(issue: Partial<Issue>) {
         className='w-40 h-50 border border-solid border-neutral-800'
         alt={`thumb_${issue.id}`}
       />
-      <div className='flex flex-col items-start justify-between gap-2'>
+      <div className='flex flex-col w-full items-start justify-between gap-2'>
         <span className='text-xs uppercase w-full font-bold text-neutral-300'>
           {issue.issueTitle}
         </span>
@@ -26,7 +26,7 @@ export default function IssueBox(issue: Partial<Issue>) {
           <span className='text-neutral-500 text-xs uppercase'>
             {issue.dateCreated?.toString()}
           </span>
-          <div className='flex items-center justify-end gap-2'>
+          <div className='flex w-full items-center justify-end gap-2'>
             <button
               onClick={() =>
                 nav.navigate({

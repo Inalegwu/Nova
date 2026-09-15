@@ -3,7 +3,7 @@ import { Console, Data, Effect, Layer, Match, Queue, Stream } from 'effect';
 import { ArchiveService } from '@/shared/core/services/archive-service';
 import db from '@/shared/storage';
 import { parseFileNameFromPath } from '@/shared/utils';
-import { type DiscoveredFile, DiscoveryChannel } from './channel';
+import { type DiscoveredFile, DiscoveryChannel } from './discovery-channel';
 
 class FileProcessingError extends Data.TaggedError('FileProcessingError')<{
   readonly path: string;
@@ -14,16 +14,12 @@ const processFile = Effect.fn(function* (file: DiscoveredFile) {
   const A = yield* ArchiveService;
   const parsePath = file.path;
 
-  yield* Effect.logInfo(`processing ${file.name}`);
-
   const ext =
     parsePath.includes('cbr') || parsePath.includes('rar')
       ? 'cbr'
       : parsePath.includes('cbz') || parsePath.includes('zip')
         ? 'cbz'
         : 'none';
-
-  yield* Effect.logInfo('checking exists');
 
   const exists = yield* Effect.tryPromise(
     async () =>
@@ -58,11 +54,11 @@ const QUEUE_CAPACITY = 256;
 const PROCESSING_CONCURRENCY = 4;
 
 const program = Effect.gen(function* () {
-  const channel = yield* DiscoveryChannel;
+  const discovery = yield* DiscoveryChannel;
   const queue = yield* Queue.bounded<DiscoveredFile>(QUEUE_CAPACITY);
 
   // bridge: broadcast channel -> local queue
-  yield* channel.subscribe.pipe(
+  yield* discovery.subscribe.pipe(
     Stream.runForEach((file) => Queue.offer(queue, file)),
     Effect.catchAll((error) =>
       Console.error('broadcast subscription failed:', error),

@@ -1,7 +1,7 @@
 import { FileSystem, Path } from '@effect/platform';
 import { NodeContext, NodeRuntime } from '@effect/platform-node';
 import { Console, Data, Effect, Layer, Stream } from 'effect';
-import { DiscoveryChannel } from './channel';
+import { DiscoveryChannel } from './discovery-channel';
 
 class WatchSetupError extends Data.TaggedError('WatchSetupError')<{
   readonly path: string;

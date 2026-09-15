@@ -4,7 +4,7 @@ import { Console, Effect } from 'effect';
 import { dialog } from 'electron';
 import z from 'zod';
 import { publicProcedure, router } from '@/trpc';
-import { DiscoveryChannel } from '@/workers/channel';
+import { DiscoveryChannel } from '@/workers/discovery-channel';
 // @ts-expect-error: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;
 import deletionWorker from '../core/workers/deletion?nodeWorker';
 import { issues as issuesSchema } from '../schema';

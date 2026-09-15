@@ -4,11 +4,6 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 @font-face {
-  font-family: SN;
-  src: url("../assets/fonts/sn.ttf");
-}
-
-@font-face {
   font-family: Font;
   src: url("../assets/fonts/supreme.ttf");
 }
@@ -26,7 +21,6 @@
 @theme {
   --font-display: Font;
   --font-code:Code;
-  --font-alternate:SN;
   --color-accent:#ff4d1c;
 }
 

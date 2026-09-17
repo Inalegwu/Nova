@@ -95,6 +95,7 @@ export default function Layout({ children }: LayoutProps) {
 
   useEffect(() => {
     toast.dismiss();
+    utils.invalidate();
   }, []);
 
   useWindow('mousemove', (e) => {

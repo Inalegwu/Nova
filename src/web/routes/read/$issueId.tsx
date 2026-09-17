@@ -8,13 +8,14 @@ import {
 import global from '@state';
 import { createFileRoute } from '@tanstack/react-router';
 import { motion } from 'motion/react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Spinner, Ticker } from '@/web/components';
 import { Icon } from '@/web/components/atoms';
 import {
   useComicFolder,
   useComicPage,
   useKeyPress,
+  usePageSlide,
   usePreloadPages,
 } from '@/web/hooks';
 
@@ -37,6 +38,18 @@ function RouteComponent() {
 
   const { canvasRef, error, status } = useComicPage(pageIndex, issueId);
   usePreloadPages(pageIndex, [1, 2, -1], issueId, pageCount);
+  usePageSlide(pageIndex);
+
+  const goForward = useCallback(() => {
+    if (pageIndex < pageCount) {
+      setPageIndex((idx) => idx + 1);
+    }
+  }, []);
+  const goBack = useCallback(() => {
+    if (pageIndex !== 0) {
+      setPageIndex((idx) => idx - 1);
+    }
+  }, []);
 
   useKeyPress((e) => {
     if (e.keyCode === 93 && pageIndex < pageCount) {
@@ -70,8 +83,16 @@ function RouteComponent() {
           height: '100%',
         }}
         ref={canvasRef}
-        className='w-full h-full absolute z-0 object-contain'
+        className='w-full h-full object-contain absolute z-0'
       />
+      <Toolbar.Root className='flex overflow-hidden absolute z-10 top-2 left-2 bg-neutral-950 border border-solid border-neutral-900'>
+        <Toolbar.Button onClick={goBack} className='toolbarToggle'>
+          <Icon name='ArrowLeft' size={13} />
+        </Toolbar.Button>
+        <Toolbar.Button onClick={goForward} className='toolbarToggle'>
+          <Icon name='ArrowRight' size={13} />
+        </Toolbar.Button>
+      </Toolbar.Root>
       <Toolbar.Root
         render={<motion.div animate={{ width: expanded ? '15.6%' : '2.6%' }} />}
         className='flex overflow-hidden absolute z-10 top-2 right-2 bg-neutral-950 border border-solid border-neutral-900'

@@ -6,7 +6,13 @@ import {
   pageStream,
 } from '@renderer';
 import { Effect, Fiber, Layer, ManagedRuntime } from 'effect';
-import { useCallback, useEffect, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { trpcClient } from '@/shared/config';
 
 const runtime = ManagedRuntime.make(Layer.mergeAll(ImageRenderer.Default));
@@ -124,4 +130,35 @@ export function usePreloadPages(
       for (const fiber of fibers) runtime.runFork(Fiber.interrupt(fiber));
     };
   }, [currentIndex, issueId]);
+}
+
+export function usePageSlide(pageIndex: number) {
+  const prevIndexRef = useRef(pageIndex);
+  const [transform, setTransform] = useState('translateX(0)');
+  const [transitioning, setTransitioning] = useState(false);
+
+  useLayoutEffect(() => {
+    const prevIndex = prevIndexRef.current;
+
+    prevIndexRef.current = pageIndex;
+
+    if (prevIndex === pageIndex) return;
+
+    const direction = pageIndex > prevIndex ? 1 : -1;
+
+    setTransitioning(false);
+    setTransform(`translateX(${direction * 100}%)`);
+
+    requestAnimationFrame(() => {
+      setTransitioning(true);
+      setTransform('translateX(0)');
+    });
+  }, [pageIndex]);
+
+  return {
+    style: {
+      transform,
+      transition: transitioning ? 'transition 250ms ease-out' : 'none',
+    },
+  };
 }

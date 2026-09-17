@@ -49,6 +49,25 @@ export class ComicVineService extends Effect.Service<ComicVineService>()(
           ),
         );
 
+      const searchByName = (query: string) =>
+        Effect.tryPromise({
+          try: async () =>
+            await fetch(
+              `https://comicvine.gamespot.com/api/search/?api_key=${apiKey}&format=json&resources=issue,volume&query=${encodeURIComponent(query)}`,
+            ).then((r) => r.json()),
+          catch: (cause) => new ComicVineApiError({ cause, query }),
+        }).pipe(
+          Effect.flatMap((result) =>
+            result.status_code !== 1
+              ? Effect.fail(
+                  new ComicVineApiError({ cause: result.error, query }),
+                )
+              : result.results.length === 0
+                ? Effect.succeed([])
+                : Effect.succeed(result.results),
+          ),
+        );
+
       const searchIssuesByName = (name: string) =>
         Effect.tryPromise({
           try: async () =>
@@ -94,6 +113,7 @@ export class ComicVineService extends Effect.Service<ComicVineService>()(
         searchVolumesByName,
         searchIssuesByName,
         findBestMatch,
+        searchByName,
       } as const;
     }),
   },

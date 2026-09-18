@@ -12,7 +12,7 @@ export default function IssueBox(issue: Partial<Issue>) {
   });
 
   return (
-    <div className='w-2/6 flex cursor-pointer gap-5 border border-solid border-l-transparent border-t-transparent border-neutral-900 p-3'>
+    <div className='w-2/6 flex gap-5 border border-solid border-l-transparent border-t-transparent border-neutral-900 p-3'>
       <img
         src={issue.thumbnailUrl}
         className='w-40 h-50 border border-solid border-neutral-800'

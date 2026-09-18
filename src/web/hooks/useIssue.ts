@@ -1,5 +1,10 @@
 import {
+  animateSlideTransition,
+  animateZoom,
   type CanvasRenderError,
+  clear,
+  type DrawableBitmap,
+  drawPage,
   type ImageDecodeError,
   ImageRenderer,
   type PageReadError,
@@ -49,26 +54,72 @@ export function useComicFolder(issueId: string) {
   return { pageCount, status };
 }
 
-// ---------- useComicPage ----------
-// Streams + decodes + renders one page. Page-flip or unmount interrupts the
-// in-flight fiber, which tears down the tRPC subscription, which aborts the
-// main-process file read — the whole chain is cancellation-aware end to end.
-
 type PageStatus = 'idle' | 'loading' | 'loaded' | 'error';
 
 export function useComicPage(pageIndex: number, issueId: string) {
+  const [containerNode, setContainerNode] = useState<HTMLDivElement | null>(
+    null,
+  );
+  const containerRef = useCallback((node: HTMLDivElement | null) => {
+    setContainerNode(node);
+  }, []);
+
   const [canvasNode, setCanvasNode] = useState<HTMLCanvasElement | null>(null);
   const canvasRef = useCallback((node: HTMLCanvasElement | null) => {
     setCanvasNode(node);
   }, []);
+
+  const viewportRef = useRef({ width: 0, height: 0 });
+  const currentPageRef = useRef<DrawableBitmap | undefined>(undefined);
+  const prevIndexRef = useRef(pageIndex);
+  const zoomStateRef = useRef({ scale: 1, panX: 0, panY: 0 });
 
   const [status, setStatus] = useState<PageStatus>('idle');
   const [error, setError] = useState<
     ImageDecodeError | CanvasRenderError | PageReadError | null
   >(null);
 
+  useLayoutEffect(() => {
+    if (!containerNode || !canvasNode) return;
+
+    const applySize = (width: number, height: number) => {
+      const dpr = window.devicePixelRatio || 1;
+      canvasNode.width = Math.round(width * dpr);
+      canvasNode.height = Math.round(height * dpr);
+      const ctx = canvasNode.getContext('2d');
+      ctx?.setTransform(dpr, 0, 0, dpr, 0, 0);
+      viewportRef.current = { width, height };
+
+      if (ctx && currentPageRef.current) {
+        clear(ctx, width, height);
+        drawPage(
+          ctx,
+          currentPageRef.current,
+          width,
+          height,
+          zoomStateRef.current,
+        );
+      }
+    };
+
+    const observer = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect;
+      applySize(width, height);
+    });
+
+    observer.observe(containerNode);
+    return () => observer.disconnect();
+  }, [containerNode, canvasNode]);
+
   useEffect(() => {
     if (!canvasNode) return;
+
+    const ctx = canvasNode.getContext('2d');
+    if (!ctx) return;
+
+    const prevIndex = prevIndexRef.current;
+    const direction: 1 | -1 = pageIndex >= prevIndex ? 1 : -1;
+    prevIndexRef.current = pageIndex;
 
     setStatus('loading');
     setError(null);
@@ -76,11 +127,31 @@ export function useComicPage(pageIndex: number, issueId: string) {
     const program = Effect.gen(function* () {
       const renderer = yield* ImageRenderer;
       const stream = pageStream(issueId, pageIndex);
-      yield* renderer.renderFromStream(
+      const toPage = yield* renderer.decodeFromStream(
         pageKey(issueId, pageIndex),
         stream,
-        canvasNode,
       );
+
+      const { width, height } = viewportRef.current;
+      const fromPage = currentPageRef.current;
+
+      zoomStateRef.current = { scale: 1, panX: 0, panY: 0 };
+
+      if (fromPage && width > 0 && height > 0) {
+        yield* animateSlideTransition(
+          ctx,
+          width,
+          height,
+          fromPage,
+          toPage,
+          direction,
+        );
+      } else if (width > 0 && height > 0) {
+        clear(ctx, width, height);
+        drawPage(ctx, toPage, width, height);
+      }
+
+      currentPageRef.current = toPage;
     });
 
     const fiber = runtime.runFork(
@@ -100,12 +171,61 @@ export function useComicPage(pageIndex: number, issueId: string) {
     };
   }, [pageIndex, issueId, canvasNode]);
 
-  return { canvasRef, status, error };
+  const zoomTo = useCallback(
+    (scale: number, panX = 0, panY = 0) => {
+      const ctx = canvasNode?.getContext('2d');
+      const page = currentPageRef.current;
+      const { width, height } = viewportRef.current;
+      if (!ctx || !page || width === 0 || height === 0) return;
+
+      const from = zoomStateRef.current;
+      const to = { scale, panX, panY };
+
+      runtime.runFork(
+        animateZoom(ctx, width, height, page, from, to).pipe(
+          Effect.tap(() => Effect.sync(() => (zoomStateRef.current = to))),
+        ),
+      );
+    },
+    [canvasNode],
+  );
+
+  const zoomBy = useCallback(
+    (factor: number) => {
+      const ctx = canvasNode?.getContext('2d');
+      const page = currentPageRef.current;
+      const { width, height } = viewportRef.current;
+      if (!ctx || !page || width === 0 || height === 0) return;
+
+      const current = zoomStateRef.current;
+      const next = {
+        ...current,
+        scale: Math.min(Math.max(current.scale * factor, 1), 4),
+      };
+
+      zoomStateRef.current = next;
+      clear(ctx, width, height);
+      drawPage(ctx, page, width, height, next);
+    },
+    [canvasNode],
+  );
+
+  useEffect(() => {
+    if (!canvasNode) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const factor = 1 - e.deltaY * 0.002;
+      zoomBy(factor);
+    };
+
+    canvasNode.addEventListener('wheel', handleWheel, { passive: false });
+    return () => canvasNode.removeEventListener('wheel', handleWheel);
+  }, [canvasNode, zoomBy]);
+
+  return { containerRef, canvasRef, status, error, zoomTo, zoomBy };
 }
 
-// ---------- usePreloadPages ----------
-// Warms the decode cache for upcoming/adjacent pages without blocking the
-// page currently being rendered.
 export function usePreloadPages(
   currentIndex: number,
   offsets: ReadonlyArray<number>,
@@ -130,35 +250,4 @@ export function usePreloadPages(
       for (const fiber of fibers) runtime.runFork(Fiber.interrupt(fiber));
     };
   }, [currentIndex, issueId]);
-}
-
-export function usePageSlide(pageIndex: number) {
-  const prevIndexRef = useRef(pageIndex);
-  const [transform, setTransform] = useState('translateX(0)');
-  const [transitioning, setTransitioning] = useState(false);
-
-  useLayoutEffect(() => {
-    const prevIndex = prevIndexRef.current;
-
-    prevIndexRef.current = pageIndex;
-
-    if (prevIndex === pageIndex) return;
-
-    const direction = pageIndex > prevIndex ? 1 : -1;
-
-    setTransitioning(false);
-    setTransform(`translateX(${direction * 100}%)`);
-
-    requestAnimationFrame(() => {
-      setTransitioning(true);
-      setTransform('translateX(0)');
-    });
-  }, [pageIndex]);
-
-  return {
-    style: {
-      transform,
-      transition: transitioning ? 'transition 250ms ease-out' : 'none',
-    },
-  };
 }

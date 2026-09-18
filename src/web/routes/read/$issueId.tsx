@@ -9,13 +9,12 @@ import global from '@state';
 import { createFileRoute } from '@tanstack/react-router';
 import { motion } from 'motion/react';
 import { useCallback, useState } from 'react';
-import { Spinner, Ticker } from '@/web/components';
+import { Skeleton, Spinner, Ticker } from '@/web/components';
 import { Icon } from '@/web/components/atoms';
 import {
   useComicFolder,
   useComicPage,
   useKeyPress,
-  usePageSlide,
   usePreloadPages,
 } from '@/web/hooks';
 
@@ -36,9 +35,12 @@ function RouteComponent() {
   const { pageCount, status: folderStatus } = useComicFolder(issueId);
   const [pageIndex, setPageIndex] = useState(0);
 
-  const { canvasRef, error, status } = useComicPage(pageIndex, issueId);
+  const { containerRef, canvasRef, status, error, zoomTo } = useComicPage(
+    pageIndex,
+    issueId,
+  );
+
   usePreloadPages(pageIndex, [1, 2, -1], issueId, pageCount);
-  usePageSlide(pageIndex);
 
   const goForward = useCallback(() => {
     if (pageIndex < pageCount) {
@@ -74,17 +76,32 @@ function RouteComponent() {
 
   return (
     <div className='relative w-full'>
-      <canvas
+      {/* <canvas
         id='readerRenderer'
         style={{
           cursor: 'grab',
           touchAction: 'none',
           width: '100%',
           height: '100%',
+          objectFit: 'contain',
+          display: 'block',
         }}
         ref={canvasRef}
-        className='w-full h-full object-contain absolute z-0'
-      />
+        className='absolute z-0'
+      /> */}
+      <div
+        ref={containerRef}
+        style={{ width: '100%', height: '100vh', position: 'relative' }}
+      >
+        {status === 'loading' && (
+          <Skeleton className='w-3/6 h-full mx-auto bg-neutral-900/20' />
+        )}
+        <canvas
+          ref={canvasRef}
+          style={{ width: '100%', height: '100%', display: 'block' }}
+          onDoubleClick={() => zoomTo(1)}
+        />
+      </div>
       <Toolbar.Root className='flex overflow-hidden absolute z-10 top-2 left-2 bg-neutral-950 border border-solid border-neutral-900'>
         <Toolbar.Button onClick={goBack} className='toolbarToggle'>
           <Icon name='ArrowLeft' size={13} />

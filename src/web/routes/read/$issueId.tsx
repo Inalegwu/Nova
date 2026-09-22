@@ -47,6 +47,7 @@ function RouteComponent() {
       setPageIndex((idx) => idx + 1);
     }
   }, []);
+
   const goBack = useCallback(() => {
     if (pageIndex !== 0) {
       setPageIndex((idx) => idx - 1);

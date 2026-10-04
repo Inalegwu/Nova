@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { app, BrowserWindow, screen } from 'electron';
@@ -32,6 +33,13 @@ const createWindow = () => {
   const instanceLock = app.requestSingleInstanceLock();
 
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+
+  fs.mkdir(path.join(data_dir, 'Library'), (err) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+  });
 
   const mainWindow = new BrowserWindow({
     frame: false,

@@ -1,6 +1,5 @@
 import ComicVine from 'comic-vine-sdk';
 import { Data, Effect } from 'effect';
-import { Env } from '@/env';
 
 class ComicVineApiError extends Data.TaggedError('ComicVineApiError')<{
   readonly cause: unknown;
@@ -28,9 +27,9 @@ export class ComicVineService extends Effect.Service<ComicVineService>()(
   'ComicVineService',
   {
     effect: Effect.gen(function* () {
-      const apiKey = Env.COMIC_VINE_API_KEY;
+      // const apiKey = Env.COMIC_VINE_API_KEY;
       const client = new ComicVine({
-        apiKey,
+        apiKey: '',
       });
 
       const searchVolumesByName = (name: string) =>

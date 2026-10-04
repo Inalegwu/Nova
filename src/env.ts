@@ -1,6 +1,6 @@
 import 'dotenv/config';
-import { cleanEnv, str } from 'envalid';
+import { cleanEnv } from 'envalid';
 
 export const Env = cleanEnv(process.env, {
-  COMIC_VINE_API_KEY: str(),
+  // COMIC_VINE_API_KEY: str(),
 });

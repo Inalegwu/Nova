@@ -1,5 +1,6 @@
-import { Duration, Effect } from 'effect';
+import { Duration, Effect, String } from 'effect';
 import { type CliOptions, build as electronBuild } from 'electron-builder';
+import pkg from './package.json';
 import { BuildError } from './src/shared/core/utils/errors';
 
 const build = (opts?: CliOptions) =>
@@ -12,8 +13,8 @@ const build = (opts?: CliOptions) =>
           ...opts,
           config: {
             asarUnpack: ['out/main/workers/**/*'],
-            appId: 'com.nova.app',
-            productName: 'Nova',
+            appId: `com.${pkg.name.toLowerCase()}.app`,
+            productName: String.capitalize(pkg.name.toLowerCase()),
             artifactName:
               '${productName}-${version}-${platform}-${arch}.${ext}',
             buildDependenciesFromSource: true,
@@ -68,7 +69,9 @@ const build = (opts?: CliOptions) =>
     }),
     Effect.timed,
     Effect.tap(([duration]) =>
-      Effect.logInfo(`Nova built in ${Duration.format(duration)}`),
+      Effect.logInfo(
+        `${String.capitalize(pkg.name.toLowerCase())} built in ${Duration.format(duration)}`,
+      ),
     ),
   );
 

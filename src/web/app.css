@@ -3,9 +3,23 @@
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
+:root {
+  --background:  #0A0A0C;
+  --surface:     #121216;
+  --border:      #1F1F24;
+  --border-hi:   #3E3A4F;
+  --text:        #EDEDF0;
+  --text-muted:  #9A9AA6;
+  --accent:      #C4B5FD;
+  --accent-dim:  #8B7BD8;
+  --accent-text: #C4B5FD;
+  --on-accent:   #0A0A0C;
+}
+
+
 @font-face {
   font-family: Font;
-  src: url("../assets/fonts/supreme.ttf");
+  src: url("../assets/fonts/raj.ttf");
 }
 
 @font-face {
@@ -20,16 +34,26 @@
 
 @theme {
   --font-display: Font;
-  --font-code:Code;
-  --color-accent:#ff4d1c;
+  --font-mono:Code;
+  --color-background:  var(--background);
+  --color-surface:     var(--surface);
+  --color-border:      var(--border);
+  --color-border-hi:   var(--border-hi);
+  --color-text:        var(--text);
+  --color-text-muted:  var(--text-muted);
+  --color-accent:      var(--accent);
+  --color-accent-dim:  var(--accent-dim);
+  --color-accent-text: var(--accent-text);
+  --color-on-accent:   var(--on-accent);
 }
 
+
 @utility toolbarToggle {
-  @apply p-2.5 hover:bg-neutral-900/40 text-neutral-300 focus-visible:bg-none focus-visible:outline focus-visible:-outline-offset-1 focus-visible:outline-neutral-400 border border-solid border-neutral-900 border-l-transparent border-y-transparent active:bg-neutral-900;
+  @apply p-2.5 hover:bg-surface text-neutral-300 focus-visible:bg-none focus-visible:outline focus-visible:-outline-offset-1 focus-visible:outline-neutral-400 active:bg-surface;
 }
 
 body {
-  @apply font-display bg-black text-neutral-200;
+  @apply font-display bg-background text-text;
 }
 
 #drag-region {
@@ -49,13 +73,13 @@ button {
 }
 
 .tabTrigger {
-  @apply p-2.5 flex items-center justify-center gap-3 text-xs border border-solid border-neutral-900 border-t-transparent border-l-transparent border-b-transparent hover:bg-neutral-900/15;            
+  @apply p-2.5 flex items-center justify-center gap-3 text-xs border border-solid border-border border-t-transparent border-l-transparent border-b-transparent hover:bg-neutral-900/15;            
 }
 .tabTrigger[data-active] {
   @apply text-accent bg-accent/5 border border-solid border-accent/5 border-t-transparent border-b-transparent;;
 }
 .ctxMenuRowItem {
-  @apply p-2.5 flex items-center justify-center border border-solid border-neutral-900 border-t-transparent border-l-transparent border-b-transparent hover:bg-neutral-900/30 cursor-pointer
+  @apply p-2.5 flex items-center justify-center border border-solid border-border border-t-transparent border-l-transparent border-b-transparent hover:bg-neutral-900/30 cursor-pointer
 }
 
 .menuItem{

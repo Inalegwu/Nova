@@ -53,7 +53,7 @@ function Component() {
               </span>
             </div>
             <Select.Root>
-              <Select.Trigger className='flex items-center justify-between gap-2 px-4 py-2 text-xs leading-none whitespace-nowrap border bg-neutral-900 border-solid border-neutral-900 text-neutral-500 uppercase data-pressed:bg-neutral-100 font-normal'>
+              <Select.Trigger className='flex items-center justify-between gap-2 px-4 py-2 text-xs leading-none whitespace-nowrap border bg-neutral-900 border-solid border-border900 text-neutral-500 uppercase data-pressed:bg-neutral-100 font-normal'>
                 <Select.Value
                   className='data-placeholder:text-neutral-500 dark:data-placeholder:text-neutral-400'
                   placeholder='Select Style'
@@ -67,7 +67,7 @@ function Component() {
                   className='outline-hidden select-none z-10'
                   sideOffset={4}
                 >
-                  <Select.Popup className='group min-w-(--anchor-width) origin-(--transform-origin) bg-clip-padding border border-neutral-950 bg-white text-neutral-950 outline-hidden shadow-[0.25rem_0.25rem_0] shadow-black/12 transition-[scale,opacity] duration-100 ease-out data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-[side=none]:translate-y-px data-[side=none]:min-w-[calc(var(--anchor-width)+1.75rem)] data-[side=none]:data-ending-style:transition-none data-starting-style:scale-[0.98] data-starting-style:opacity-0 data-[side=none]:data-starting-style:scale-100 data-[side=none]:data-starting-style:opacity-100 data-[side=none]:data-starting-style:transition-none dark:border-white dark:bg-neutral-950 dark:text-white dark:shadow-none'>
+                  <Select.Popup className='group min-w-(--anchor-width) origin-(--transform-origin) bg-clip-padding border border-border950 bg-white text-neutral-950 outline-hidden shadow-[0.25rem_0.25rem_0] shadow-black/12 transition-[scale,opacity] duration-100 ease-out data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-[side=none]:translate-y-px data-[side=none]:min-w-[calc(var(--anchor-width)+1.75rem)] data-[side=none]:data-ending-style:transition-none data-starting-style:scale-[0.98] data-starting-style:opacity-0 data-[side=none]:data-starting-style:scale-100 data-[side=none]:data-starting-style:opacity-100 data-[side=none]:data-starting-style:transition-none dark:border-white dark:bg-neutral-950 dark:text-white dark:shadow-none'>
                     <Select.ScrollUpArrow className="top-0 z-1 flex h-4 w-full cursor-default items-center justify-center bg-white text-center text-xs before:absolute data-[side=none]:before:-top-full before:left-0 before:h-full before:w-full before:content-[''] dark:bg-neutral-950">
                       <Icon name='CaretUp' size={12} />
                     </Select.ScrollUpArrow>

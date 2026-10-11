@@ -56,7 +56,7 @@ function IssuesView({ issues }: { issues: Array<Partial<Issue>> }) {
           </h1>
           <button
             onClick={() => addIssue()}
-            className='my-5 flex items-center justify-center gap-2 px-5 py-2 border border-neutral-800 bg-neutral-900 text-xs font-code uppercase'
+            className='my-5 flex items-center justify-center gap-2 px-5 py-2 border border-border bg-surface text-xs font-mono uppercase'
           >
             <span>Add Issue</span>
             <Icon name='Plus' size={12} />
@@ -67,7 +67,7 @@ function IssuesView({ issues }: { issues: Array<Partial<Issue>> }) {
         fallback={
           <div className='w-full h-full flex items-start justify-start content-start'>
             {new Array(10).fill(0).map((_) => (
-              <Skeleton className='w-2/6 flex cursor-pointer gap-5 border border-solid border-l-transparent border-t-transparent border-neutral-900 p-3' />
+              <Skeleton className='w-2/6 flex cursor-pointer gap-5 border border-solid border-l-transparent border-t-transparent border-border p-3' />
             ))}
           </div>
         }
@@ -108,7 +108,7 @@ function CollectionsView({
         fallback={
           <div className='w-full h-full flex items-start justify-start content-start'>
             {new Array(10).fill(0).map((_) => (
-              <Skeleton className='w-2/6 flex cursor-pointer gap-5 border border-solid border-l-transparent border-t-transparent border-neutral-900 p-3' />
+              <Skeleton className='w-2/6 flex cursor-pointer gap-5 border border-solid border-l-transparent border-t-transparent border-border p-3' />
             ))}
           </div>
         }
@@ -118,12 +118,12 @@ function CollectionsView({
         ))}
       </Suspense>
       <Dialog.Root>
-        <Dialog.Trigger className='fixed font-bold z-1 bottom-2 right-3 border border-solid uppercase border-neutral-900 bg-neutral-950 px-5 py-2 text-xs text-neutral-400'>
+        <Dialog.Trigger className='fixed font-bold z-1 bottom-2 right-3 border border-solid uppercase border-border bg-surface px-5 py-2 text-xs text-neutral-400'>
           Create Collection
         </Dialog.Trigger>
         <Dialog.Portal>
-          <Dialog.Backdrop className='fixed inset-0 min-h-dvh bg-black opacity-20 transition-opacity duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 supports-[-webkit-touch-callout:none]:absolute' />
-          <Dialog.Popup className='fixed top-1/2 left-1/2 -mt-8 flex flex-col w-2/6 py-7 overflow-hidden md:lg:xl:max-w-[calc(100vw-3rem)] md:lg:xl:max-h-[calc(90vh-3rem)] -translate-x-1/2 -translate-y-1/2 bg-neutral-950 text-neutral-100 border border-neutral-900 shadow shadow-black/20 transition-[scale,opacity] duration-100 ease-out data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0'>
+          <Dialog.Backdrop className='fixed inset-0 min-h-dvh bg-background opacity-20 transition-opacity duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 supports-[-webkit-touch-callout:none]:absolute' />
+          <Dialog.Popup className='fixed top-1/2 left-1/2 -mt-8 flex flex-col w-2/6 py-7 overflow-hidden md:lg:xl:max-w-[calc(100vw-3rem)] md:lg:xl:max-h-[calc(90vh-3rem)] -translate-x-1/2 -translate-y-1/2 bg-background text-neutral-100 border border-border shadow shadow-black/20 transition-[scale,opacity] duration-100 ease-out data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0'>
             <Dialog.Close className='absolute z-1 top-3 right-3 text-red-800'>
               <CloseCircle size={20} weight='Bold' />
             </Dialog.Close>
@@ -136,7 +136,7 @@ function CollectionsView({
                   placeholder='name'
                 />
                 <button
-                  className='px-5 text-xs uppercase py-1 bg-black gap-2'
+                  className='px-5 text-xs uppercase py-1 bg-background gap-2'
                   onClick={() => mutate({ collectionName })}
                 >
                   <span>Create</span>

@@ -20,4 +20,13 @@ export const windowRouter = router({
       ctx.window.maximize();
     }
   }),
+  fullscreen: publicProcedure.mutation(({ ctx }) => {
+    if (!ctx.window) return;
+    const isFullscreen = ctx.window.isFullScreen();
+    if (isFullscreen) {
+      ctx.window.setFullScreen(false);
+    } else {
+      ctx.window.setFullScreen(true);
+    }
+  }),
 });

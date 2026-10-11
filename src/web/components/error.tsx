@@ -17,7 +17,7 @@ export default function ErrorComponent(props: ErrorComponentProps) {
         {props.error.stack}
       </span>
       <button
-        className='px-5 py-1 text-sm uppercase border border-solid border-neutral-900'
+        className='px-5 py-1 text-sm uppercase border border-solid border-border900'
         onClick={() => props.reset()}
       >
         reset

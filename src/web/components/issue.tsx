@@ -12,10 +12,10 @@ export default function IssueBox(issue: Partial<Issue>) {
   });
 
   return (
-    <div className='w-2/6 flex gap-5 border border-solid border-l-transparent border-t-transparent border-neutral-900 p-3'>
+    <div className='w-2/6 flex gap-5 border border-solid border-l-transparent border-t-transparent border-border p-3'>
       <img
         src={issue.thumbnailUrl}
-        className='w-40 h-50 border border-solid border-neutral-800'
+        className='w-40 h-50 border border-solid border-border'
         alt={`thumb_${issue.id}`}
       />
       <div className='flex flex-col w-full items-start justify-between gap-2'>
@@ -37,12 +37,12 @@ export default function IssueBox(issue: Partial<Issue>) {
                   },
                 })
               }
-              className='p-1.5 border border-solid border-neutral-900 bg-neutral-900/10'
+              className='p-1.5 border border-solid border-border bg-neutral-900/10'
             >
               <Icon name='Eyeglasses' size={15} />
             </button>
             <Menu.Root>
-              <Menu.Trigger className='p-1.5 border border-solid border-neutral-900 bg-neutral-900/10'>
+              <Menu.Trigger className='p-1.5 border border-solid border-border bg-neutral-900/10'>
                 <Icon name='DotsThreeVertical' size={15} />
               </Menu.Trigger>
               <Menu.Portal>
@@ -52,7 +52,7 @@ export default function IssueBox(issue: Partial<Issue>) {
                   sideOffset={8}
                   align='start'
                 >
-                  <Menu.Popup className='relative origin-(--transform-origin) border border-neutral-900 bg-neutral-950 py-1 text-neutral-3000 shadow-[0.25rem_0.25rem_0] shadow-black/12 outline-hidden transition-[scale,opacity] duration-100 ease-out data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0'>
+                  <Menu.Popup className='relative origin-(--transform-origin) border border-border bg-neutral-950 py-1 text-neutral-3000 shadow-[0.25rem_0.25rem_0] shadow-black/12 outline-hidden transition-[scale,opacity] duration-100 ease-out data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0'>
                     <Menu.Item className='menuItem'>
                       Add To Collection
                     </Menu.Item>

@@ -2,7 +2,7 @@ import { Tabs } from '@base-ui/react';
 import { Home } from '@solar-icons/react';
 import global from '@state';
 import { Link, useRouter, useRouterState } from '@tanstack/react-router';
-import { AnimatePresence } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -28,9 +28,8 @@ export default function Layout({ children }: LayoutProps) {
   const isHome = routerState.location.pathname === '/';
   const lastOpenedTab = global.app.use.lastOpenedTab();
   const colorMode = global.app.use.colorMode();
-  const isFullScreen = global.app.use.isFullscreen();
-  const [showTop, setShowTop] = useState(false);
-  const [mouseOver] = useState(false);
+  const isFullscreen = global.app.use.isFullscreen();
+  const [] = useState(false);
 
   // track the process of adding issues to the library
   // from background processes
@@ -98,25 +97,11 @@ export default function Layout({ children }: LayoutProps) {
     utils.invalidate();
   }, []);
 
-  useWindow('mousemove', (e) => {
-    if (e.clientY < 20 && !isFullScreen) {
-      setShowTop(true);
-    } else {
-      setShowTop(false);
-    }
-  });
-
   useWindow('keypress', (e) => {
     if (e.keyCode === 16) {
       console.log('search command pressed');
     }
   });
-
-  useInterval(() => {
-    if (showTop && !mouseOver) {
-      setShowTop(false);
-    }
-  }, 5000);
 
   useInterval(() => {
     utils.library.getLibrary.invalidate();
@@ -129,7 +114,14 @@ export default function Layout({ children }: LayoutProps) {
         className='flex flex-col w-full h-screen root'
       >
         {/*titlebar*/}
-        <div className='w-full flex items-center justify-between gap border-b border-b-solid border-b-neutral-900'>
+        <motion.div
+          initial={{ transform: 'translateY(0px)' }}
+          animate={{
+            transform: isFullscreen ? 'translateY(-50px)' : 'translateY(0px)',
+          }}
+          exit={{ transform: 'translateY(0px)' }}
+          className='w-full flex items-center justify-between gap border-b border-b-solid border-b-neutral-900'
+        >
           <div className='flex items-center justify-start'>
             <img src={logo} alt='logo' className='size-5 ml-2' />
             <div className='flex items-center justify-start ml-2'>
@@ -211,7 +203,7 @@ export default function Layout({ children }: LayoutProps) {
               <Icon name='X' size={15} />
             </button>
           </div>
-        </div>
+        </motion.div>
         <div className='flex overflow-hidden overflow-y-scroll overflow-x-hidden w-full h-full'>
           {children}
         </div>

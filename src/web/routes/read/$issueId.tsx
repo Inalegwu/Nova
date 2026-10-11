@@ -9,6 +9,7 @@ import global from '@state';
 import { createFileRoute } from '@tanstack/react-router';
 import { motion } from 'motion/react';
 import { useCallback, useState } from 'react';
+import t from '@/shared/config';
 import { Skeleton, Spinner, Ticker } from '@/web/components';
 import { Icon } from '@/web/components/atoms';
 import {
@@ -17,6 +18,7 @@ import {
   useKeyPress,
   usePreloadPages,
 } from '@/web/hooks';
+import { useGlobalState } from '@/web/state/global';
 
 export const Route = createFileRoute('/read/$issueId')({
   component: RouteComponent,
@@ -29,8 +31,8 @@ function RouteComponent() {
 
   const readerDirection = global.reader.use.direction();
   const setReaderDirection = global.reader.use.setReaderDirection();
-  const toggleFullscreen = global.app.use.setFullScreen();
-  const fullscreen = global.app.use.isFullscreen();
+  const isFullscreen = useGlobalState((s) => s.isFullscreen);
+  const uiFullscreen = useGlobalState((s) => s.setFullScreen);
 
   const { pageCount, status: folderStatus } = useComicFolder(issueId);
   const [pageIndex, setPageIndex] = useState(0);
@@ -40,7 +42,19 @@ function RouteComponent() {
     issueId,
   );
 
+  const { mutate: appFullscreen } = t.window.fullscreen.useMutation();
+
   usePreloadPages(pageIndex, [1, 2, -1], issueId, pageCount);
+
+  const toggleFullscreen = useCallback(() => {
+    if (isFullscreen) {
+      appFullscreen(false);
+      uiFullscreen(false);
+    } else {
+      appFullscreen(true);
+      uiFullscreen(true);
+    }
+  }, []);
 
   const goForward = useCallback(() => {
     if (pageIndex < pageCount) {
@@ -103,7 +117,7 @@ function RouteComponent() {
           onDoubleClick={() => zoomTo(1)}
         />
       </div>
-      <Toolbar.Root className='flex overflow-hidden absolute z-10 top-2 left-2 bg-neutral-950 border border-solid border-neutral-900'>
+      <Toolbar.Root className='flex overflow-hidden absolute z-10 top-2 left-2 bg-neutral-950 border border-solid border-border'>
         <Toolbar.Button onClick={goBack} className='toolbarToggle'>
           <Icon name='ArrowLeft' size={13} />
         </Toolbar.Button>
@@ -112,8 +126,8 @@ function RouteComponent() {
         </Toolbar.Button>
       </Toolbar.Root>
       <Toolbar.Root
-        render={<motion.div animate={{ width: expanded ? '15.6%' : '2.6%' }} />}
-        className='flex overflow-hidden absolute z-10 top-2 right-2 bg-neutral-950 border border-solid border-neutral-900'
+        render={<motion.div animate={{ width: expanded ? '14.9%' : '2.6%' }} />}
+        className='flex overflow-hidden absolute z-10 top-2 right-2 bg-neutral-950 border border-solid border-border'
       >
         <motion.button
           onClick={() => setExpanded((ex) => !ex)}
@@ -189,7 +203,7 @@ function RouteComponent() {
             <Toggle
               render={
                 <motion.button
-                  onClick={() => toggleFullscreen(!fullscreen)}
+                  onClick={toggleFullscreen}
                   animate={{ display: expanded ? 'flex' : 'none' }}
                 />
               }

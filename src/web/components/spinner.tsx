@@ -10,7 +10,7 @@ export type SpinnerProps = {
 
 const Spinner: React.FC<SpinnerProps> = ({
   size = 24,
-  color = '#56806d',
+  color = '#8B7BD8',
   duration = '700',
   className = '',
   label = 'Loading',

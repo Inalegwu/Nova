@@ -34,7 +34,7 @@ function RouteComponent() {
     return (
       <div className='w-full h-full flex flex-col'>
         <div className='w-full h-3/6'>
-          <Skeleton className='w-1.8/6 h-96 border border-solid border-neutral-200 dark:border-neutral-800' />
+          <Skeleton className='w-1.8/6 h-96 border border-solid border-border' />
         </div>
       </div>
     );
@@ -55,7 +55,7 @@ function RouteComponent() {
         <Issue key={issue.id} {...issue} />
       ))}
       <Collapsible.Root className='flex flex-col justify-center text-neutral-350 absolute z-5 bottom-3 right-3'>
-        <Collapsible.Trigger className='group flex text-xs uppercase h-8 items-center justify-between gap-2 rounded-none border border-neutral-900 bg-neutral-950 pl-5 pr-4 leading-none whitespace-nowrap font-normal text-neutral-300 select-none hover:not-data-disabled:bg-neutral-900  active:not-data-disabled:bg-neutral-900 focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-neutral-400 data-disabled:border-neutral-500 data-disabled:text-neutral-500 disabled:border-neutral-500 disabled:text-neutral-500'>
+        <Collapsible.Trigger className='group flex text-xs uppercase h-8 items-center justify-between gap-2 rounded-none border border-border bg-surface pl-5 pr-4 leading-none whitespace-nowrap font-normal text-neutral-300 select-none hover:not-data-disabled:bg-surface/20  active:not-data-disabled:bg-surface/30 focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-neutral-400 data-disabled:border-border/30 data-disabled:text-neutral-500 disabled:border-border/20 disabled:text-neutral-500'>
           <span>viewing: {data?.collection?.collectionName}</span>
           <Icon name='Info' weight='fill' size={12} />
         </Collapsible.Trigger>
@@ -85,17 +85,17 @@ const AddIssueToCollection = ({ collectionId }: { collectionId: string }) => {
 
   return (
     <Dialog.Root>
-      <Dialog.Trigger className='flex text-xs uppercase items-center justify-start w-full px-2 py-1.5 border-b border-b-solid border-neutral-950'>
+      <Dialog.Trigger className='flex text-xs uppercase items-center justify-start w-full px-2 py-1.5 border-b border-b-solid border-border'>
         Add Issue
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Backdrop className='fixed inset-0 min-h-dvh bg-black opacity-20 transition-all duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 dark:opacity-70 supports-[-webkit-touch-callout:none]:absolute' />
-        <Dialog.Popup className='fixed top-1/2 left-1/2 -mt-8 w-xl max-w-[calc(100vw-1rem)] max-h-90 overflow-hidden -translate-x-1/2 -translate-y-1/2 bg-neutral-950 p-6 text-neutral-200 outline outline-neutral-900 transition-all duration-150 data-ending-style:scale-90 data-ending-style:opacity-0 data-starting-style:scale-90 data-starting-style:opacity-0'>
+        <Dialog.Popup className='fixed top-1/2 left-1/2 -mt-8 w-xl max-w-[calc(100vw-1rem)] max-h-90 overflow-hidden -translate-x-1/2 -translate-y-1/2 bg-background p-6 text-neutral-200 transition-all duration-150 data-ending-style:scale-90 data-ending-style:opacity-0 data-starting-style:scale-90 data-starting-style:opacity-0'>
           <Dialog.Title className='font-bold uppercase text-lg'>
             Add Issue To Collection
           </Dialog.Title>
           <ScrollArea.Root className='h-50 w-full max-w-[calc(100vw-8rem)] my-3'>
-            <ScrollArea.Viewport className='h-full overscroll-contain outline bg-neutral-900 p-1 gap-2 -outline-offset-1 outline-neutral-800 focus-visible:outline focus-visible:outline-blue-800'>
+            <ScrollArea.Viewport className='h-full overscroll-contain outline bg-surface p-1 gap-2 -outline-offset-1 outline-neutral-800 focus-visible:outline focus-visible:outline-blue-800'>
               {unmatched?.issues?.map((issue) => (
                 <div
                   key={issue.id}
@@ -113,9 +113,9 @@ const AddIssueToCollection = ({ collectionId }: { collectionId: string }) => {
                             ...old.filter((v) => v !== issue.id),
                           ])
                     }
-                    className='flex size-5 items-center justify-center focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-blue-800 data-checked:bg-neutral-900 data-checked:border data-checked:border-neutral-900 data-unchecked:border data-unchecked:border-neutral-800'
+                    className='flex size-5 items-center justify-center focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-accent/20 data-checked:bg-background data-checked:border data-checked:border-border data-unchecked:border data-unchecked:border-border'
                   >
-                    <Checkbox.Indicator className='flex text-gray-50 dark:text-neutral-200 data-unchecked:hidden'>
+                    <Checkbox.Indicator className='flex text-text-muted data-unchecked:hidden'>
                       <Icon name='Check' size={11} />
                     </Checkbox.Indicator>
                   </Checkbox.Root>

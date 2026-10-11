@@ -35,7 +35,7 @@ function RouteComponent() {
     <div className='flex w-full h-full'>
       <div className='h-full w-4/6 flex flex-col items-start py-3 px-2 justify-start'>
         <div className='flex items-center justify-between w-full'>
-          <span className='text-lg font-bold uppercase font-code tracking-wide'>
+          <span className='text-lg font-bold uppercase font-mono tracking-wide'>
             {issue?.issue.issueTitle.replace(/\s*\([^)]*\)/, '')}
           </span>
           <div className='w-3/6 flex items-center justify-end'>
@@ -44,7 +44,7 @@ function RouteComponent() {
                 onClick={() =>
                   fetchInformation({ issueName: issue?.issue.issueTitle })
                 }
-                className='p-2 border border-solid border-neutral-900 hover:bg-neutral-900/20'
+                className='p-2 border border-solid border-border900 hover:bg-neutral-900/20'
               >
                 {isPending ? (
                   <Spinner size={14} color='#FFFFFF' />

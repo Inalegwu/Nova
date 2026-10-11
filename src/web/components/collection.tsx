@@ -48,7 +48,7 @@ export default function CollectionBox(collection: CollectionProp) {
           return (
             <div
               key={record.id}
-              className='absolute border border-b-0 bg-neutral-800/30 border-solid border-neutral-800'
+              className='absolute border border-b-0 bg-surface/30 border-solid border-border'
               style={{
                 top: STEP * i + 10,
                 left: (CARD_WIDTH - width) / 2,
@@ -62,7 +62,7 @@ export default function CollectionBox(collection: CollectionProp) {
           );
         })}
         <div
-          className={`absolute left-0 border border-solid bg-cover bg-center border-neutral-800`}
+          className={`absolute left-0 border border-solid bg-cover bg-center border-border`}
           style={{
             top: STEP * count,
             width: CARD_WIDTH,
@@ -72,7 +72,7 @@ export default function CollectionBox(collection: CollectionProp) {
           }}
         >
           <div className='flex h-full bg-black/80 flex-col justify-between p-5'>
-            <span className='text-[10px] font-bold uppercase tracking-wide text-neutral-400'>
+            <span className='text-[10px] font-bold uppercase tracking-wide text-text-muted'>
               {collection.id} / {String(count).padStart(2, '0')}
             </span>
             <div>
@@ -82,7 +82,7 @@ export default function CollectionBox(collection: CollectionProp) {
               <p className='text-xs uppercase font-bold text-accent/60'>
                 {moment(front?.dateCreated).fromNow()}
               </p>
-              <div className='h-px mt-4 w-full bg-neutral-700' />
+              <div className='h-px mt-4 w-full bg-border-hi' />
             </div>
           </div>
         </div>

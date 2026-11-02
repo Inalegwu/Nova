@@ -31,7 +31,7 @@ function Component() {
 
   return (
     <Tabs.Root defaultValue='issues' className='w-full h-full'>
-      <Tabs.List className='absolute z-10 flex overflow-hidden bottom-3 left-[44.5%] text-xs bg-panel shadow-lg border border-solid border-line rounded-lg'>
+      <Tabs.List className='absolute z-10 flex overflow-hidden bottom-3 left-[44%] text-xs bg-panel shadow-lg border border-solid border-line rounded-lg'>
         <Tabs.Tab className='px-6 py-2 border-r border-r-line' value='issues'>
           Issues
         </Tabs.Tab>
@@ -50,10 +50,16 @@ function Component() {
 }
 
 const IssuesView = memo(({ issues }: { issues: Partial<Issue>[] }) => {
+  const { mutate, isPending } = t.issue.addIssue.useMutation();
+
   if (issues.length === 0) {
     return (
       <div className='flex items-center justify-center w-full h-full'>
-        <button className='bg-ground border border-solid rounded-2xl shadow text-sm px-5 py-2'>
+        <button
+          onClick={() => mutate()}
+          disabled={isPending}
+          className='bg-ground border border-solid rounded-2xl shadow text-sm px-5 py-2 disabled:opacity-[0.7]'
+        >
           Add Issue
         </button>
       </div>
@@ -61,12 +67,14 @@ const IssuesView = memo(({ issues }: { issues: Partial<Issue>[] }) => {
   }
 
   return (
-    <Suspense fallback={<div>loading...</div>}>
-      {issues.map((issue) => (
-        // @ts-expect-error: idfk man
-        <Issue key={issue.id} issue={issue} />
-      ))}
-    </Suspense>
+    <div className='w-full h-full flex p-3 gap-5'>
+      <Suspense fallback={<div>loading...</div>}>
+        {issues.map((issue) => (
+          // @ts-expect-error: idfk man
+          <Issue key={issue.id} issue={issue} />
+        ))}
+      </Suspense>
+    </div>
   );
 });
 
@@ -76,6 +84,16 @@ type CollectionProp = Partial<Collection> & {
 
 const CollectionsView = memo(
   ({ collections }: { collections: Array<CollectionProp> }) => {
+    if (collections.length === 0) {
+      return (
+        <div className='flex items-center justify-center w-full h-full'>
+          <button className='bg-ground border border-solid rounded-2xl shadow text-sm px-5 py-2'>
+            New Collection
+          </button>
+        </div>
+      );
+    }
+
     return (
       <Suspense fallback={<div>loading...</div>}>
         {collections.map((collection) => (

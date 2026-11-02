@@ -18,6 +18,7 @@ export default function Layout({ children }: LayoutProps) {
 
   const { mutate: maximize } = t.window.maximize.useMutation();
   const { mutate: close } = t.window.closeWindow.useMutation();
+  const { mutate: add } = t.issue.addIssue.useMutation();
 
   const isHome = routerState.location.pathname === '/';
   const colorMode = useGlobalState((s) => s.colorMode);
@@ -48,17 +49,20 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div className='flex flex-col w-full h-screen transition'>
-      <div className='w-full flex items-center bg-ground px-3 py-1 justify-between border-b border-b-line'>
+      <div className='w-full flex items-center bg-ground px-3 py-1 justify-between border-b-2 border-b-line'>
         <div className='flex items-center justify-start gap-4'>
           <button onClick={() => close()}>
             <Icon name='X' size={16} />
           </button>
           <img src={logo} className='size-4' alt='logo' />
+          <button onClick={() => add()}>
+            <Icon name='Plus' size={16} />
+          </button>
           {!isHome && (
             <>
-              <Link to='/'>
-                <Icon name='House' size={16} />
-              </Link>
+              <button onClick={() => window.navigation.back()}>
+                <Icon name='ArrowLeft' size={16} />
+              </button>
               <button>
                 <Icon name='Sidebar' weight='fill' size={16} />
               </button>

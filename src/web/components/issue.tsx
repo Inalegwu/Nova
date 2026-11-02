@@ -9,7 +9,7 @@ export default function Issue({ issue }: Props) {
   const r = useRouter();
   return (
     <div
-      style={{ width: 250, height: 300 }}
+      style={{ width: 250, height: 325 }}
       onClick={() =>
         r.navigate({
           to: '/read/$issueId',
@@ -18,14 +18,21 @@ export default function Issue({ issue }: Props) {
           },
         })
       }
-      className='border h-3/6 border-solid border-line rounded-3xl hover:shadow-md px-3 pb-5 flex flex-col items-start justify-end corner-squircle bg-dim/10 cursor-pointer'
+      className='border relative h-3/6 border-solid border-line overflow-hidden rounded-3xl shadow-lg flex flex-col items-start justify-end corner-squircle bg-dim/10 cursor-pointer'
     >
-      <span className='font-medium capitalize tracking-wide'>
-        {issue.issueTitle}
-      </span>
-      <span className='text-xs text-dim lowercase'>
-        {moment(issue.dateUpdated).fromNow()}
-      </span>
+      <img
+        src={issue.thumbnailUrl}
+        className='absolute z-0 w-full h-full'
+        alt={issue.issueTitle}
+      />
+      <div className='absolute z-1 px-3 pb-5 w-full h-full bg-ink/40 dark:invert flex flex-col items-start justify-end'>
+        <span className='font-medium text-sm capitalize tracking-wide invert'>
+          {issue.issueTitle}
+        </span>
+        <span className='text-xs text-dim lowercase'>
+          {moment(issue.dateUpdated).fromNow()}
+        </span>
+      </div>
     </div>
   );
 }

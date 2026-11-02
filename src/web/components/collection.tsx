@@ -2,8 +2,8 @@ import { useRouter } from '@tanstack/react-router';
 import * as A from 'effect/Array';
 import moment from 'moment';
 
-const CARD_WIDTH = 200;
-const CARD_HEIGHT = 260;
+const CARD_WIDTH = 250;
+const CARD_HEIGHT = 350;
 const STEP = 7;
 
 type CollectionProp = Partial<Collection> & {
@@ -29,6 +29,9 @@ export default function CollectionBox(collection: CollectionProp) {
           },
         })
       }
+      style={{
+        height: CARD_HEIGHT,
+      }}
       className='cursor-pointer flex items-center justify-center mx-2 p-2'
     >
       <div
@@ -48,21 +51,21 @@ export default function CollectionBox(collection: CollectionProp) {
           return (
             <div
               key={record.id}
-              className='absolute border border-b-0 bg-surface/30 border-solid border-border'
+              className='absolute border border-b-0 bg-ground/30 rounded-2xl border-solid'
               style={{
                 top: STEP * i + 10,
                 left: (CARD_WIDTH - width) / 2,
                 width,
-                height: STEP,
+                height: STEP + 20,
                 zIndex: i,
                 opacity,
-                borderColor: '#2a2a2a',
+                borderColor: 'var(--ink)',
               }}
             />
           );
         })}
         <div
-          className={`absolute left-0 border border-solid bg-cover bg-center border-border`}
+          className={`absolute left-0 border border-solid bg-cover bg-center border-line bg-ground rounded-2xl overflow-hidden`}
           style={{
             top: STEP * count,
             width: CARD_WIDTH,
@@ -71,15 +74,12 @@ export default function CollectionBox(collection: CollectionProp) {
             backgroundImage: `url(${front?.thumbnailUrl})`,
           }}
         >
-          <div className='flex h-full bg-black/80 flex-col justify-between p-5'>
-            <span className='text-[10px] font-bold uppercase tracking-wide text-text-muted'>
-              {collection.id} / {String(count).padStart(2, '0')}
-            </span>
+          <div className='flex h-full flex-col justify-end px-3 py-2 bg-invert/20'>
             <div>
-              <h2 className='text-[11px] uppercase font-extrabold text-neutral-200 mb-1'>
+              <h2 className='text-[11px] uppercase font-extrabold text-neutral-200 mb-1 invert'>
                 {collection.collectionName}
               </h2>
-              <p className='text-xs uppercase font-bold text-accent/60'>
+              <p className='text-xs uppercase font-bold text-accent/60 invert'>
                 {moment(front?.dateCreated).fromNow()}
               </p>
               <div className='h-px mt-4 w-full bg-border-hi' />

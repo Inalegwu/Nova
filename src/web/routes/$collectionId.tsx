@@ -41,7 +41,7 @@ function RouteComponent() {
   }
 
   return (
-    <div className='w-full h-full flex items-start justify-start flex-wrap content-start overflow-y-scroll'>
+    <div className='w-full h-full flex items-start justify-start flex-wrap content-start overflow-y-scroll p-3 gap-5'>
       {data?.issues?.length === 0 && (
         <div className='w-full h-full items-center justify-center flex flex-col'>
           <h1 className='uppercase text-xl font-bold text-neutral-400'>
@@ -51,8 +51,7 @@ function RouteComponent() {
         </div>
       )}
       {data?.issues?.map((issue) => (
-        // @ts-expect-error
-        <Issue key={issue.id} {...issue} />
+        <Issue key={issue.id} issue={issue} />
       ))}
       <Collapsible.Root className='flex flex-col justify-center text-neutral-350 absolute z-5 bottom-3 right-3'>
         <Collapsible.Trigger className='group flex text-xs uppercase h-8 items-center justify-between gap-2 rounded-none border border-border bg-surface pl-5 pr-4 leading-none whitespace-nowrap font-normal text-neutral-300 select-none hover:not-data-disabled:bg-surface/20  active:not-data-disabled:bg-surface/30 focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-neutral-400 data-disabled:border-border/30 data-disabled:text-neutral-500 disabled:border-border/20 disabled:text-neutral-500'>

@@ -26,9 +26,9 @@ class FileWatcherService extends Effect.Service<FileWatcherService>()(
             })
             .pipe(
               // THIS should only report creation or copy in's
-              // Stream.filter(
-              //   (event) => event._tag === 'Create' || event._tag === 'Update',
-              // ),
+              Stream.filter(
+                (event) => event._tag === 'Create' || event._tag === 'Update',
+              ),
               Stream.tap((e) => Effect.log({ tag: e._tag, path: e.path })),
               Stream.mapEffect((event) =>
                 Effect.sleep('150 millis').pipe(Effect.as(event)),

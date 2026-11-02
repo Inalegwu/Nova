@@ -1,59 +1,96 @@
 @import "tailwindcss";
 @plugin "@toolwind/corner-shape";
 
-@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
-
-:root {
-  --background:  #0A0A0C;
-  --surface:     #121216;
-  --border:      #1F1F24;
-  --border-hi:   #3E3A4F;
-  --text:        #EDEDF0;
-  --text-muted:  #9A9AA6;
-  --accent:      #C4B5FD;
-  --accent-dim:  #8B7BD8;
-  --accent-text: #C4B5FD;
-  --on-accent:   #0A0A0C;
-}
-
+@custom-variant dark (&:where(.dark, .dark *));
 
 @font-face {
   font-family: Font;
-  src: url("../assets/fonts/raj.ttf");
+  src: url("../assets/fonts/onest.ttf");
 }
 
-@font-face {
-  font-family: Code;
-  src: url("../assets/fonts/plex-mono.ttf");
+:root {
+  --ground: #f2ecdc; /* eggshell */
+  --ink: #000000;
 }
 
-@font-face {
-  font-family: Code;
-  src: url("../assets/fonts/plex-mono-medium.ttf");
+.dark {
+  --ground: #000000;
+  --ink: #eae3d0; /* cream */
+}
+
+:root,
+.dark {
+  --muted: color-mix(in srgb, var(--ink) 62%, var(--ground)); /* secondary text */
+  --dim: color-mix(in srgb, var(--ink) 34%, var(--ground));   /* non-text only: inactive fills, dashed borders */
+  --line: color-mix(in srgb, var(--ink) 12%, var(--ground));  /* hairlines */
+  --panel: color-mix(in srgb, var(--ink) 5%, var(--ground));  /* source cards, previews */
+}
+
+@theme inline {
+  --font-display: Font;
+  --color-*: initial;
+  --color-ground: var(--ground);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-dim: var(--dim);
+  --color-line: var(--line);
+  --color-panel: var(--panel);
 }
 
 @theme {
-  --font-display: Font;
-  --font-mono:Code;
-  --color-background:  var(--background);
-  --color-surface:     var(--surface);
-  --color-border:      var(--border);
-  --color-border-hi:   var(--border-hi);
-  --color-text:        var(--text);
-  --color-text-muted:  var(--text-muted);
-  --color-accent:      var(--accent);
-  --color-accent-dim:  var(--accent-dim);
-  --color-accent-text: var(--accent-text);
-  --color-on-accent:   var(--on-accent);
+  --font-sans: Font;
+  /* --radius-*: initial; */
+  --radius-full: 9999px;
+  /* --shadow-*: initial; */
+  --drop-shadow-*: initial;
+  /* type scale from the mockups */
+  --text-label: 10px;
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.08em;
+  --text-ui: 11px;
+  --text-ui--line-height: 1.5;
+  --text-body: 15px;
+  --text-body--line-height: 1.5;
+  --text-readout: 28px; /* big numbers, timecodes */
+  --text-readout--line-height: 1.1;
+  --text-readout--font-weight: 700;
+  --spacing-rail: 56px;
+  --spacing-inspector: 260px;
 }
 
-
-@utility toolbarToggle {
-  @apply p-2.5 hover:bg-surface text-neutral-300 focus-visible:bg-none focus-visible:outline focus-visible:-outline-offset-1 focus-visible:outline-neutral-400 active:bg-surface;
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--line);
+  }
+  html { color-scheme: light; }
+  html.dark { color-scheme: dark; }
+  body {
+    @apply bg-ground text-ink font-sans text-body antialiased select-none transition;
+  }
+  button { cursor: pointer; @apply flex items-center justify-center active:scale-[0.97] corner-squircle outline-none}
+  ::selection { background: var(--ink); color: var(--ground); }
+  :focus-visible { outline: 1px solid var(--ink); outline-offset: 2px; }
 }
 
-body {
-  @apply font-display bg-background text-text;
+/* ---- utilities ---- */
+@utility bg-dots {
+  background-image: radial-gradient(var(--line) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+@utility hazard {
+  background: repeating-linear-gradient(-45deg, var(--ink) 0 6px, var(--ground) 6px 12px);
+}
+@utility inverted {
+  background-color: var(--ink);
+  color: var(--ground);
+}
+@utility popup{
+  @apply w-[min(20rem,calc(100vw-4rem))] origin-(--transform-origin) border border-line bg-panel rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] outline-none transition-[transform,scale,opacity] data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0;
+}
+@utility tabTrigger {
+  @apply bg-panel p-1.5;    
 }
 
 #drag-region {
@@ -64,46 +101,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 0;
-  background: none;
-}
-
-button {
-  @apply items-center justify-center cursor-pointer appearance-none outline-none active:scale-[0.97];
-}
-
-.tabTrigger {
-  @apply p-2.5 flex items-center justify-center gap-3 text-xs border border-solid border-border border-t-transparent border-l-transparent border-b-transparent hover:bg-neutral-900/15;            
-}
-.tabTrigger[data-active] {
-  @apply text-accent bg-accent/5 border border-solid border-accent/5 border-t-transparent border-b-transparent;;
-}
-.ctxMenuRowItem {
-  @apply p-2.5 flex items-center justify-center border border-solid border-border border-t-transparent border-l-transparent border-b-transparent hover:bg-neutral-900/30 cursor-pointer
-}
-
-.menuItem{
-  @apply flex items-center justify-start gap-2 cursor-pointer py-2 pr-8 text-neutral-400 pl-4 text-[13px] leading-4 outline-hidden select-none data-highlighted:relative data-highlighted:z-0 data-highlighted:text-white data-highlighted:before:absolute data-highlighted:before:inset-x-1 data-highlighted:before:inset-y-0 data-highlighted:before:z-[-1] data-highlighted:before:bg-neutral-900 data-highlighted:before:content-[''] data-disabled:text-neutral-700;
-}
-
-.input{
-  @apply bg-neutral-900 text-sm w-full outline-none px-2 py-1 placeholder:text-sm; 
-}
-
-body {
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-div {
-  outline: none;
-}
-
-.root {
-  isolation: isolate;
-}
-
-a {
-  @apply dark:text-neutral-400;
+  /* width: 0;
+  background: none; */
+  @apply w-0 bg-none;
 }

@@ -1,6 +1,5 @@
 import path from 'node:path';
 import { Console, Effect } from 'effect';
-import { parserChannel } from '../../channels';
 import { Fs } from '../../fs';
 import { convertToImageUrl, parseFileNameFromPath } from '../../utils';
 import * as Archive from '../archive/index';
@@ -46,15 +45,6 @@ export class ArchiveService extends Effect.Service<ArchiveService>()(
               },
             ).pipe(Effect.catchTag('FSError', Console.log)),
           );
-
-          yield* Effect.sync(() =>
-            parserChannel.postMessage({
-              state: 'SUCCESS',
-              isCompleted: true,
-              error: null,
-              issue: issueTitle,
-            }),
-          );
         }),
         zip: Effect.fnUntraced(function* (zipPath: string) {
           const { files } = yield* Archive.cbz.readCbzArchive(zipPath);
@@ -73,15 +63,6 @@ export class ArchiveService extends Effect.Service<ArchiveService>()(
           yield* saveIssue(issueTitle, thumbnailUrl, savePath);
 
           yield* Archive.cbz.extractZip(zipPath, savePath);
-
-          yield* Effect.sync(() =>
-            parserChannel.postMessage({
-              state: 'SUCCESS',
-              isCompleted: true,
-              error: null,
-              issue: issueTitle,
-            }),
-          );
         }),
       };
     }),

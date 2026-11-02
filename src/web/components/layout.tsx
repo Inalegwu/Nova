@@ -1,15 +1,12 @@
-import { Tabs } from '@base-ui/react';
-import { Home } from '@solar-icons/react';
-import global from '@state';
-import { Link, useRouter, useRouterState } from '@tanstack/react-router';
-import { AnimatePresence, motion } from 'motion/react';
+import { Link, useRouterState } from '@tanstack/react-router';
 import type React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { toast } from 'sonner';
 import logo from '@/assets/images/win_dark.png';
 import t from '@/shared/config';
 import { useInterval, useWindow } from '../hooks';
-import { Icon, Tooltip } from './atoms';
+import { useGlobalState } from '../state/global';
+import { Icon } from './atoms';
 
 type LayoutProps = {
   children?: React.ReactNode;
@@ -17,78 +14,20 @@ type LayoutProps = {
 
 export default function Layout({ children }: LayoutProps) {
   const utils = t.useUtils();
-  const navigation = useRouter();
   const routerState = useRouterState();
 
-  const { mutate: minimize } = t.window.minimize.useMutation();
   const { mutate: maximize } = t.window.maximize.useMutation();
   const { mutate: close } = t.window.closeWindow.useMutation();
-  const { mutate: addIssue } = t.issue.addIssue.useMutation();
 
   const isHome = routerState.location.pathname === '/';
-  const lastOpenedTab = global.app.use.lastOpenedTab();
-  const colorMode = global.app.use.colorMode();
-  const isFullscreen = global.app.use.isFullscreen();
-  const [] = useState(false);
-
-  // track the process of adding issues to the library
-  // from background processes
-  t.additions.useSubscription(undefined, {
-    onData: (data) => {
-      console.log({ data });
-      if (!data.isCompleted && data.state === 'SUCCESS') {
-        toast.success(`Adding ${data.issue || 'issue'} To Library`);
-      }
-
-      if (data.isCompleted && data.state === 'SUCCESS') {
-        toast.success(`Added ${data.issue || 'issue'} to library`);
-        utils.library.getLibrary.invalidate();
-      }
-
-      if (data.isCompleted && data.state === 'ERROR') {
-        console.log(data.error);
-        toast.error(data.error || 'Something went wrong');
-      }
-
-      if (!data.isCompleted && data.state === 'ERROR') {
-        toast.error(data.error || 'Unknown Error Occurred');
-      }
-
-      return;
-    },
-  });
-
-  // track the process of deleting issues from the library
-  // from background processes
-  t.deletions.useSubscription(undefined, {
-    onData: (data) => {
-      if (!data.isDone) {
-        toast.info(`deleting ${data.title} from my Library`);
-      }
-
-      if (!data.isDone && data.error) {
-        toast.error(data.error);
-      }
-
-      if (data.isDone) {
-        toast.success(`${data.title} has been deleted`);
-        utils.library.invalidate();
-        toast.dismiss();
-      }
-    },
-  });
-
-  // deeplinks
-  // t.deeplink.useSubscription(undefined, {
-  //   onData: () => utils.library.invalidate(),
-  // });
+  const colorMode = useGlobalState((s) => s.colorMode);
+  const toggleColorMode = useGlobalState((s) => s.toggleColorMode);
 
   useEffect(() => {
-    if (colorMode === 'dark') {
-      document.body.setAttribute('data-theme', 'dark');
-      // globalState$.colorMode.set("dark");
+    if (colorMode === 'light') {
+      document.body.classList.add('dark');
     } else {
-      document.body.setAttribute('data-theme', 'light');
+      document.body.classList.remove('dark');
     }
   }, [colorMode]);
 
@@ -108,106 +47,39 @@ export default function Layout({ children }: LayoutProps) {
   }, 10_000);
 
   return (
-    <AnimatePresence>
-      <Tabs.Root
-        defaultValue={lastOpenedTab}
-        className='flex flex-col w-full h-screen root'
-      >
-        {/*titlebar*/}
-        <motion.div
-          initial={{ transform: 'translateY(0px)' }}
-          animate={{
-            transform: isFullscreen ? 'translateY(-50px)' : 'translateY(0px)',
-          }}
-          exit={{ transform: 'translateY(0px)' }}
-          className='w-full flex items-center justify-between gap border-b border-b-solid border-b-neutral-900'
-        >
-          <div className='flex items-center justify-start'>
-            <img src={logo} alt='logo' className='size-5 ml-2' />
-            <div className='flex items-center justify-start ml-2'>
-              <Tooltip content='Home'>
-                <Link
-                  to='/'
-                  className='p-2.5 outline-none border-x border-x-solid border-x-neutral-900 hover:bg-neutral-900/15'
-                >
-                  <Home size={15} weight='Linear' />
-                </Link>
-              </Tooltip>
-              <Tooltip content='Back'>
-                <button
-                  disabled={!!isHome}
-                  onClick={() => navigation.history.back()}
-                  className='p-2.5 border-r border-r-solid border-r-neutral-900 hover:bg-neutral-900/15'
-                >
-                  <Icon name='ArrowLeft' size={15} />
-                </button>
-              </Tooltip>
-              <Tooltip content='Forward'>
-                <button
-                  onClick={() => navigation.history.forward()}
-                  className='p-2.5 border-r border-r-solid border-r-neutral-900 hover:bg-neutral-900/15'
-                >
-                  <Icon name='ArrowRight' size={15} />
-                </button>
-              </Tooltip>
-            </div>
-            <Tabs.List className='flex items-center justify-start'>
-              <Tabs.Tab className='tabTrigger' value='issues'>
-                <Icon name='Book' size={15} />
-              </Tabs.Tab>
-              <Tabs.Tab className='tabTrigger' value='collections'>
-                <Icon name='Books' size={15} />
-              </Tabs.Tab>
-            </Tabs.List>
-            <div className='flex items-center justify-start'>
-              <Tooltip content='Add Issue'>
-                <button
-                  onClick={() => addIssue()}
-                  className='p-2.5 border-r border-r-solid border-r-neutral-900 hover:bg-neutral-900/15'
-                >
-                  <Icon name='Plus' size={15} />
-                </button>
-              </Tooltip>
-              <Link
-                to='/history'
-                className='p-2.5 outline-none border-r border-r-solid border-r-neutral-900 hover:bg-neutral-900/15'
-              >
-                <Icon name='ClockCounterClockwise' size={15} />
+    <div className='flex flex-col w-full h-screen transition'>
+      <div className='w-full flex items-center bg-ground px-3 py-1 justify-between border-b border-b-line'>
+        <div className='flex items-center justify-start gap-4'>
+          <button onClick={() => close()}>
+            <Icon name='X' size={16} />
+          </button>
+          <img src={logo} className='size-4' alt='logo' />
+          {!isHome && (
+            <>
+              <Link to='/'>
+                <Icon name='House' size={16} />
               </Link>
-            </div>
-          </div>
-          <div className='p-4.5 w-full' id='drag-region' />
-          <div className='flex items-center justify-end text-neutral-500'>
-            <Link
-              className='p-2.5 border-l border-l-solid border-l-neutral-900 hover:bg-neutral-900/15'
-              to='/settings'
-            >
-              <Icon name='Gear' size={15} />
-            </Link>
-            <button
-              className='p-2.5 border-l border-l-solid border-l-neutral-900 hover:bg-neutral-900/15'
-              onClick={() => minimize()}
-            >
-              <Icon name='Minus' size={15} />
-            </button>
-            <button
-              className='p-2.5 border-l border-l-solid border-l-neutral-900 hover:bg-neutral-900/15'
-              onClick={() => maximize()}
-            >
-              <Icon name='CornersOut' size={15} />
-            </button>
-            <button
-              className='text-red-800 hover:bg-red-800/5 p-2.5 border-l border-l-solid border-l-neutral-900'
-              onClick={() => close()}
-            >
-              <Icon name='X' size={15} />
-            </button>
-          </div>
-        </motion.div>
-        <div className='flex overflow-hidden overflow-y-scroll overflow-x-hidden w-full h-full'>
-          {children}
+              <button>
+                <Icon name='Sidebar' weight='fill' size={16} />
+              </button>
+            </>
+          )}
         </div>
-      </Tabs.Root>
-    </AnimatePresence>
+        <div id='drag-region' className='p-3 w-full' />
+        <div className='flex items-center justify-end gap-5'>
+          <button onClick={toggleColorMode}>
+            <Icon
+              name={colorMode === 'light' ? 'Moon' : 'Sun'}
+              size={16}
+              weight='fill'
+            />
+          </button>
+          <button onClick={() => maximize()}>
+            <Icon name='ArrowsOutSimple' size={16} />
+          </button>
+        </div>
+      </div>
+      <div className='w-full h-full bg-panel'>{children}</div>
+    </div>
   );
 }

@@ -1,14 +1,9 @@
-import { Dialog } from '@base-ui/react/dialog';
-import { Tabs } from '@base-ui/react/tabs';
-import { CloseCircle } from '@solar-icons/react';
-import global from '@state';
+import { Tabs } from '@base-ui/react';
+import { Spinner } from '@components';
 import { createFileRoute } from '@tanstack/react-router';
-import { useTimeout } from '@web/hooks';
-import React, { memo, Suspense, useEffect, useState } from 'react';
-import { toast } from 'sonner';
+import React, { memo, Suspense, useState } from 'react';
 import t from '@/shared/config';
-import { Skeleton, Spinner } from '../components';
-import { Icon } from '../components/atoms';
+import { useTimeout } from '../hooks';
 
 const Issue = React.lazy(() => import('../components/issue'));
 const Collection = React.lazy(() => import('../components/collection'));
@@ -18,135 +13,75 @@ export const Route = createFileRoute('/')({
 });
 
 function Component() {
-  const [isEnabled, setIsEnabled] = useState(false);
+  const [, setEnabled] = useState(false);
 
-  const { data } = t.library.getLibrary.useQuery(undefined, {
-    enabled: isEnabled,
-  });
+  const { data, isLoading } = t.library.getLibrary.useQuery();
 
-  useTimeout(() => setIsEnabled(true), 500);
+  useTimeout(() => setEnabled(true), 500);
+
+  console.log({ data });
+
+  if (isLoading || !data) {
+    return (
+      <div className='w-full h-full flex items-center justify-center'>
+        <Spinner size={20} />
+      </div>
+    );
+  }
 
   return (
-    <div className='w-full h-full'>
-      <Tabs.Panel value='collections' className='w-full h-full'>
-        {/* @ts-expect-error */}
-        <CollectionsView collections={data?.collections || []} />
+    <Tabs.Root defaultValue='issues' className='w-full h-full'>
+      <Tabs.List className='absolute z-10 flex overflow-hidden bottom-3 left-[44.5%] text-xs bg-panel shadow-lg border border-solid border-line rounded-lg'>
+        <Tabs.Tab className='px-6 py-2 border-r border-r-line' value='issues'>
+          Issues
+        </Tabs.Tab>
+        <Tabs.Tab className='px-4 py-2' value='collections'>
+          Collections
+        </Tabs.Tab>
+      </Tabs.List>
+      <Tabs.Panel className='w-full h-full' value='issues'>
+        <IssuesView issues={data.issues ?? []} />
       </Tabs.Panel>
-      <Tabs.Panel value='issues' className='w-full h-full'>
-        {/* @ts-expect-error */}
-        <IssuesView issues={data?.issues || []} />
+      <Tabs.Panel className='w-full h-full' value='collections'>
+        <CollectionsView collections={data.collections ?? []} />
       </Tabs.Panel>
-    </div>
+    </Tabs.Root>
   );
 }
 
-function IssuesView({ issues }: { issues: Array<Partial<Issue>> }) {
-  const { mutate: addIssue } = t.issue.addIssue.useMutation();
-
-  const setLastOpenedTab = global.app.use.setLastOpenedTab();
-
-  useEffect(() => setLastOpenedTab('issues'), []);
+const IssuesView = memo(({ issues }: { issues: Partial<Issue>[] }) => {
+  if (issues.length === 0) {
+    return (
+      <div className='flex items-center justify-center w-full h-full'>
+        <button className='bg-ground border border-solid rounded-2xl shadow text-sm px-5 py-2'>
+          Add Issue
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div className='w-full h-full flex items-start justify-start flex-wrap content-start overflow-y-scroll'>
-      {issues.length === 0 && (
-        <div className='w-full h-full items-center justify-center flex flex-col'>
-          <h1 className='uppercase text-xl font-bold text-neutral-400'>
-            No Issues in your library
-          </h1>
-          <button
-            onClick={() => addIssue()}
-            className='my-5 flex items-center justify-center gap-2 px-5 py-2 border border-border bg-surface text-xs font-mono uppercase'
-          >
-            <span>Add Issue</span>
-            <Icon name='Plus' size={12} />
-          </button>
-        </div>
-      )}
-      <Suspense
-        fallback={
-          <div className='w-full h-full flex items-start justify-start content-start'>
-            {new Array(10).fill(0).map((_) => (
-              <Skeleton className='w-2/6 flex cursor-pointer gap-5 border border-solid border-l-transparent border-t-transparent border-border p-3' />
-            ))}
-          </div>
-        }
-      >
-        {issues.map((issue) => (
-          <Issue key={issue.id} {...issue} />
-        ))}
-      </Suspense>
-    </div>
+    <Suspense fallback={<div>loading...</div>}>
+      {issues.map((issue) => (
+        // @ts-expect-error: idfk man
+        <Issue key={issue.id} issue={issue} />
+      ))}
+    </Suspense>
   );
-}
+});
 
 type CollectionProp = Partial<Collection> & {
   issues: Array<Partial<Issue>>;
 };
 
-function CollectionsView({
-  collections,
-}: {
-  collections: Array<CollectionProp>;
-}) {
-  const utils = t.useUtils();
-  const [collectionName, setCollectionName] = useState('');
-  const setLastOpenedTab = global.app.use.setLastOpenedTab();
-
-  const { mutate, isPending } = t.library.createCollection.useMutation({
-    onSuccess: () => {
-      toast.success(`Collection created successfully`);
-      utils.library.getLibrary.invalidate();
-    },
-  });
-
-  useEffect(() => setLastOpenedTab('collections'), []);
-
-  return (
-    <div className='w-full h-full flex items-start justify-start flex-wrap relative'>
-      <Suspense
-        fallback={
-          <div className='w-full h-full flex items-start justify-start content-start'>
-            {new Array(10).fill(0).map((_) => (
-              <Skeleton className='w-2/6 flex cursor-pointer gap-5 border border-solid border-l-transparent border-t-transparent border-border p-3' />
-            ))}
-          </div>
-        }
-      >
+const CollectionsView = memo(
+  ({ collections }: { collections: Array<CollectionProp> }) => {
+    return (
+      <Suspense fallback={<div>loading...</div>}>
         {collections.map((collection) => (
           <Collection key={collection.id} {...collection} />
         ))}
       </Suspense>
-      <Dialog.Root>
-        <Dialog.Trigger className='fixed font-bold z-1 bottom-2 right-3 border border-solid uppercase border-border bg-surface px-5 py-2 text-xs text-neutral-400'>
-          Create Collection
-        </Dialog.Trigger>
-        <Dialog.Portal>
-          <Dialog.Backdrop className='fixed inset-0 min-h-dvh bg-background opacity-20 transition-opacity duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 supports-[-webkit-touch-callout:none]:absolute' />
-          <Dialog.Popup className='fixed top-1/2 left-1/2 -mt-8 flex flex-col w-2/6 py-7 overflow-hidden md:lg:xl:max-w-[calc(100vw-3rem)] md:lg:xl:max-h-[calc(90vh-3rem)] -translate-x-1/2 -translate-y-1/2 bg-background text-neutral-100 border border-border shadow shadow-black/20 transition-[scale,opacity] duration-100 ease-out data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0'>
-            <Dialog.Close className='absolute z-1 top-3 right-3 text-red-800'>
-              <CloseCircle size={20} weight='Bold' />
-            </Dialog.Close>
-            <div className='w-full h-full px-6 flex flex-col items-start justify-center gap-3'>
-              <h1 className='text-2xl font-extrabold'>Collection Name</h1>
-              <div className='flex flex-col items-start gap-3 w-full'>
-                <input
-                  onChange={(e) => setCollectionName(e.currentTarget.value)}
-                  className='input'
-                  placeholder='name'
-                />
-                <button
-                  className='px-5 text-xs uppercase py-1 bg-background gap-2'
-                  onClick={() => mutate({ collectionName })}
-                >
-                  <span>Create</span>
-                  {isPending && <Spinner size={10} color='#FFFFFF' />}
-                </button>
-              </div>
-            </div>
-          </Dialog.Popup>
-        </Dialog.Portal>
-      </Dialog.Root>
-    </div>
-  );
-}
+    );
+  },
+);

@@ -1,10 +1,9 @@
-import { deletionChannel } from '../../channels';
+import { parentPort } from 'node:worker_threads';
+import { Effect } from 'effect';
 import { Fs } from '../../fs';
 import { collections, issues } from '../../schema';
 import db from '../../storage';
 import { transformMessage } from '../../utils';
-import { Effect } from 'effect';
-import { parentPort } from 'node:worker_threads';
 import { cacheWorkerSchema } from '../../validations';
 
 const port = parentPort;
@@ -22,14 +21,7 @@ port.on('message', (message) =>
               await db.delete(collections);
             }),
           ),
-          Effect.catchTag('FSError', (error) =>
-            Effect.succeed(
-              deletionChannel.postMessage({
-                isDone: false,
-                error: error.message,
-              }),
-            ),
-          ),
+          Effect.catchTag('FSError', (error) => Effect.log(error)),
         ),
       onFailure: Effect.logFatal,
     }),

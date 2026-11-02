@@ -44,7 +44,7 @@ function RouteComponent() {
 
   const { mutate: appFullscreen } = t.window.fullscreen.useMutation();
 
-  usePreloadPages(pageIndex, [1, 2, -1], issueId, pageCount);
+  usePreloadPages(pageIndex, [2, 3, -2], issueId, pageCount);
 
   const toggleFullscreen = useCallback(() => {
     if (isFullscreen) {
@@ -60,19 +60,19 @@ function RouteComponent() {
     if (pageIndex < pageCount) {
       setPageIndex((idx) => idx + 1);
     }
-  }, []);
+  }, [pageIndex, pageCount]);
 
   const goBack = useCallback(() => {
     if (pageIndex !== 0) {
       setPageIndex((idx) => idx - 1);
     }
-  }, []);
+  }, [pageIndex]);
 
   useKeyPress((e) => {
-    if (e.keyCode === 93 && pageIndex < pageCount) {
-      setPageIndex((idx) => idx + 1);
-    } else if (e.keyCode === 91 && pageIndex !== 0) {
-      setPageIndex((idx) => idx - 1);
+    if (e.keyCode === 93) {
+      goForward();
+    } else if (e.keyCode === 91) {
+      goBack();
     }
   });
 

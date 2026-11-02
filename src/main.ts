@@ -3,7 +3,6 @@ import os from 'node:os';
 import path from 'node:path';
 import { app, BrowserWindow, screen } from 'electron';
 import { createIPCHandler } from 'trpc-electron/main';
-import { deeplinkChannel } from '@/shared/channels';
 import { createContext } from '@/shared/context';
 import { appRouter } from '@/shared/routers/_app';
 import './workers/executor';
@@ -84,10 +83,6 @@ const createWindow = () => {
 
         console.log('DEEPLINK PATH RECEIVED');
         console.log({ path });
-
-        deeplinkChannel.postMessage({
-          path,
-        });
       }
     });
   }

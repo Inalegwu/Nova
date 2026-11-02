@@ -8,10 +8,14 @@ export const collections = sqliteTable(
     collectionName: text('collection_name').notNull().unique(),
     dateCreated: integer('date_created', {
       mode: 'timestamp',
-    }).default(new Date()),
+    })
+      .default(new Date())
+      .notNull(),
     dateUpdated: integer('date_udpdated', {
       mode: 'timestamp',
-    }).default(new Date()),
+    })
+      .default(new Date())
+      .notNull(),
   },
   (table) => [index('collection_id_index').on(table.id)],
 );
@@ -23,14 +27,17 @@ export const issues = sqliteTable(
     issueTitle: text('issue_title').notNull().unique(),
     thumbnailUrl: text('thumbnail_url').notNull(),
     collectionId: text('collection_id').references(() => collections.id),
-    historyId: text('history_id'),
     path: text('path').notNull(),
     dateCreated: integer('date_created', {
       mode: 'timestamp',
-    }).default(new Date()),
+    })
+      .default(new Date())
+      .notNull(),
     dateUpdated: integer('date_udpdated', {
       mode: 'timestamp',
-    }).default(new Date()),
+    })
+      .default(new Date())
+      .notNull(),
   },
   (table) => [index('issue_id_index').on(table.id)],
 );

@@ -1,13 +1,11 @@
-import { issues } from '../../schema';
-import db from '../../storage';
-import { deletionChannel } from '../../channels';
-import { Fs } from '../../fs';
+import { parentPort } from 'node:worker_threads';
 import { eq } from 'drizzle-orm';
 import { Effect } from 'effect';
-import { parentPort } from 'node:worker_threads';
-import workerpool from 'workerpool';
-import { deletionWorkerSchema } from '@/shared/validations';
 import { transformMessage } from '@/shared/utils';
+import { deletionWorkerSchema } from '@/shared/validations';
+import { Fs } from '../../fs';
+import { issues } from '../../schema';
+import db from '../../storage';
 
 const port = parentPort;
 
@@ -25,38 +23,17 @@ const deleteIssue = ({ issueId }: DeletionSchema) =>
     );
 
     if (!issue) {
-      deletionChannel.postMessage({
-        isDone: false,
-      });
       return;
     }
 
-    deletionChannel.postMessage({
-      isDone: false,
-      title: issue.issueTitle,
-    });
-
     yield* Fs.removeDirectory(issue.path).pipe(
-      Effect.catchTag('FSError', (error) =>
-        Effect.succeed(
-          deletionChannel.postMessage({
-            isDone: false,
-            title: issue.issueTitle,
-            error: error.message,
-          }),
-        ),
-      ),
+      Effect.catchTag('FSError', (error) => Effect.log(error)),
     );
 
     yield* Effect.tryPromise(
       async () =>
         await db.delete(issues).where(eq(issues.id, issue.id)).returning(),
     );
-
-    deletionChannel.postMessage({
-      isDone: true,
-      title: issue.issueTitle,
-    });
   });
 
 port.on('message', (message) =>

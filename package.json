@@ -47,6 +47,8 @@
     "broadcast-channel": "^7.4.0",
     "chokidar": "^5.0.0",
     "comic-vine-sdk": "^2.0.1",
+    "dexie": "^4.4.7",
+    "dexie-react-hooks": "^4.4.0",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
     "effect": "^3.22.1",

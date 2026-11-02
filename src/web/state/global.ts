@@ -6,8 +6,6 @@ export const useGlobalState = create<GlobalState>()(
     (set) => ({
       appId: null,
       colorMode: 'light',
-      isFullscreen: false,
-      lastOpenedTab: 'issues',
       firstLaunch: true,
       toggleColorMode: () =>
         set((state) => ({
@@ -18,12 +16,8 @@ export const useGlobalState = create<GlobalState>()(
         set((state) => ({ ...state, isFullscreen: value })),
       updateFirstLaunch: () =>
         set((state) => ({ ...state, firstLaunch: !state.firstLaunch })),
-      toggleFullScreen: () =>
-        set((state) => ({ ...state, isFullscreen: !state.isFullscreen })),
       setAppId: (id) => set((state) => ({ ...state, appId: id })),
       clearAppId: () => set((state) => ({ ...state, appId: null })),
-      setLastOpenedTab: (tab) =>
-        set((state) => ({ ...state, lastOpenedTab: tab })),
     }),
     {
       name: 'global__state',

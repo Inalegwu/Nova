@@ -5,11 +5,10 @@ import { XMLParser } from 'fast-xml-parser';
 import { createExtractorFromData } from 'node-unrar-js';
 import { v4 } from 'uuid';
 import yauzl from 'yauzl';
-import { parserChannel } from '../../channels';
 import { Fs } from '../../fs';
 import { issues, metadata } from '../../schema';
 import db from '../../storage';
-import { extractMetaID, parseFileNameFromPath, sortPages } from '../../utils';
+import { extractMetaID } from '../../utils';
 import { MetadataSchema } from '../../validations';
 import { ArchiveError } from './errors';
 
@@ -110,12 +109,6 @@ export const saveIssue = Effect.fn(function* (
   ).pipe(Effect.map((result) => result.at(0)));
 
   if (!newIssue) {
-    parserChannel.postMessage({
-      isCompleted: true,
-      error: "Couldn't save Issue",
-      state: 'ERROR',
-      issue: parseFileNameFromPath(path),
-    });
     return yield* Effect.die(
       new ArchiveError({ cause: 'Unable to Save Issue' }),
     );

@@ -12,22 +12,17 @@ import type {
 import type { collections, issues } from './schema';
 
 declare global {
-  type Tabs = 'issues' | 'collections';
   type Direction = 'horizontal' | 'vertical';
 
   export type GlobalState = {
     colorMode: 'dark' | 'light';
     firstLaunch: boolean;
-    isFullscreen: boolean;
     appId: string | null;
-    lastOpenedTab: Tabs;
     toggleColorMode: () => void;
     updateFirstLaunch: () => void;
-    toggleFullScreen: () => void;
     setFullScreen: (value: boolean) => void;
     setAppId: (id: string) => void;
     clearAppId: () => void;
-    setLastOpenedTab: (tab: Tabs) => void;
   };
 
   export type ReaderState = {
@@ -36,41 +31,20 @@ declare global {
     setReaderDirection: (direction: Direction) => void;
   };
 
-  export type Issue = typeof issues.$inferSelect;
-
-  export type Collection = typeof collections.$inferSelect;
-
-  export type ParserResponse = {
-    completed: boolean;
+  export type Issue = Omit<
+    typeof issues.$inferSelect,
+    'dateCreated' | 'dateUpdated'
+  > & {
+    dateCreated: string;
+    dateUpdated: string;
   };
 
-  export type ParserErrorResponse = ParserResponse & {
-    message: string;
-  };
-
-  export type ParserChannel = {
-    completed?: number;
-    total?: number;
-    error: string | null;
-    isCompleted?: boolean;
-    state: 'ERROR' | 'SUCCESS';
-    issue?: string;
-  };
-
-  export type DeletionChannel = {
-    isDone: boolean;
-    title?: string;
-    error?: string | null;
-  };
-
-  export type Index = {
-    index: Array<{
-      path: string;
-    }>;
-  };
-
-  export type ThemeSubscription = {
-    theme: 'dark' | 'light';
+  export type Collection = Omit<
+    typeof collections.$inferSelect,
+    'dateCreated' | 'dateUpdated'
+  > & {
+    dateCreated: string;
+    dateUpdated: string;
   };
 
   // allow for a simple message and sub-message
@@ -82,20 +56,6 @@ declare global {
     title: string;
     subtitle?: string;
     render?: () => React.ReactNode;
-  };
-
-  export type Task = Readonly<{
-    path: string;
-    ext: 'cbr' | 'cbz' | 'none';
-  }>;
-
-  export type DeeplinkChannel = {
-    path: string;
-  };
-
-  export type DeeplinkListener = {
-    exists: boolean;
-    name: string;
   };
 
   export type Extractor = {

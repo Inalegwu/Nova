@@ -76,7 +76,7 @@ export default function CollectionBox(collection: CollectionProp) {
               {collection.id} / {String(count).padStart(2, '0')}
             </span>
             <div>
-              <h2 className='text-xs uppercase font-extrabold text-neutral-200 mb-1'>
+              <h2 className='text-[11px] uppercase font-extrabold text-neutral-200 mb-1'>
                 {collection.collectionName}
               </h2>
               <p className='text-xs uppercase font-bold text-accent/60'>

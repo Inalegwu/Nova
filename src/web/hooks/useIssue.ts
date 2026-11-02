@@ -241,6 +241,7 @@ export function usePreloadPages(
           Effect.gen(function* () {
             const renderer = yield* ImageRenderer;
             const stream = pageStream(issueId, pageIndex);
+            yield* Effect.log(stream);
             yield* renderer.preload(pageKey(issueId, pageIndex), stream);
           }),
         ),

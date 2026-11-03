@@ -127,14 +127,10 @@ const program = Effect.gen(function* () {
     Effect.forkScoped,
   );
 
-  yield* Effect.forkScoped(indexer.save).pipe(
-    Effect.repeat({
-      schedule: Schedule.fixed(Duration.seconds(50)),
-    }),
-  );
-
   // consume with bounded concurrency; failures are logged, not fatal
   yield* Stream.fromQueue(queue).pipe(
+    Stream.filter((item) => !indexer.has(item.path)),
+    Stream.tap(Effect.logInfo),
     Stream.mapEffect(
       (file) =>
         processFile(file, taskId).pipe(
@@ -145,6 +141,12 @@ const program = Effect.gen(function* () {
       { concurrency: PROCESSING_CONCURRENCY },
     ),
     Stream.runDrain,
+  );
+
+  yield* Effect.forkScoped(indexer.save).pipe(
+    Effect.repeat({
+      schedule: Schedule.fixed(Duration.seconds(50)),
+    }),
   );
 });
 

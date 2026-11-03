@@ -1,9 +1,9 @@
+import { DiscoveryChannel } from '@channels';
 import { TRPCError } from '@trpc/server';
 import { eq } from 'drizzle-orm';
 import { Console, Effect } from 'effect';
 import { dialog } from 'electron';
 import z from 'zod';
-import { DiscoveryChannel } from '@/shared/channels/discovery-channel';
 import { publicProcedure, router } from '@/trpc';
 import { ComicVineService } from '../core/services/metadata-service';
 // @ts-expect-error: https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes;

@@ -68,7 +68,13 @@ const IssuesView = memo(({ issues }: { issues: Partial<Issue>[] }) => {
 
   return (
     <div className='w-full h-full flex p-3 gap-5 flex-wrap overflow-y-scroll pb-20'>
-      <Suspense fallback={<div>loading...</div>}>
+      <Suspense
+        fallback={
+          <div className='flex w-full h-full items-center justify-center'>
+            <Spinner size={30} />
+          </div>
+        }
+      >
         {issues.map((issue) => (
           // @ts-expect-error: idfk man
           <Issue key={issue.id} issue={issue} />
@@ -92,6 +98,8 @@ const CollectionsView = memo(
 
     const createCollection = useCallback(() => {
       if (name === null) return;
+
+      console.log({ name });
 
       mutate({ collectionName: name });
     }, []);
@@ -133,12 +141,56 @@ const CollectionsView = memo(
     }
 
     return (
-      <div className='w-full h-full flex p-2 gap-5'>
-        <Suspense fallback={<div>loading...</div>}>
-          {collections.map((collection) => (
-            <Collection key={collection.id} {...collection} />
-          ))}
-        </Suspense>
+      <div className='w-full h-full flex flex-col p-2 gap-2'>
+        <div className='w-full flex items-center justify-end'>
+          <Popover.Root>
+            <Popover.Trigger
+              disabled={isPending}
+              className='bg-ground border border-solid rounded-2xl px-3 py-1 text-xs'
+            >
+              New Collection
+            </Popover.Trigger>
+            <Popover.Portal className='z-30'>
+              <Popover.Positioner
+                sideOffset={10}
+                side='bottom'
+                className='z-20 outline-none'
+              >
+                <Popover.Arrow className="relative block w-3 h-1.5 overflow-clip data-[side=bottom]:-top-1.5 data-[side=left]:-right-2.25 data-[side=left]:rotate-90 data-[side=right]:-left-2.25 data-[side=right]:-rotate-90 data-[side=top]:-bottom-1.5 data-[side=top]:rotate-180 before:content-[''] before:absolute before:bottom-0 before:left-1/2 before:w-[calc(6px*sqrt(2))] before:h-[calc(6px*sqrt(2))] before:bg-background before:border before:border-border before:transform-[translate(-50%,50%)_rotate(45deg)]" />
+                <Popover.Popup className='popup overflow-hidden flex'>
+                  <input
+                    className='input p-2 bg-ground outline-none placeholder:text-sm text-sm w-full'
+                    onChange={(e) => {
+                      console.log(e.currentTarget.value);
+                      setName(e.currentTarget.value);
+                    }}
+                    placeholder='Collection Name'
+                  />
+                  <button onClick={createCollection} className='py-2 px-3'>
+                    {isPending ? (
+                      <Spinner size={12} />
+                    ) : (
+                      <Icon name='Check' size={14} />
+                    )}
+                  </button>
+                </Popover.Popup>
+              </Popover.Positioner>
+            </Popover.Portal>
+          </Popover.Root>
+        </div>
+        <div className='w-full h-full flex flex-wrap gap-5'>
+          <Suspense
+            fallback={
+              <div className='flex w-full h-full items-center justify-center'>
+                <Spinner size={30} />
+              </div>
+            }
+          >
+            {collections.map((collection) => (
+              <Collection key={collection.id} {...collection} />
+            ))}
+          </Suspense>
+        </div>
       </div>
     );
   },

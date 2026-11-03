@@ -51,7 +51,7 @@ export default function CollectionBox(collection: CollectionProp) {
           return (
             <div
               key={record.id}
-              className='absolute border border-b-0 bg-ground/30 rounded-2xl border-solid'
+              className='absolute border border-b-0 bg-ground/40 backdrop-blur-3xl rounded-2xl border-solid border-line'
               style={{
                 top: STEP * i + 10,
                 left: (CARD_WIDTH - width) / 2,
@@ -59,13 +59,13 @@ export default function CollectionBox(collection: CollectionProp) {
                 height: STEP + 20,
                 zIndex: i,
                 opacity,
-                borderColor: 'var(--ink)',
+                borderColor: 'var(--line)',
               }}
             />
           );
         })}
         <div
-          className={`absolute left-0 border border-solid bg-cover bg-center border-line bg-ground rounded-2xl overflow-hidden`}
+          className={`absolute left-0 border border-solid bg-cover bg-center border-line bg-ink/20 dark:bg-panel/10 rounded-2xl overflow-hidden`}
           style={{
             top: STEP * count,
             width: CARD_WIDTH,
@@ -74,12 +74,12 @@ export default function CollectionBox(collection: CollectionProp) {
             backgroundImage: `url(${front?.thumbnailUrl})`,
           }}
         >
-          <div className='flex h-full flex-col justify-end px-3 py-2 bg-invert/20'>
+          <div className='flex h-full flex-col justify-end px-3 py-2 bg-ink/30 dark:bg-ground/30'>
             <div>
-              <h2 className='text-[11px] uppercase font-extrabold text-neutral-200 mb-1 invert'>
+              <h2 className='text-[11px] uppercase font-extrabold text-ground dark:text-ink mb-1'>
                 {collection.collectionName}
               </h2>
-              <p className='text-xs uppercase font-bold text-accent/60 invert'>
+              <p className='text-xs font-medium text-muted'>
                 {moment(front?.dateCreated).fromNow()}
               </p>
               <div className='h-px mt-4 w-full bg-border-hi' />

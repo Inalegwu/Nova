@@ -54,14 +54,17 @@ function RouteComponent() {
         <Issue key={issue.id} issue={issue} />
       ))}
       <Collapsible.Root className='flex flex-col justify-center text-neutral-350 absolute z-5 bottom-3 right-3'>
-        <Collapsible.Trigger className='group flex text-xs uppercase h-8 items-center justify-between gap-2 rounded-none border border-border bg-surface pl-5 pr-4 leading-none whitespace-nowrap font-normal text-neutral-300 select-none hover:not-data-disabled:bg-surface/20  active:not-data-disabled:bg-surface/30 focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-neutral-400 data-disabled:border-border/30 data-disabled:text-neutral-500 disabled:border-border/20 disabled:text-neutral-500'>
+        <Collapsible.Trigger className='group flex text-xs active:scale-[1] uppercase h-8 items-center justify-between gap-2 border border-line border-b-0 bg-ground rounded-xl data-panel-open:rounded-b-none shadow px-6 leading-none whitespace-nowrap font-normal text-neutral-300 select-none hover:not-data-disabled:bg-surface/20 active:not-data-disabled:bg-surface/30 focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-neutral-400 data-disabled:border-border/30 data-disabled:text-neutral-500 disabled:border-border/20 disabled:text-neutral-500'>
           <span>viewing: {data?.collection?.collectionName}</span>
           <Icon name='Info' weight='fill' size={12} />
         </Collapsible.Trigger>
-        <Collapsible.Panel className="flex h-(--collapsible-panel-height) flex-col justify-end overflow-hidden text-sm transition-[height] duration-150 ease-[ease-out] [&[hidden]:not([hidden='until-found'])]:hidden data-ending-style:h-0 data-starting-style:h-0">
+        <Collapsible.Panel className="flex h-(--collapsible-panel-height) bg-ground border border-line rounded-b-xl flex-col justify-end overflow-hidden text-sm transition-[height] duration-150 ease-[ease-out] [&[hidden]:not([hidden='until-found'])]:hidden data-ending-style:h-0 data-starting-style:h-0">
           <div className='flex flex-col gap-2'>
-            {/* @ts-expect-error */}
-            <AddIssueToCollection collectionId={data?.collection?.id} />
+            <AddIssueToCollection
+              //  @ts-expect-error
+              collectionId={data?.collection?.id}
+              variant='collapsible'
+            />
           </div>
         </Collapsible.Panel>
       </Collapsible.Root>
@@ -69,7 +72,13 @@ function RouteComponent() {
   );
 }
 
-const AddIssueToCollection = ({ collectionId }: { collectionId: string }) => {
+const AddIssueToCollection = ({
+  collectionId,
+  variant = 'standalone',
+}: {
+  collectionId: string;
+  variant?: 'standalone' | 'collapsible';
+}) => {
   const utils = t.useUtils();
   const [toAdd, setToAdd] = useState<Array<string>>([]);
 
@@ -82,19 +91,23 @@ const AddIssueToCollection = ({ collectionId }: { collectionId: string }) => {
 
   const { data } = t.library.getCollectionById.useQuery({ collectionId }, {});
 
+  const classNames = {
+    standalone:
+      'flex text-xs uppercase items-center justify-center my-4 active:scale-[1] px-5 py-2 bg-ground font-medium border border-line rounded-xl shadow',
+    collapsible: 'py-2 text-xs uppercase font-medium active:scale-[1]',
+  };
+
   return (
     <Dialog.Root>
-      <Dialog.Trigger className='flex text-xs uppercase items-center justify-start w-full px-2 py-1.5 border-b border-b-solid border-border'>
-        Add Issue
-      </Dialog.Trigger>
+      <Dialog.Trigger className={classNames[variant]}>Add Issue</Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Backdrop className='fixed inset-0 min-h-dvh bg-black opacity-20 transition-all duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 dark:opacity-70 supports-[-webkit-touch-callout:none]:absolute' />
-        <Dialog.Popup className='fixed top-1/2 left-1/2 -mt-8 w-xl max-w-[calc(100vw-1rem)] max-h-90 overflow-hidden -translate-x-1/2 -translate-y-1/2 bg-background p-6 text-neutral-200 transition-all duration-150 data-ending-style:scale-90 data-ending-style:opacity-0 data-starting-style:scale-90 data-starting-style:opacity-0'>
+        <Dialog.Popup className='fixed top-1/2 left-1/2 -mt-8 w-xl max-w-[calc(100vw-1rem)] max-h-90 overflow-hidden -translate-x-1/2 -translate-y-1/2 bg-ground rounded-2xl border border-line p-6 transition-all duration-150 data-ending-style:scale-90 data-ending-style:opacity-0 data-starting-style:scale-90 data-starting-style:opacity-0'>
           <Dialog.Title className='font-bold uppercase text-lg'>
             Add Issue To Collection
           </Dialog.Title>
           <ScrollArea.Root className='h-50 w-full max-w-[calc(100vw-8rem)] my-3'>
-            <ScrollArea.Viewport className='h-full overscroll-contain outline bg-surface p-1 gap-2 -outline-offset-1 outline-neutral-800 focus-visible:outline focus-visible:outline-blue-800'>
+            <ScrollArea.Viewport className='h-full overscroll-contain'>
               {unmatched?.issues?.map((issue) => (
                 <div
                   key={issue.id}
@@ -112,7 +125,7 @@ const AddIssueToCollection = ({ collectionId }: { collectionId: string }) => {
                             ...old.filter((v) => v !== issue.id),
                           ])
                     }
-                    className='flex size-5 items-center justify-center focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-accent/20 data-checked:bg-background data-checked:border data-checked:border-border data-unchecked:border data-unchecked:border-border'
+                    className='flex size-5 items-center rounded-md justify-center focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-accent/20 data-checked:bg-panel data-checked:border data-checked:border-line data-unchecked:border data-unchecked:border-line'
                   >
                     <Checkbox.Indicator className='flex text-text-muted data-unchecked:hidden'>
                       <Icon name='Check' size={11} />
@@ -124,7 +137,7 @@ const AddIssueToCollection = ({ collectionId }: { collectionId: string }) => {
           </ScrollArea.Root>
           <button
             disabled={adding}
-            className='flex gap-2 px-5 py-1 bg-black text-white'
+            className='flex gap-2 px-5 py-1 bg-panel rounded-lg border border-line text-white'
             onClick={() =>
               addToCollection({
                 // @ts-expect-error
@@ -133,9 +146,7 @@ const AddIssueToCollection = ({ collectionId }: { collectionId: string }) => {
               })
             }
           >
-            <p className='text-xs uppercase'>
-              Add To {data?.collection?.collectionName}
-            </p>
+            <p className='text-xs'>Add To {data?.collection?.collectionName}</p>
             <Icon name='Plus' size={12} />
           </button>
         </Dialog.Popup>

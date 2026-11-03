@@ -9,7 +9,9 @@
 }
 
 :root {
-  --ground: #f2ecdc; /* eggshell */
+  /* eggshell */
+  /* --ground: #f2ecdc; */
+  --ground: #e8e6ff;
   --ink: #000000;
 }
 
@@ -20,10 +22,22 @@
 
 :root,
 .dark {
-  --muted: color-mix(in srgb, var(--ink) 62%, var(--ground)); /* secondary text */
-  --dim: color-mix(in srgb, var(--ink) 34%, var(--ground));   /* non-text only: inactive fills, dashed borders */
-  --line: color-mix(in srgb, var(--ink) 12%, var(--ground));  /* hairlines */
-  --panel: color-mix(in srgb, var(--ink) 5%, var(--ground));  /* source cards, previews */
+  --muted: color-mix(
+    in srgb,
+    var(--ink) 62%,
+    var(--ground)
+  ); /* secondary text */
+  --dim: color-mix(
+    in srgb,
+    var(--ink) 34%,
+    var(--ground)
+  ); /* non-text only: inactive fills, dashed borders */
+  --line: color-mix(in srgb, var(--ink) 12%, var(--ground)); /* hairlines */
+  --panel: color-mix(
+    in srgb,
+    var(--ink) 5%,
+    var(--ground)
+  ); /* source cards, previews */
 }
 
 @theme inline {
@@ -64,13 +78,23 @@
   ::after {
     border-color: var(--line);
   }
-  html { color-scheme: light; }
-  html.dark { color-scheme: dark; }
+  html {
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
   body {
     @apply bg-ground text-ink font-sans text-body antialiased select-none transition;
   }
-  button { cursor: pointer; @apply flex items-center justify-center active:scale-[0.97] corner-squircle outline-none disabled:opacity-[0.7]}
-  ::selection { background: var(--ink); color: var(--ground); }
+  button {
+    cursor: pointer;
+    @apply flex items-center justify-center active:scale-[0.97] corner-squircle outline-none disabled:opacity-[0.7]
+  }
+  ::selection {
+    background: var(--ink);
+    color: var(--ground);
+  }
   /* :focus-visible { outline: 1px solid var(--ink); outline-offset: 2px; } */
 }
 
@@ -80,20 +104,24 @@
   background-size: 24px 24px;
 }
 @utility hazard {
-  background: repeating-linear-gradient(-45deg, var(--ink) 0 6px, var(--ground) 6px 12px);
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--ink) 0 6px,
+    var(--ground) 6px 12px
+  );
 }
 @utility inverted {
   background-color: var(--ink);
   color: var(--ground);
 }
-@utility popup{
+@utility popup {
   @apply w-[min(20rem,calc(100vw-4rem))] origin-(--transform-origin) border border-line bg-panel rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] outline-none transition-[transform,scale,opacity] data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0;
 }
 @utility tabTrigger {
-  @apply bg-panel p-1.5;    
+  @apply bg-panel p-1.5;
 }
 
-@utility toolbarToggle{
+@utility toolbarToggle {
   @apply p-2 outline-none;
 }
 

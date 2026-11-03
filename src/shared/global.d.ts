@@ -14,14 +14,18 @@ import type { collections, issues } from './schema';
 declare global {
   type Direction = 'horizontal' | 'vertical';
 
+  type Tabs = 'issues' | 'collections';
+
   export type GlobalState = {
     colorMode: 'dark' | 'light';
     firstLaunch: boolean;
     appId: string | null;
+    lastOpenedTab: Tabs;
     toggleColorMode: () => void;
     updateFirstLaunch: () => void;
     setAppId: (id: string) => void;
     clearAppId: () => void;
+    setLastOpenedTab: (tab: Tabs) => void;
   };
 
   export type ReaderState = {

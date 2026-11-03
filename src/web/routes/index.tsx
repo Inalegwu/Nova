@@ -104,10 +104,11 @@ const CollectionsView = memo(
     const { mutate, isPending } = t.library.createCollection.useMutation({
       onSuccess: () => utils.library.invalidate(),
     });
-    const [name, setName] = useState<string | null>(null);
+    const [name, setName] = useState<string>('');
 
     const createCollection = useCallback(() => {
-      if (name === null) return;
+      console.log({ name });
+      if (name === '') return;
 
       console.log({ name });
 
@@ -175,12 +176,15 @@ const CollectionsView = memo(
                   <input
                     className='input p-2 bg-ground outline-none placeholder:text-sm text-sm w-full'
                     onChange={(e) => {
-                      console.log(e.currentTarget.value);
                       setName(e.currentTarget.value);
                     }}
                     placeholder='Collection Name'
                   />
-                  <button onClick={createCollection} className='py-2 px-3'>
+                  <button
+                    disabled={isPending}
+                    onClick={createCollection}
+                    className='py-2 px-3 opacity-[0.7]'
+                  >
                     {isPending ? (
                       <Spinner size={12} />
                     ) : (
@@ -192,7 +196,7 @@ const CollectionsView = memo(
             </Popover.Portal>
           </Popover.Root>
         </div>
-        <div className='w-full h-full flex flex-wrap gap-5'>
+        <div className='w-full h-full flex flex-wrap gap-5 space-y-3 overflow-y-scroll pb-20'>
           <Suspense
             fallback={
               <div className='flex w-full h-full items-center justify-center'>

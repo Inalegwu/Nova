@@ -1,3 +1,5 @@
+import { Dialog } from '@base-ui/react/dialog';
+import { Tabs } from '@base-ui/react/tabs';
 import { useRouterState } from '@tanstack/react-router';
 import type React from 'react';
 import { useEffect } from 'react';
@@ -79,6 +81,17 @@ export default function Layout({ children }: LayoutProps) {
               weight='fill'
             />
           </button>
+          <Dialog.Root>
+            <Dialog.Trigger className='p-1'>
+              <Icon name='GearFine' size={14} weight='fill' />
+            </Dialog.Trigger>
+            <Dialog.Portal>
+              <Dialog.Backdrop className='fixed z-20 inset-0 min-h-dvh bg-[#000000] opacity-20 transition-all duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 dark:opacity-70 supports-[-webkit-touch-callout:none]:absolute' />
+              <Dialog.Popup className='fixed top-1/2 z-50 left-1/2 -mt-8 w-xl max-w-[calc(100vw-1rem)] max-h-90 min-h-45 overflow-hidden -translate-x-1/2 -translate-y-1/2 bg-panel rounded-xl border-2 border-line transition-all duration-150 data-ending-style:scale-90 data-ending-style:opacity-0 data-starting-style:scale-90 data-starting-style:opacity-0'>
+                <SettingsView />
+              </Dialog.Popup>
+            </Dialog.Portal>
+          </Dialog.Root>
           <button className='p-1' onClick={() => maximize()}>
             <Icon name='ArrowsOutSimple' weight='bold' size={14} />
           </button>
@@ -86,5 +99,38 @@ export default function Layout({ children }: LayoutProps) {
       </div>
       <div className='w-full h-full bg-panel'>{children}</div>
     </div>
+  );
+}
+
+function SettingsView() {
+  return (
+    <Tabs.Root defaultValue='appearance' className='w-full h-full'>
+      <Tabs.List className='w-full flex items-center justify-center border-b border-b-line'>
+        <Tabs.Tab
+          className='w-full border-r border-r-line flex items-center justify-center text-sm p-1.5'
+          value='appearance'
+        >
+          Appearance
+        </Tabs.Tab>
+        <Tabs.Tab
+          className='w-full flex items-center justify-center text-sm p-1.5'
+          value='storage'
+        >
+          Storage
+        </Tabs.Tab>
+      </Tabs.List>
+      <Tabs.Panel value='appearance' className='flex flex-col'>
+        <div className='w-full flex border-b border-b-line px-3 py-3 items-center justify-between'>
+          <span className='text-sm'>Accent Color</span>
+          <div className='flex items-center justify-end gap-2'>
+            <div className='bg-[#ECECEC] border border-line cursor-pointer rounded-full p-2.5' />
+            <div className='bg-[#FFEC55] border border-line rounded-full cursor-pointer p-2.5' />
+          </div>
+        </div>
+      </Tabs.Panel>
+      <Tabs.Panel value='storage' className='p-3'>
+        storage
+      </Tabs.Panel>
+    </Tabs.Root>
   );
 }

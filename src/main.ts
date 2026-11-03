@@ -16,7 +16,8 @@ process.env.cache_dir = path.join(data_dir, 'Library');
 process.env.data_dir = data_dir;
 process.env.source_dir = path.join(`${os.homedir()}/Downloads`, 'Comics');
 process.env.lib_dir = path.join(data_dir, 'Library');
-process.env.error_dump = path.join(data_dir, 'Nova', 'ErrorDump.json');
+process.env.error_dump = path.join(data_dir, 'ErrorDump.json');
+process.env.index_file = path.join(data_dir, 'indexer.txt');
 
 if (process.defaultApp) {
   if (process.argv.length >= 2) {

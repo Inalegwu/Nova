@@ -18,7 +18,6 @@ import {
   useKeyPress,
   usePreloadPages,
 } from '@/web/hooks';
-import { useGlobalState } from '@/web/state/global';
 
 export const Route = createFileRoute('/read/$issueId')({
   component: RouteComponent,
@@ -31,8 +30,6 @@ function RouteComponent() {
 
   const readerDirection = global.reader.use.direction();
   const setReaderDirection = global.reader.use.setReaderDirection();
-  const isFullscreen = useGlobalState((s) => s.isFullscreen);
-  const uiFullscreen = useGlobalState((s) => s.setFullScreen);
 
   const { pageCount, status: folderStatus } = useComicFolder(issueId);
   const [pageIndex, setPageIndex] = useState(0);
@@ -42,19 +39,9 @@ function RouteComponent() {
     issueId,
   );
 
-  const { mutate: appFullscreen } = t.window.fullscreen.useMutation();
+  t.window.fullscreen.useMutation();
 
-  usePreloadPages(pageIndex, [2, 3, -2], issueId, pageCount);
-
-  const toggleFullscreen = useCallback(() => {
-    if (isFullscreen) {
-      appFullscreen(false);
-      uiFullscreen(false);
-    } else {
-      appFullscreen(true);
-      uiFullscreen(true);
-    }
-  }, []);
+  usePreloadPages(pageIndex, [4, 3, -4], issueId, pageCount);
 
   const goForward = useCallback(() => {
     if (pageIndex < pageCount) {
@@ -106,7 +93,15 @@ function RouteComponent() {
       /> */}
       <div
         ref={containerRef}
-        style={{ width: '100%', height: '100vh', position: 'relative' }}
+        // style={{ width: '100%', height: '100vh', position: 'relative' }}
+        style={{
+          cursor: 'grab',
+          touchAction: 'none',
+          width: '100%',
+          height: '100%',
+          objectFit: 'contain',
+          display: 'block',
+        }}
       >
         {status === 'loading' && (
           <Skeleton className='w-3/6 h-full mx-auto bg-neutral-900/20' />
@@ -117,30 +112,32 @@ function RouteComponent() {
           onDoubleClick={() => zoomTo(1)}
         />
       </div>
-      <Toolbar.Root className='flex overflow-hidden absolute z-10 top-2 left-2 bg-neutral-950 border border-solid border-border'>
-        <Toolbar.Button onClick={goBack} className='toolbarToggle'>
-          <Icon name='ArrowLeft' size={13} />
+      <Toolbar.Root className='flex overflow-hidden absolute z-10 top-2 left-2 bg-neutral-950 border border-solid border-line rounded-xl shadow bg-ground corner-squircle'>
+        <Toolbar.Button
+          onClick={goBack}
+          className='toolbarToggle border-r border-r-line'
+        >
+          <Icon name='ArrowLeft' size={14} />
         </Toolbar.Button>
         <Toolbar.Button onClick={goForward} className='toolbarToggle'>
-          <Icon name='ArrowRight' size={13} />
+          <Icon name='ArrowRight' size={14} />
         </Toolbar.Button>
       </Toolbar.Root>
       <Toolbar.Root
-        render={<motion.div animate={{ width: expanded ? '14.9%' : '2.6%' }} />}
-        className='flex overflow-hidden absolute z-10 top-2 right-2 bg-neutral-950 border border-solid border-border'
+        render={<motion.div animate={{ width: expanded ? '15%' : '2.5%' }} />}
+        className='flex overflow-hidden absolute z-10 top-2 right-2 bg-neutral-950 border border-solid border-line rounded-xl shadow bg-ground corner-squircle'
       >
-        <motion.button
+        <button
           onClick={() => setExpanded((ex) => !ex)}
-          className='toolbarToggle'
+          className='toolbarToggle border-r border-r-line'
         >
           <Icon name={expanded ? 'CaretRight' : 'CaretLeft'} size={13} />
-        </motion.button>
+        </button>
         <ToggleGroup
           render={
             <motion.div
               animate={{
-                transform: expanded ? 'translateX(0px)' : 'translateX(130px)',
-                display: expanded ? 'flex' : 'none',
+                transform: expanded ? 'translateX(0px)' : 'translateX(30px)',
               }}
             />
           }
@@ -148,24 +145,24 @@ function RouteComponent() {
         >
           <Toolbar.Button
             onClick={() => setReaderDirection('vertical')}
-            className='toolbarToggle'
+            className='toolbarToggle border-r border-r-line'
             render={<Toggle pressed={readerDirection === 'vertical'} />}
             aria-label='reader-vertical'
           >
             <SliderVerticalMinimalistic
               weight={readerDirection === 'vertical' ? 'Bold' : 'Outline'}
-              size={13}
+              size={14}
             />
           </Toolbar.Button>
           <Toolbar.Button
             onClick={() => setReaderDirection('horizontal')}
-            className='toolbarToggle'
+            className='toolbarToggle border-r border-r-line'
             render={<Toggle pressed={readerDirection === 'horizontal'} />}
             aria-label='reader-vertical'
           >
             <SliderMinimalisticHorizontal
               weight={readerDirection === 'horizontal' ? 'Bold' : 'Outline'}
-              size={13}
+              size={14}
             />
           </Toolbar.Button>
         </ToggleGroup>
@@ -180,9 +177,23 @@ function RouteComponent() {
               }
             />
           }
-          className='toolbarToggle'
+          className='toolbarToggle border-r border-r-line'
         >
-          <Icon name='Bookmark' size={13} />
+          <Icon name='Bookmark' size={14} />
+        </Toolbar.Button>
+        <Toolbar.Button
+          render={
+            <Toggle
+              render={
+                <motion.button
+                  animate={{ display: expanded ? 'flex' : 'none' }}
+                />
+              }
+            />
+          }
+          className='toolbarToggle border-r border-r-line'
+        >
+          <Icon name='Heart' size={14} />
         </Toolbar.Button>
         <Toolbar.Button
           render={
@@ -196,25 +207,10 @@ function RouteComponent() {
           }
           className='toolbarToggle'
         >
-          <Icon name='Heart' size={13} />
-        </Toolbar.Button>
-        <Toolbar.Button
-          render={
-            <Toggle
-              render={
-                <motion.button
-                  onClick={toggleFullscreen}
-                  animate={{ display: expanded ? 'flex' : 'none' }}
-                />
-              }
-            />
-          }
-          className='toolbarToggle'
-        >
-          <Icon name='CornersOut' size={13} />
+          <Icon name='CornersOut' size={14} />
         </Toolbar.Button>
       </Toolbar.Root>
-      <div className='absolute z-30 bottom-0 left-0 w-full p-2 items-center justify-center'>
+      <div className='absolute z-30 bottom-8 left-0 w-full p-2 items-center justify-center'>
         <Ticker
           borderColor='#262626'
           height={20}

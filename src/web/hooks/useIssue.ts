@@ -239,6 +239,7 @@ export function usePreloadPages(
       .map((pageIndex) =>
         runtime.runFork(
           Effect.gen(function* () {
+            yield* Effect.logInfo(`preloading ${pageIndex}`);
             const renderer = yield* ImageRenderer;
             const stream = pageStream(issueId, pageIndex);
             yield* Effect.log(stream);

@@ -17,7 +17,6 @@ export default defineConfig({
           'workers/watcher': 'src/workers/watcher.ts',
           'workers/processing': 'src/workers/processing.ts',
           'workers/executor': 'src/workers/executor.ts',
-          'workers/discovery-channel': 'src/workers/discovery-channel.ts',
         },
       },
     },

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import logo from '@/assets/images/win_dark.png';
 import t from '@/shared/config';
-import { useInterval, useWindow } from '../hooks';
+import { useInterval, useTaskProgress, useWindow } from '../hooks';
 import { useGlobalState } from '../state/global';
 import { Icon } from './atoms';
 
@@ -26,6 +26,10 @@ export default function Layout({ children }: LayoutProps) {
   const isHome = routerState.location.pathname === '/';
   const colorMode = useGlobalState((s) => s.colorMode);
   const toggleColorMode = useGlobalState((s) => s.toggleColorMode);
+
+  const tasks = useTaskProgress();
+
+  console.log(tasks);
 
   useEffect(() => {
     if (colorMode === 'light') {
@@ -51,7 +55,7 @@ export default function Layout({ children }: LayoutProps) {
   }, 10_000);
 
   return (
-    <div className='flex flex-col w-full h-screen transition'>
+    <div className='flex flex-col w-full h-screen transition overflow-hidden'>
       <motion.div
         initial={{ transform: 'translateX(-400px)' }}
         animate={{

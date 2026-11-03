@@ -21,8 +21,6 @@ function Component() {
 
   useTimeout(() => setEnabled(true), 500);
 
-  console.log({ data });
-
   if (isLoading || !data) {
     return (
       <div className='w-full h-full flex items-center justify-center'>
@@ -33,7 +31,7 @@ function Component() {
 
   return (
     <Tabs.Root defaultValue='issues' className='w-full h-full'>
-      <Tabs.List className='absolute z-10 flex overflow-hidden bottom-3 left-[44%] text-xs bg-ground shadow-lg border border-solid border-line rounded-lg'>
+      <Tabs.List className='fixed z-10 flex overflow-hidden bottom-3 left-[44%] text-xs bg-ground shadow-lg border border-solid border-line rounded-lg'>
         <Tabs.Tab className='px-6 py-2 border-r border-r-line' value='issues'>
           Issues
         </Tabs.Tab>
@@ -69,7 +67,7 @@ const IssuesView = memo(({ issues }: { issues: Partial<Issue>[] }) => {
   }
 
   return (
-    <div className='w-full h-full flex p-3 gap-5'>
+    <div className='w-full h-full flex p-3 gap-5 flex-wrap overflow-y-scroll pb-20'>
       <Suspense fallback={<div>loading...</div>}>
         {issues.map((issue) => (
           // @ts-expect-error: idfk man

@@ -9,7 +9,7 @@ export default function Issue({ issue }: Props) {
   const r = useRouter();
   return (
     <div
-      style={{ width: 250, height: 350 }}
+      style={{ width: 257, height: 357 }}
       onClick={() =>
         r.navigate({
           to: '/read/$issueId',

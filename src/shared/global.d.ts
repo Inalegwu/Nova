@@ -20,7 +20,6 @@ declare global {
     appId: string | null;
     toggleColorMode: () => void;
     updateFirstLaunch: () => void;
-    setFullScreen: (value: boolean) => void;
     setAppId: (id: string) => void;
     clearAppId: () => void;
   };

@@ -8,7 +8,7 @@ import yauzl from 'yauzl';
 import { Fs } from '../../fs';
 import { issues, metadata } from '../../schema';
 import db from '../../storage';
-import { extractMetaID } from '../../utils';
+import { extractMetaID, sortPages } from '../../utils';
 import { MetadataSchema } from '../../validations';
 import { ArchiveError } from './errors';
 

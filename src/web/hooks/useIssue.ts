@@ -118,7 +118,7 @@ export function useComicPage(pageIndex: number, issueId: string) {
     if (!ctx) return;
 
     const prevIndex = prevIndexRef.current;
-    const direction: 1 | -1 = pageIndex >= prevIndex ? 1 : -1;
+    const direction: 1 | -1 = pageIndex < prevIndex ? 1 : -1;
     prevIndexRef.current = pageIndex;
 
     setStatus('loading');
@@ -216,11 +216,14 @@ export function useComicPage(pageIndex: number, issueId: string) {
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       const factor = 1 - e.deltaY * 0.002;
+      // TODO: zoom in on the point under the mouse
       zoomBy(factor);
     };
 
     canvasNode.addEventListener('wheel', handleWheel, { passive: false });
-    return () => canvasNode.removeEventListener('wheel', handleWheel);
+    return () => {
+      canvasNode.removeEventListener('wheel', handleWheel);
+    };
   }, [canvasNode, zoomBy]);
 
   return { containerRef, canvasRef, status, error, zoomTo, zoomBy };

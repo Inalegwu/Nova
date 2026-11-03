@@ -36,7 +36,7 @@ if (!rootElement?.innerHTML) {
           persistOptions={{ persister }}
           client={queryClient}
         >
-          <RouterProvider defaultViewTransition router={router} />
+          <RouterProvider router={router} />
         </PersistQueryClientProvider>
       </t.Provider>
     </StrictMode>,

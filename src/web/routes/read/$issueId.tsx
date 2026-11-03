@@ -9,7 +9,6 @@ import global from '@state';
 import { createFileRoute } from '@tanstack/react-router';
 import { motion } from 'motion/react';
 import { useCallback, useState } from 'react';
-import t from '@/shared/config';
 import { Skeleton, Spinner, Ticker } from '@/web/components';
 import { Icon } from '@/web/components/atoms';
 import {
@@ -17,6 +16,7 @@ import {
   useComicPage,
   useKeyPress,
   usePreloadPages,
+  useWindow,
 } from '@/web/hooks';
 
 export const Route = createFileRoute('/read/$issueId')({
@@ -39,8 +39,6 @@ function RouteComponent() {
     issueId,
   );
 
-  t.window.fullscreen.useMutation();
-
   usePreloadPages(pageIndex, [4, 3, -4], issueId, pageCount);
 
   const goForward = useCallback(() => {
@@ -61,6 +59,10 @@ function RouteComponent() {
     } else if (e.keyCode === 91) {
       goBack();
     }
+  });
+
+  useWindow('scroll', (e) => {
+    console.log(e);
   });
 
   if (status === 'error')
@@ -124,7 +126,7 @@ function RouteComponent() {
         </Toolbar.Button>
       </Toolbar.Root>
       <Toolbar.Root
-        render={<motion.div animate={{ width: expanded ? '15%' : '2.5%' }} />}
+        render={<motion.div animate={{ width: expanded ? '13.5%' : '2.2%' }} />}
         className='flex overflow-hidden absolute z-10 top-2 right-2 bg-neutral-950 border border-solid border-line rounded-xl shadow bg-ground corner-squircle'
       >
         <button
@@ -210,7 +212,7 @@ function RouteComponent() {
           <Icon name='CornersOut' size={14} />
         </Toolbar.Button>
       </Toolbar.Root>
-      <div className='absolute z-30 bottom-8 left-0 w-full p-2 items-center justify-center'>
+      <div className='absolute z-30 bottom-0 left-0 w-full p-2 items-center justify-center'>
         <Ticker
           borderColor='#262626'
           height={20}

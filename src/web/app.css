@@ -94,7 +94,7 @@
 }
 
 @utility toolbarToggle{
-  @apply p-2.5 outline-none;
+  @apply p-2 outline-none;
 }
 
 #drag-region {

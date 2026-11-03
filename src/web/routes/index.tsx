@@ -31,7 +31,7 @@ function Component() {
 
   return (
     <Tabs.Root defaultValue='issues' className='w-full h-full'>
-      <Tabs.List className='fixed z-10 flex overflow-hidden bottom-3 left-[44%] text-xs bg-ground shadow-lg border border-solid border-line rounded-lg'>
+      <Tabs.List className='fixed z-10 flex overflow-hidden bottom-3 right-3 text-xs bg-ground border border-solid border-line rounded-lg'>
         <Tabs.Tab className='px-6 py-2 border-r border-r-line' value='issues'>
           Issues
         </Tabs.Tab>
@@ -141,7 +141,7 @@ const CollectionsView = memo(
     }
 
     return (
-      <div className='w-full h-full flex flex-col p-2 gap-2'>
+      <div className='w-full h-full flex flex-col p-2'>
         <div className='w-full flex items-center justify-end'>
           <Popover.Root>
             <Popover.Trigger

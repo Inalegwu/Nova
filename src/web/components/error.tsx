@@ -21,7 +21,7 @@ export default function ErrorComponent(props: ErrorComponentProps) {
           onClick={() => props.reset()}
         >
           <span>reset</span>
-          <Icon name='Warning' size={12} weight='fill' />
+          <Icon name='Warning' size={12} weight='bold' />
         </button>
       </div>
     </div>

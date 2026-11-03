@@ -18,7 +18,7 @@ export const appRouter = router({
   issue: issueRouter,
   library: libraryRouter,
   pages,
-  taskProgress: publicProcedure.subscription(async function* () {
+  _taskProgress: publicProcedure.subscription(async function* () {
     yield* Effect.gen(function* () {
       const progress = yield* ProgressChannel;
       const queue = yield* Queue.bounded<TaskProgress>(QUEUE_CAPACITY);
@@ -39,7 +39,7 @@ export const appRouter = router({
       );
     }).pipe(Effect.provide(ProgressChannel.Default), Effect.scoped);
   }),
-  _taskProgress: publicProcedure.subscription(() =>
+  taskProgress: publicProcedure.subscription(() =>
     observable<TaskProgress>((emit) =>
       Effect.gen(function* () {
         const progress = yield* ProgressChannel;

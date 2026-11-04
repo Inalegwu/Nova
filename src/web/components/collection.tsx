@@ -2,8 +2,8 @@ import { useRouter } from '@tanstack/react-router';
 import * as A from 'effect/Array';
 import moment from 'moment';
 
-const CARD_WIDTH = 250;
-const CARD_HEIGHT = 370;
+const CARD_WIDTH = 240;
+const CARD_HEIGHT = 345;
 const STEP = 7;
 
 type CollectionProp = Partial<Collection> & {
@@ -32,7 +32,7 @@ export default function CollectionBox(collection: CollectionProp) {
       style={{
         height: CARD_HEIGHT,
       }}
-      className='cursor-pointer flex items-center justify-center mx-2 p-2'
+      className='cursor-pointer flex items-center justify-center p-2'
     >
       <div
         className='relative'
@@ -51,7 +51,7 @@ export default function CollectionBox(collection: CollectionProp) {
           return (
             <div
               key={record.id}
-              className='absolute border border-b-0 bg-ground/40 backdrop-blur-3xl rounded-xl border-solid border-line'
+              className='absolute border border-b-0 bg-ground/40 backdrop-blur-3xl rounded-2xl border-solid border-line'
               style={{
                 top: STEP * i + 10,
                 left: (CARD_WIDTH - width) / 2,
@@ -65,7 +65,7 @@ export default function CollectionBox(collection: CollectionProp) {
           );
         })}
         <div
-          className={`absolute left-0 border border-solid bg-cover bg-center border-line bg-ink/20 dark:bg-panel/10 rounded-xl overflow-hidden`}
+          className={`absolute left-0 border border-solid bg-cover bg-center border-line bg-ink/20 dark:bg-panel/10 rounded-2xl overflow-hidden`}
           style={{
             top: STEP * count,
             width: CARD_WIDTH,

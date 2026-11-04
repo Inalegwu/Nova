@@ -52,6 +52,7 @@ function Component() {
   );
 }
 
+// TODO: List virtualization
 const IssuesView = memo(({ issues }: { issues: Partial<Issue>[] }) => {
   const { mutate, isPending } = t.issue.addIssue.useMutation();
 
@@ -97,6 +98,7 @@ type CollectionProp = Partial<Collection> & {
   issues: Array<Partial<Issue>>;
 };
 
+// TODO: List virtualization
 const CollectionsView = memo(
   ({ collections }: { collections: Array<CollectionProp> }) => {
     const utils = t.useUtils();
@@ -156,7 +158,7 @@ const CollectionsView = memo(
     }
 
     return (
-      <div className='w-full h-full flex flex-col p-2'>
+      <div className='w-full h-full flex flex-col p-2 gap-2'>
         <div className='w-full flex items-center justify-end'>
           <Popover.Root>
             <Popover.Trigger

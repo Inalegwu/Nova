@@ -111,7 +111,7 @@ const program = Effect.gen(function* () {
   yield* indexer.save;
   yield* indexer.loadIndex;
 
-  progress.publish({
+  yield* progress.publish({
     kind: 'extracting',
     status: 'pending',
     taskId,
@@ -120,6 +120,7 @@ const program = Effect.gen(function* () {
 
   // bridge: broadcast channel -> local queue
   yield* discovery.subscribe.pipe(
+    Stream.tap(Effect.logInfo),
     Stream.runForEach((file) => Queue.offer(queue, file)),
     Effect.catchAll((error) =>
       Console.error('broadcast subscription failed:', error),
@@ -129,7 +130,7 @@ const program = Effect.gen(function* () {
 
   // consume with bounded concurrency; failures are logged, not fatal
   yield* Stream.fromQueue(queue).pipe(
-    Stream.filter((item) => !indexer.has(item.path)),
+    // Stream.filter((item) => indexer.has(item.path)),
     Stream.tap(Effect.logInfo),
     Stream.mapEffect(
       (file) =>

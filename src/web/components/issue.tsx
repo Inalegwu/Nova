@@ -59,8 +59,18 @@ export default function Issue({ issue }: Props) {
                 <Icon name='Trash' size={14} weight='fill' />
               )}
             </ContextMenu.Item>
-            <ContextMenu.Item className='flex items-center justify-center p-2.5 cursor-pointer active:scale-[0.97]'>
-              <Icon name='Trash' size={14} weight='fill' />
+            <ContextMenu.Item
+              onClick={() =>
+                r.navigate({
+                  to: '/edit/$issue',
+                  params: {
+                    issue: issue.id,
+                  },
+                })
+              }
+              className='flex items-center justify-center p-2.5 cursor-pointer active:scale-[0.97]'
+            >
+              <Icon name='Info' size={14} weight='fill' />
             </ContextMenu.Item>
           </ContextMenu.Popup>
         </ContextMenu.Positioner>

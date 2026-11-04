@@ -4,7 +4,8 @@ import { useRouterState } from '@tanstack/react-router';
 import type React from 'react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
-import logo from '@/assets/images/win_dark.png';
+import logo_light from '@/assets/images/win_dark.png';
+import logo_dark from '@/assets/images/win_light.png';
 import t from '@/shared/config';
 import { useInterval, useTaskProgress, useWindow } from '../hooks';
 import { useGlobalState } from '../state/global';
@@ -22,13 +23,15 @@ export default function Layout({ children }: LayoutProps) {
   const { mutate: close } = t.window.closeWindow.useMutation();
   const { mutate: add } = t.issue.addIssue.useMutation();
 
+  t.taskProgress.useSubscription(undefined, {
+    onData: (d) => {
+      console.log(d);
+    },
+  });
+
   const isHome = routerState.location.pathname === '/';
   const colorMode = useGlobalState((s) => s.colorMode);
   const toggleColorMode = useGlobalState((s) => s.toggleColorMode);
-
-  const tasks = useTaskProgress();
-
-  console.log(tasks);
 
   useEffect(() => {
     if (colorMode === 'light') {
@@ -60,7 +63,11 @@ export default function Layout({ children }: LayoutProps) {
           <button className='p-1' onClick={() => close()}>
             <Icon name='X' size={14} weight='bold' />
           </button>
-          <img src={logo} className='size-4' alt='logo' />
+          <img
+            src={colorMode === 'light' ? logo_light : logo_dark}
+            className='size-4'
+            alt='logo'
+          />
           <button className='p-1' onClick={() => add()}>
             <Icon name='Plus' size={14} weight='bold' />
           </button>

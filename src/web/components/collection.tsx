@@ -74,12 +74,12 @@ export default function CollectionBox(collection: CollectionProp) {
             backgroundImage: `url(${front?.thumbnailUrl})`,
           }}
         >
-          <div className='flex h-full flex-col justify-end px-3 py-2 bg-ink/30 dark:bg-ground/30'>
+          <div className='flex h-full flex-col justify-end px-3 py-2 bg-ink/55 dark:bg-ground/30'>
             <div>
               <h2 className='text-[11px] uppercase font-extrabold text-ground dark:text-ink mb-1'>
                 {collection.collectionName}
               </h2>
-              <p className='text-xs font-medium text-muted'>
+              <p className='text-xs font-medium text-dim'>
                 {moment(front?.dateCreated).fromNow()}
               </p>
               <div className='h-px mt-4 w-full bg-border-hi' />

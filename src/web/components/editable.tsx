@@ -30,7 +30,7 @@ export default function Editable({ initialValue, className, onBlur }: Props) {
         <input
           onChange={(e) => setChangedString(e.currentTarget.value)}
           className='w-full outline-none px-2'
-          defaultValue={initialValue}
+          defaultValue={changedString}
           onBlur={updateValue}
         />
       ) : (

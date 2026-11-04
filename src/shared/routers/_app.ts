@@ -1,18 +1,12 @@
-import { EventEmitter, on } from 'node:events';
-import { observable } from '@trpc/server/observable';
-import { Console, Effect, ManagedRuntime, Queue, Stream } from 'effect';
-import {
-  ProgressChannel,
-  type TaskProgress,
-} from '@/shared/channels/progress-channel';
+import path from 'node:path';
+import { Effect, ManagedRuntime, Stream } from 'effect';
+import { dialog } from 'electron';
+import { ProgressChannel } from '@/shared/channels/progress-channel';
 import { publicProcedure, router } from '@/trpc';
 import issueRouter from './issue';
 import libraryRouter from './library';
 import { pages } from './pages';
 import { windowRouter } from './window';
-
-const QUEUE_CAPACITY = 256;
-const PROCESSING_CONCURRENCY = 4;
 
 const rt = ManagedRuntime.make(ProgressChannel.Default);
 
@@ -38,33 +32,22 @@ export const appRouter = router({
       ),
     );
   }),
-  _taskProgress: publicProcedure.subscription(() =>
-    observable<TaskProgress>((emit) =>
-      Effect.gen(function* () {
-        const progress = yield* ProgressChannel;
-        const queue = yield* Queue.bounded<TaskProgress>(QUEUE_CAPACITY);
+  pickSourceDirectory: publicProcedure.mutation(async () => {
+    const _ = await dialog.showOpenDialog({
+      properties: ['openDirectory', 'dontAddToRecent'],
+    });
 
-        yield* progress.subscribe.pipe(
-          Stream.runForEach((task) => Queue.offer(queue, task)),
-          Effect.catchAll((error) =>
-            Console.error('Broadcast subscription failed', error),
-          ),
-          Effect.forkScoped,
-        );
+    if (_.canceled) {
+      return {
+        path: null,
+      };
+    }
 
-        yield* Stream.fromQueue(queue).pipe(
-          Stream.mapEffect((task) => Effect.sync(() => emit.next(task)), {
-            concurrency: PROCESSING_CONCURRENCY,
-          }),
-          Stream.runDrain,
-        );
-      }).pipe(
-        Effect.provide(ProgressChannel.Default),
-        Effect.scoped,
-        Effect.runSync,
-      ),
-    ),
-  ),
+    return {
+      path: _.filePaths[0],
+      name: path.basename(_.filePaths[0]),
+    };
+  }),
 });
 
 export type AppRouter = typeof appRouter;

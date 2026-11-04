@@ -1,13 +1,13 @@
 import { Dialog } from '@base-ui/react/dialog';
 import { Tabs } from '@base-ui/react/tabs';
-import { useRouterState } from '@tanstack/react-router';
+import { useRouter, useRouterState } from '@tanstack/react-router';
 import type React from 'react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 import logo_light from '@/assets/images/win_dark.png';
 import logo_dark from '@/assets/images/win_light.png';
 import t from '@/shared/config';
-import { useInterval, useTaskProgress, useWindow } from '../hooks';
+import { useInterval, useWindow } from '../hooks';
 import { useGlobalState } from '../state/global';
 import { Icon } from './atoms';
 
@@ -18,6 +18,7 @@ type LayoutProps = {
 export default function Layout({ children }: LayoutProps) {
   const utils = t.useUtils();
   const routerState = useRouterState();
+  const router = useRouter();
 
   const { mutate: maximize } = t.window.maximize.useMutation();
   const { mutate: close } = t.window.closeWindow.useMutation();
@@ -32,6 +33,7 @@ export default function Layout({ children }: LayoutProps) {
   const isHome = routerState.location.pathname === '/';
   const colorMode = useGlobalState((s) => s.colorMode);
   const toggleColorMode = useGlobalState((s) => s.toggleColorMode);
+  const isFirstLaunch = useGlobalState((s) => s.firstLaunch);
 
   useEffect(() => {
     if (colorMode === 'light') {
@@ -44,6 +46,14 @@ export default function Layout({ children }: LayoutProps) {
   useEffect(() => {
     toast.dismiss();
     utils.invalidate();
+  }, []);
+
+  useEffect(() => {
+    if (isFirstLaunch) {
+      router.navigate({
+        to: '/first-launch',
+      });
+    }
   }, []);
 
   useWindow('keypress', (e) => {

@@ -44,9 +44,7 @@ function RouteComponent() {
         <div className='flex items-center gap-3 justify-between w-full mb-10'>
           <Editable
             className='font-bold text-2xl w-full'
-            initialValue={
-              issue?.issue.issueTitle.replace(/\s*\([^)]*\)/, '') ?? ''
-            }
+            initialValue={issue?.issue.issueTitle ?? ''}
             onBlur={(value) => {
               console.log(value);
               editIssueTitle({ issueId: issue?.issue.id!, issueTitle: value });

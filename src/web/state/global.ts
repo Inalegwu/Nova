@@ -8,6 +8,7 @@ export const useGlobalState = create<GlobalState>()(
       colorMode: 'light',
       firstLaunch: true,
       lastOpenedTab: 'issues',
+      sourceDirectory: null,
       toggleColorMode: () =>
         set((state) => ({
           ...state,
@@ -19,6 +20,8 @@ export const useGlobalState = create<GlobalState>()(
       clearAppId: () => set((state) => ({ ...state, appId: null })),
       setLastOpenedTab: (tab) =>
         set((state) => ({ ...state, lastOpenedTab: tab })),
+      setSourceDir: (dir) =>
+        set((state) => ({ ...state, sourceDirectory: dir })),
     }),
     {
       name: 'global__state',

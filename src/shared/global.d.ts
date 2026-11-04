@@ -21,11 +21,13 @@ declare global {
     firstLaunch: boolean;
     appId: string | null;
     lastOpenedTab: Tabs;
+    sourceDirectory: string | null;
     toggleColorMode: () => void;
     updateFirstLaunch: () => void;
     setAppId: (id: string) => void;
     clearAppId: () => void;
     setLastOpenedTab: (tab: Tabs) => void;
+    setSourceDir: (dir: string) => void;
   };
 
   export type ReaderState = {

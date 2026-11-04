@@ -2,6 +2,7 @@ import { DiscoveryChannel } from '@channels';
 import { FileSystem, Path } from '@effect/platform';
 import { NodeContext, NodeRuntime } from '@effect/platform-node';
 import { Console, Data, Effect, Layer, Option, Stream } from 'effect';
+import { useGlobalState } from '@/web/state/global';
 
 class WatchSetupError extends Data.TaggedError('WatchSetupError')<{
   readonly path: string;
@@ -114,7 +115,12 @@ class FileWatcherService extends Effect.Service<FileWatcherService>()(
 
 const program = Effect.gen(function* () {
   const watcher = yield* FileWatcherService;
-  yield* watcher.watch(process.env.source_dir!);
+
+  const sourceDir = useGlobalState.getState().sourceDirectory;
+
+  const source = sourceDir ?? process.env.source_dir!;
+
+  yield* watcher.watch(source);
 });
 
 const MainLayer = Layer.mergeAll(

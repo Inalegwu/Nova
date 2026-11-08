@@ -1,55 +1,27 @@
-import type { IconProps as PhosphorIconProps } from '@phosphor-icons/react';
-import * as PhosphorIcons from '@phosphor-icons/react';
-import type React from 'react';
-import { memo } from 'react';
+import * as Solar from '@solar-icons/react/ssr';
+import { type ComponentProps, type ComponentType, memo } from 'react';
 
-export type IconName = {
-  [K in keyof typeof PhosphorIcons]: (typeof PhosphorIcons)[K] extends React.ComponentType<PhosphorIconProps>
-    ? K
-    : never;
-}[keyof typeof PhosphorIcons];
+type IconName = Exclude<
+  keyof typeof Solar,
+  | 'SolarProvider'
+  | 'default'
+  | 'useSolar'
+  | 'SSR'
+  | 'solar'
+  | 'IconBase'
+  | 'category'
+>;
 
-export type IconWeight = PhosphorIconProps['weight'];
+type IconWeight = Pick<ComponentProps<typeof Solar.Home>, 'weight'>['weight'];
 
-export type IconProps = {
+type IconProps = ComponentType<Omit<typeof Solar.Home, 'ref'>> & {
   name: IconName;
-  size?: number | string;
-  color?: string;
-  weight?: IconWeight;
-  mirrored?: boolean;
-  alt?: string;
+  size?: number;
+  weight: IconWeight;
 };
 
-function IconComponent({
-  name,
-  size = 24,
-  color = 'currentColor',
-  weight = 'regular',
-  mirrored = false,
-  alt,
-}: IconProps) {
-  const PhosphorIcon = PhosphorIcons[
-    name
-  ] as React.ComponentType<PhosphorIconProps>;
+export const Icon = memo(({ name, ...props }: IconProps) => {
+  const Component = Solar[name] as ComponentType<Omit<IconProps, 'name'>>;
 
-  if (!PhosphorIcon) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.warn(
-        `[Icon] "${name}" is not a valid @phosphor-icons/react icon.`,
-      );
-    }
-    return null;
-  }
-
-  return (
-    <PhosphorIcon
-      size={size}
-      color={color}
-      weight={weight}
-      mirrored={mirrored}
-      alt={alt}
-    />
-  );
-}
-
-export const Icon = memo(IconComponent);
+  return <Component {...props} />;
+});

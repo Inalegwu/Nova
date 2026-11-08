@@ -71,7 +71,7 @@ export default function Layout({ children }: LayoutProps) {
       <div className='w-full flex items-center bg-ground px-3 py-1 justify-between border-b-2 border-b-line'>
         <div className='flex items-center justify-start gap-3'>
           <button className='p-1' onClick={() => close()}>
-            <Icon name='X' size={14} weight='bold' />
+            <Icon name='CloseCircle' size={14} weight='bold' />
           </button>
           <img
             src={colorMode === 'light' ? logo_light : logo_dark}
@@ -79,7 +79,7 @@ export default function Layout({ children }: LayoutProps) {
             alt='logo'
           />
           <button className='p-1' onClick={() => add()}>
-            <Icon name='Plus' size={14} weight='bold' />
+            <Icon name='AddCircle' size={14} />
           </button>
           {!isHome && (
             <div className='flex items-center justify-center gap-2'>

@@ -60,7 +60,7 @@ const createWindow = () => {
     createContext,
   });
 
-  mainWindow.webContents.on('dom-ready', () => {
+  mainWindow.on('ready-to-show', () => {
     mainWindow.show();
   });
 

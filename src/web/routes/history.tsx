@@ -1,8 +1,4 @@
-import { eq, useLiveQuery } from '@tanstack/react-db';
 import { createFileRoute } from '@tanstack/react-router';
-import * as Array from 'effect/Array';
-import React, { Suspense } from 'react';
-import { historyCollection } from '../store/history';
 
 export const Route = createFileRoute('/history')({
   component: Index,

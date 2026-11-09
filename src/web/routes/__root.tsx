@@ -1,4 +1,3 @@
-import { SolarProvider } from '@solar-icons/react';
 import {
   createRootRoute,
   Outlet,
@@ -6,6 +5,7 @@ import {
 } from '@tanstack/react-router';
 import { Toaster } from 'sonner';
 import { Layout } from '../components';
+import ErrorComponent from '../components/error';
 
 export const Route = createRootRoute({
   component: () => {
@@ -17,31 +17,15 @@ export const Route = createRootRoute({
 
     // hide the app layout on the first launch screen only
     if (isFirstLaunch) {
-      return (
-        <SolarProvider
-          value={{
-            size: 18,
-            weight: 'Bold',
-          }}
-        >
-          <Outlet />
-        </SolarProvider>
-      );
+      return <Outlet />;
     }
 
     return (
-      <SolarProvider
-        value={{
-          size: 18,
-          weight: 'Bold',
-        }}
-      >
-        <Layout>
-          <Outlet />
-          <Toaster richColors position='bottom-center' />
-          {/* <TanStackRouterDevtools /> */}
-        </Layout>
-      </SolarProvider>
+      <Layout>
+        <Outlet />
+        <Toaster richColors position='bottom-center' />
+      </Layout>
     );
   },
+  errorComponent: (props) => <ErrorComponent {...props} />,
 });

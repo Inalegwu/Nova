@@ -5,7 +5,13 @@
 
 @font-face {
   font-family: Font;
-  src: url("../assets/fonts/onest.ttf");
+  src: url("../assets/fonts/SFPRODISPLAYMEDIUM.OTF");
+}
+
+
+@font-face {
+  font-family: Font;
+  src: url("../assets/fonts/SFPRODISPLAYREGULAR.OTF");
 }
 
 :root {

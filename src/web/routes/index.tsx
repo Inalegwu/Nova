@@ -8,8 +8,8 @@ import t from '@/shared/config';
 import { useTimeout } from '../hooks';
 import { useGlobalState } from '../state/global';
 
-const Issue = React.lazy(() => import('../components/issue'));
-const Collection = React.lazy(() => import('../components/collection'));
+const Issue = React.lazy(() => import('@/web/components/issue'));
+const Collection = React.lazy(() => import('@/web/components/collection'));
 
 export const Route = createFileRoute('/')({
   component: memo(Component),

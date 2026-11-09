@@ -10,7 +10,7 @@ type CollectionProp = Partial<Collection> & {
   issues: Array<Partial<Issue>>;
 };
 
-export default function CollectionBox(collection: CollectionProp) {
+export default function Collection(collection: CollectionProp) {
   const nav = useRouter();
   const images = A.drop(collection.issues.length - 3)(collection.issues);
 
